@@ -12,7 +12,10 @@
             </intent-filter>
         </activity>
 
-    </application>
+    <receiver android:name=".reciever.BankDroidTransactionReciever"><intent-filter><action android:name="com.magnusart.transtatistics.action.UPDATE_TRANSACTIONS"></action>
+</intent-filter>
+</receiver>
+</application>
     <uses-sdk android:minSdkVersion="4" />
 
 </manifest> 
