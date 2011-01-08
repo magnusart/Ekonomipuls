@@ -15,8 +15,8 @@
  */
 package com.magnusart.transtatistics.reciever;
 
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.BroadcastReceiver;
@@ -44,22 +44,13 @@ public class BankDroidTransactionReciever extends BroadcastReceiver {
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
 			Log.d(TranStatistics.TAG, "Begin retrieving updated transactions");
-			final String bankName = intent.getExtras().getString("bankName");
-			final String accountName = intent.getExtras().getString(
-					"accountName");
-			final String transactions[] = intent.getExtras().getStringArray(
-					"UpdatedTransactions");
-
-			for (final String t : transactions) {
-				try {
-					final JSONObject jObj = (JSONObject) new JSONTokener(t)
-							.nextValue();
-
-					Log.d(TranStatistics.TAG, jObj.toString(4));
-
-				} catch (final JSONException e) {
-					throw new RuntimeException(e);
-				}
+			final String banks = intent.getExtras().getString("banks");
+			JSONArray jsBanks = null;
+			try {
+				jsBanks = (JSONArray) new JSONTokener(banks).nextValue();
+				Log.d(TranStatistics.TAG, jsBanks.toString(4));
+			} catch (final JSONException e) {
+				throw new RuntimeException(e);
 			}
 
 		}

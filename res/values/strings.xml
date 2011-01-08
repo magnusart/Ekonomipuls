@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, TranStatistics!</string>
-    <string name="app_name">Transaction Statistics</string>
+    <string name="valFetchFromProvider">Fetch from BankDroid Provider</string>
+    <string name="app_name">Bank Transaction Statistics</string>
+
 </resources>
