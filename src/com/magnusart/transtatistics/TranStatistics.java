@@ -40,6 +40,9 @@ public class TranStatistics extends Activity implements
 
 	public static final String TAG = "TranStatistics";
 
+	// TODO: Replace this with a user property
+	private static final String THE_KEY = "THE_SECRET";
+
 	private Spinner spnrAccounts;
 	private SimpleCursorAdapter bankAccountsAdapter;
 
@@ -54,7 +57,7 @@ public class TranStatistics extends Activity implements
 			Log.d(TAG, "Preparing To Read Transactions from Provider");
 
 			final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-					+ TRANSACTIONS_CAT);
+					+ TRANSACTIONS_CAT + "/" + API_KEY + THE_KEY);
 
 			final Cursor acc_cursor = (Cursor) parent
 					.getItemAtPosition(position);
@@ -109,7 +112,7 @@ public class TranStatistics extends Activity implements
 		Log.d(TAG, "Preparing To Read Bank Accounts from Provider");
 
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT);
+				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + THE_KEY);
 
 		final Cursor cur = managedQuery(uri, BANK_ACCOUNT_PROJECTION,
 				NO_HIDDEN_ACCOUNTS_FILTER, null, null);
