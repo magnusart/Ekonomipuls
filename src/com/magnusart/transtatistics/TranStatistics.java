@@ -40,7 +40,7 @@ public class TranStatistics extends Activity implements
 
 	public static final String TAG = "TranStatistics";
 
-	// TODO: Replace this with a user property
+	// TODO: API_KEY: Replace this with a user property
 	private static final String THE_KEY = "THE_SECRET";
 
 	private Spinner spnrAccounts;
@@ -87,7 +87,6 @@ public class TranStatistics extends Activity implements
 
 		@Override
 		public void onNothingSelected(final AdapterView<?> parent) {
-			// TODO Auto-generated method stub
 
 		}
 
