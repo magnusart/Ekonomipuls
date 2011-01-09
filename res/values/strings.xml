@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="valFetchFromProvider">Fetch from BankDroid Provider</string>
+    <string name="valPickAccount">Please pick an Account</string>
     <string name="app_name">Bank Transaction Statistics</string>
 
 </resources>
