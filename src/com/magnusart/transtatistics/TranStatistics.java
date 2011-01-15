@@ -16,19 +16,18 @@
 package com.magnusart.transtatistics;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
+import com.magnusart.transtatistics.proxy.BankDroidProxy;
 
 /**
  * 
@@ -36,52 +35,27 @@ import com.liato.bankdroid.provider.IBankTransactionsProvider;
  * @since 30 dec 2010
  */
 public class TranStatistics extends Activity implements
-		IBankTransactionsProvider {
-
-	public static final String TAG = "TranStatistics";
-
-	// TODO: API_KEY: Replace this with a user property
-	private static final String THE_KEY = "THE_SECRET";
+		IBankTransactionsProvider, Tag {
 
 	private Spinner spnrAccounts;
-	private SimpleCursorAdapter bankAccountsAdapter;
 
 	private ListView transactionsListView;
-	private CursorAdapter transactionAdapter;
 
 	private final OnItemSelectedListener readBankDroidContentProvider = new OnItemSelectedListener() {
 
 		@Override
 		public void onItemSelected(final AdapterView<?> parent,
 				final View view, final int position, final long id) {
-			Log.d(TAG, "Preparing To Read Transactions from Provider");
 
-			final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-					+ TRANSACTIONS_CAT + "/" + API_KEY + THE_KEY);
+			final String accountId = getAccountId(parent, position);
 
-			final Cursor acc_cursor = (Cursor) parent
-					.getItemAtPosition(position);
-			final int acc_id_idx = acc_cursor.getColumnIndex(ACC_ID);
-			final String account_id = acc_cursor.getString(acc_id_idx);
+			final Cursor cur = BankDroidProxy.getManagedTransactionsCursor(
+					getParent(), accountId);
 
-			Log.d(TAG, "Picked Account with id " + account_id);
+			final SimpleCursorAdapter transactionsAdapter = setupListAdapter(
+					view.getContext(), cur);
 
-			final Cursor cur = managedQuery(uri, TRANSACTIONS_PROJECTION,
-					ACCOUNT_SELECTION_FILTER, new String[] { account_id }, null);
-			startManagingCursor(cur);
-
-			// the desired columns to be bound
-			final String[] columns = new String[] { TRANS_DATE, TRANS_DESC,
-					TRANS_AMT };
-
-			// the XML defined views which the data will be bound to
-			final int[] to = new int[] { R.id.tDate, R.id.tDesc, R.id.tAmt };
-
-			// Populate the list
-			transactionAdapter = new SimpleCursorAdapter(view.getContext(),
-					R.layout.transaction_list_item, cur, columns, to);
-
-			transactionsListView.setAdapter(transactionAdapter);
+			transactionsListView.setAdapter(transactionsAdapter);
 
 		}
 
@@ -108,16 +82,16 @@ public class TranStatistics extends Activity implements
 	}
 
 	private void populateSpinner(final Spinner spnrAccounts) {
-		Log.d(TAG, "Preparing To Read Bank Accounts from Provider");
+		final Cursor cur = BankDroidProxy.getManagedBankAccountsCursor(this);
 
-		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + THE_KEY);
+		final SimpleCursorAdapter bankAccountsAdapter = setupSpinnerAdapter(cur);
 
-		final Cursor cur = managedQuery(uri, BANK_ACCOUNT_PROJECTION,
-				NO_HIDDEN_ACCOUNTS_FILTER, null, null);
+		bankAccountsAdapter.setDropDownViewResource(R.layout.bank_account_item);
 
-		startManagingCursor(cur);
+		spnrAccounts.setAdapter(bankAccountsAdapter);
+	}
 
+	private SimpleCursorAdapter setupSpinnerAdapter(final Cursor cursor) {
 		// the desired columns to be bound
 		final String[] columns = new String[] { BANK_NAME, ACC_NAME };
 
@@ -125,12 +99,30 @@ public class TranStatistics extends Activity implements
 		final int[] to = new int[] { R.id.bankName, R.id.accountName };
 
 		// Populate the list
-		bankAccountsAdapter = new SimpleCursorAdapter(this,
-				R.layout.bank_account_spinner, cur, columns, to);
+		return new SimpleCursorAdapter(this, R.layout.bank_account_spinner,
+				cursor, columns, to);
 
-		// Layout the dropdown view
-		bankAccountsAdapter.setDropDownViewResource(R.layout.bank_account_item);
-
-		spnrAccounts.setAdapter(bankAccountsAdapter);
 	}
+
+	private SimpleCursorAdapter setupListAdapter(final Context c,
+			final Cursor cur) {
+		// the desired columns to be bound
+		final String[] columns = new String[] { TRANS_DATE, TRANS_DESC,
+				TRANS_AMT };
+
+		// the XML defined views which the data will be bound to
+		final int[] to = new int[] { R.id.tDate, R.id.tDesc, R.id.tAmt };
+
+		// Populate the list
+		return new SimpleCursorAdapter(c, R.layout.transaction_list_item, cur,
+				columns, to);
+	}
+
+	private String getAccountId(final AdapterView<?> parent, final int position) {
+
+		final Cursor acc_cursor = (Cursor) parent.getItemAtPosition(position);
+		final int acc_id_idx = acc_cursor.getColumnIndex(ACC_ID);
+		return acc_cursor.getString(acc_id_idx);
+	}
+
 }

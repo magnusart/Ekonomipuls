@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Flot Pie Examples</title>
+    <script language="javascript" type="text/javascript" src="../javascript/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="../javascript/flot/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="../javascript/flot/jquery.flot.pie.js"></script>
+	
+<script id="source" language="javascript" type="text/javascript">
+function load(){
+	window.budgetHandler.loadGraph();
+	$("#interactive").bind("plotclick", pieClick);
+}
+
+function gotGraph(gdata, series) {
+	$.plot($("#placeholder"), gdata, series);
+}
+
+function pieClick(event, pos, obj) 
+{
+	if (!obj) return;
+	percent = parseFloat(obj.series.percent).toFixed(2);
+	alert(''+obj.series.label+': '+percent+'%');
+}
+
+
+</script>
+<style type="text/css">
+	html {
+		overflow: hidden;
+		width: 200px;
+		height: 200px;
+		margin: 0px 0px 0px 0px;
+		padding: 0px 0px 0px 0px;
+		top: 0px;
+		left: 0px;
+		position: absolute;
+	}
+
+	body
+	{
+		width: 200px;
+		height: 200px;	
+		margin: 0px 0px 0px 0px;
+		padding: 0px 0px 0px 0px;
+		background-color: transparent;
+		top: 0px;
+		left: 0px;
+		position: absolute;
+	}
+
+
+	div.graph 
+	{
+		width: 200px;
+		height: 200px;
+		float: left;
+		background-color: transparent;
+		top: 0px;
+		left: 0px;
+		position: absolute;
+	}
+</style>
+ </head>
+    <body onload="load()">
+    <div id="placeholder" class="graph"></div>
+ </body>
+</html>
+
