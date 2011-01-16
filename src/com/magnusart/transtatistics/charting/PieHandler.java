@@ -30,19 +30,19 @@ import com.magnusart.transtatistics.LogTag;
  */
 public class PieHandler implements LogTag {
 
-	private final WebView budget;
+	private final WebView chartWebView;
 	private Slice[] slices;
 	private final PieChartConfiguration conf;
 
 	/**
 	 * Handler class that acts a interface to the webview and charts
 	 * 
-	 * @param budget
+	 * @param chartWebView
 	 *            Budget WebView
 	 */
-	public PieHandler(final WebView budget,
+	public PieHandler(final WebView chartWebView,
 			final PieChartConfiguration configuration, final Slice[] slices) {
-		this.budget = budget;
+		this.chartWebView = chartWebView;
 		this.slices = slices;
 		this.conf = configuration;
 	}
@@ -63,7 +63,7 @@ public class PieHandler implements LogTag {
 			Log.d(TAG, data.toString(4));
 			Log.d(TAG, series.toString(4));
 
-			budget.loadUrl("javascript:gotGraph(" + data.toString() + ", "
+			chartWebView.loadUrl("javascript:gotGraph(" + data.toString() + ", "
 					+ series.toString() + ")");
 		} catch (final Exception ex) {
 			// do something
