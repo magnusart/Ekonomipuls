@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.magnusart.transtatistics.LogTag;
 import com.magnusart.transtatistics.TranStatistics;
 
 /**
@@ -33,7 +34,8 @@ import com.magnusart.transtatistics.TranStatistics;
  * @author Magnus Andersson
  * @since 30 dec 2010
  */
-public class BankDroidTransactionReciever extends BroadcastReceiver {
+public class BankDroidTransactionReciever extends BroadcastReceiver implements
+		LogTag {
 
 	private static final String UPDATE_TRANSACTIONS = "com.magnusart.transtatistics.action.UPDATE_TRANSACTIONS";
 
@@ -43,12 +45,12 @@ public class BankDroidTransactionReciever extends BroadcastReceiver {
 		Log.d(TranStatistics.TAG, "Recieved intent");
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
-			Log.d(TranStatistics.TAG, "Begin retrieving updated transactions");
+			Log.d(TAG, "Begin retrieving updated transactions");
 			final String banks = intent.getExtras().getString("banks");
 			JSONArray jsBanks = null;
 			try {
 				jsBanks = (JSONArray) new JSONTokener(banks).nextValue();
-				Log.d(TranStatistics.TAG, jsBanks.toString(4));
+				Log.d(TAG, jsBanks.toString(4));
 			} catch (final JSONException e) {
 				throw new RuntimeException(e);
 			}

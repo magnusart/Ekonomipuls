@@ -22,13 +22,13 @@ import org.json.JSONObject;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.magnusart.transtatistics.Tag;
+import com.magnusart.transtatistics.LogTag;
 
 /**
  * @author Magnus Andersson
  * @since 10 jan 2011
  */
-public class PieHandler implements Tag {
+public class PieHandler implements LogTag {
 
 	private final WebView budget;
 	private Slice[] slices;

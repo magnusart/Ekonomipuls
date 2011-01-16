@@ -21,13 +21,13 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
-import com.magnusart.transtatistics.Tag;
+import com.magnusart.transtatistics.LogTag;
 
 /**
  * @author Magnus Andersson
  * @since 15 jan 2011
  */
-public class BankDroidProxy implements IBankTransactionsProvider, Tag {
+public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 
 	private BankDroidProxy() {
 		// Private Constructor

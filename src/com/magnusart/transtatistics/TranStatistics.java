@@ -35,7 +35,7 @@ import com.magnusart.transtatistics.proxy.BankDroidProxy;
  * @since 30 dec 2010
  */
 public class TranStatistics extends Activity implements
-		IBankTransactionsProvider, Tag {
+		IBankTransactionsProvider, LogTag {
 
 	private Spinner spnrAccounts;
 

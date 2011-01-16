@@ -1,5 +1,5 @@
 package com.magnusart.transtatistics;
 
-public interface Tag {
+public interface LogTag {
 	public static final String TAG = "TranStatistics";
 }

@@ -28,7 +28,7 @@ import com.magnusart.transtatistics.charting.Slice;
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class BudgetOverview extends Activity implements Tag {
+public class BudgetOverview extends Activity implements LogTag {
 
 	private static final String STROKE_COLOR = "#FFF";
 	private static final int STROKE_WIDTH = 3;
@@ -41,6 +41,11 @@ public class BudgetOverview extends Activity implements Tag {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.budget_overview);
 
+		setUpBudgetPieChart();
+
+	}
+
+	private void setUpBudgetPieChart() {
 		budget = (WebView) findViewById(R.id.budgetWebview);
 
 		final Slice[] slices = { new Slice(15000D, "Balance", "#31b320"),
@@ -58,6 +63,5 @@ public class BudgetOverview extends Activity implements Tag {
 		budget.setScrollContainer(false);
 		budget.setBackgroundColor(0);
 		budget.loadUrl("file:///android_asset/charts/pie.html");
-
 	}
 }
