@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Magnus Andersson 
+ * Copyright 2010 Magnus Andersson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
 import com.magnusart.transtatistics.proxy.BankDroidProxy;
@@ -38,7 +39,6 @@ public class TranStatistics extends Activity implements
 		IBankTransactionsProvider, LogTag {
 
 	private Spinner spnrAccounts;
-
 	private ListView transactionsListView;
 
 	private final OnItemSelectedListener readBankDroidContentProvider = new OnItemSelectedListener() {
@@ -49,14 +49,7 @@ public class TranStatistics extends Activity implements
 
 			final String accountId = getAccountId(parent, position);
 
-			final Cursor cur = BankDroidProxy.getManagedTransactionsCursor(
-					getParent(), accountId);
-
-			final SimpleCursorAdapter transactionsAdapter = setupListAdapter(
-					view.getContext(), cur);
-
-			transactionsListView.setAdapter(transactionsAdapter);
-
+			populateTransactionsList(accountId);
 		}
 
 		@Override
@@ -82,13 +75,36 @@ public class TranStatistics extends Activity implements
 	}
 
 	private void populateSpinner(final Spinner spnrAccounts) {
-		final Cursor cur = BankDroidProxy.getManagedBankAccountsCursor(this);
+		Cursor cur;
+		try {
+			cur = BankDroidProxy.getManagedBankAccountsCursor(this);
+		} catch (final IllegalAccessException e) {
+			Toast.makeText(spnrAccounts.getContext(), e.getMessage(),
+					Toast.LENGTH_LONG).show();
+			return;
+		}
 
 		final SimpleCursorAdapter bankAccountsAdapter = setupSpinnerAdapter(cur);
 
 		bankAccountsAdapter.setDropDownViewResource(R.layout.bank_account_item);
 
 		spnrAccounts.setAdapter(bankAccountsAdapter);
+	}
+
+	private void populateTransactionsList(final String accountId) {
+		Cursor cur;
+		try {
+			cur = BankDroidProxy.getManagedTransactionsCursor(this, accountId);
+		} catch (final IllegalAccessException e) {
+			Toast.makeText(spnrAccounts.getContext(), e.getMessage(),
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		final SimpleCursorAdapter transactionsAdapter = setupListAdapter(
+				this.getBaseContext(), cur);
+
+		transactionsListView.setAdapter(transactionsAdapter);
 	}
 
 	private SimpleCursorAdapter setupSpinnerAdapter(final Cursor cursor) {

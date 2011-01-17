@@ -16,6 +16,7 @@
 package com.magnusart.transtatistics.proxy;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
@@ -29,27 +30,34 @@ import com.magnusart.transtatistics.LogTag;
  */
 public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 
+	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
+
 	private BankDroidProxy() {
 		// Private Constructor
 	}
-
-	// TODO: API_KEY: Replace this with a user property
-	private static final String THE_KEY = "THE_SECRET";
 
 	/**
 	 * 
 	 * @param a
 	 *            The activity that should manage the cursor.
 	 * @return a managed cursor to the Bank Accounts Provider.
+	 * @throws IllegalAccessException
 	 */
-	public static Cursor getManagedBankAccountsCursor(final Activity a) {
+	public static Cursor getManagedBankAccountsCursor(final Activity a)
+			throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Bank Accounts from Provider");
 
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + THE_KEY);
+				+ BANK_ACCOUNTS_CAT + "/" + API_KEY
+				+ getApiKey(a.getBaseContext()));
 
 		final Cursor cur = a.managedQuery(uri, BANK_ACCOUNT_PROJECTION,
 				NO_HIDDEN_ACCOUNTS_FILTER, null, null);
+
+		if (cur == null) {
+			throw new IllegalAccessException(
+					"The API-key was either empty or did not match BankDroid's API-key");
+		}
 
 		a.startManagingCursor(cur);
 
@@ -57,19 +65,36 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 	}
 
 	public static Cursor getManagedTransactionsCursor(final Activity a,
-			final String accountId) {
+			final String accountId) throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Transactions from Provider");
 
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ TRANSACTIONS_CAT + "/" + API_KEY + THE_KEY);
+				+ TRANSACTIONS_CAT + "/" + API_KEY
+				+ getApiKey(a.getBaseContext()));
 
 		Log.d(TAG, "Picked Account with id " + accountId);
 
 		final Cursor cur = a.managedQuery(uri, TRANSACTIONS_PROJECTION,
 				ACCOUNT_SELECTION_FILTER, new String[] { accountId }, null);
 
+		if (cur == null) {
+			throw new IllegalAccessException(
+					"The API-key was either empty or did not match BankDroid's API-key");
+		}
+
 		a.startManagingCursor(cur);
 
 		return cur;
+	}
+
+	private static String getApiKey(final Context ctx) {
+		// final SharedPreferences prefs =
+		// PreferenceManager.getDefaultSharedPreferences(ctx);
+
+		// final String apiKey = prefs.getString(CONTENT_PROVIDER_API_KEY, "");
+
+		// return apiKey;
+
+		return "3FEBC";
 	}
 }
