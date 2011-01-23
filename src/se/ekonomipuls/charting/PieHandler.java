@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.magnusart.transtatistics.charting;
+package se.ekonomipuls.charting;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import se.ekonomipuls.LogTag;
+
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.magnusart.transtatistics.LogTag;
 
 /**
  * @author Magnus Andersson

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.magnusart.transtatistics;
+package se.ekonomipuls;
 
+import se.ekonomipuls.proxy.BankDroidProxy;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -28,7 +29,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
-import com.magnusart.transtatistics.proxy.BankDroidProxy;
 
 /**
  * 

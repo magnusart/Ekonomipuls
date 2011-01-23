@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.magnusart.transtatistics.proxy;
+package se.ekonomipuls.proxy;
 
+import se.ekonomipuls.LogTag;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
@@ -22,7 +23,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
-import com.magnusart.transtatistics.LogTag;
 
 /**
  * @author Magnus Andersson

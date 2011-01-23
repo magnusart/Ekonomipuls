@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.magnusart.transtatistics.reciever;
+package se.ekonomipuls.reciever;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONTokener;
+
+import se.ekonomipuls.LogTag;
+import se.ekonomipuls.TranStatistics;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.magnusart.transtatistics.LogTag;
-import com.magnusart.transtatistics.TranStatistics;
 
 /**
  * This class recieves changes to transactions and makes sure they are stored

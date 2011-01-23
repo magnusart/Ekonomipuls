@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.magnusart.transtatistics;
+package se.ekonomipuls;
 
+import se.ekonomipuls.charting.BudgetPieChartFactory;
+import se.ekonomipuls.charting.PieChartConfiguration;
+import se.ekonomipuls.charting.PieHandler;
+import se.ekonomipuls.charting.Slice;
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.magnusart.transtatistics.charting.BudgetPieChartFactory;
-import com.magnusart.transtatistics.charting.PieChartConfiguration;
-import com.magnusart.transtatistics.charting.PieHandler;
-import com.magnusart.transtatistics.charting.Slice;
 
 /**
  * @author Magnus Andersson
