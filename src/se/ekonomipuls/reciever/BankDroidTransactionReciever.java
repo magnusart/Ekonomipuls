@@ -15,18 +15,12 @@
  */
 package se.ekonomipuls.reciever;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONTokener;
-
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.TranStatistics;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 
 /**
  * This class recieves changes to transactions and makes sure they are stored
@@ -38,7 +32,7 @@ import android.util.Log;
 public class BankDroidTransactionReciever extends BroadcastReceiver implements
 		LogTag {
 
-	private static final String UPDATE_TRANSACTIONS = "com.magnusart.transtatistics.action.UPDATE_TRANSACTIONS";
+	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,14 +41,6 @@ public class BankDroidTransactionReciever extends BroadcastReceiver implements
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
 			Log.d(TAG, "Begin retrieving updated transactions");
-			final String banks = intent.getExtras().getString("banks");
-			JSONArray jsBanks = null;
-			try {
-				jsBanks = (JSONArray) new JSONTokener(banks).nextValue();
-				Log.d(TAG, jsBanks.toString(4));
-			} catch (final JSONException e) {
-				throw new RuntimeException(e);
-			}
 
 		}
 

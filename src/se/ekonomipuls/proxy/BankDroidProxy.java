@@ -15,6 +15,9 @@
  */
 package se.ekonomipuls.proxy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.ekonomipuls.LogTag;
 import android.app.Activity;
 import android.content.Context;
@@ -47,17 +50,7 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 			throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Bank Accounts from Provider");
 
-		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT + "/" + API_KEY
-				+ getApiKey(a.getBaseContext()));
-
-		final Cursor cur = a.managedQuery(uri, BANK_ACCOUNT_PROJECTION,
-				NO_HIDDEN_ACCOUNTS_FILTER, null, null);
-
-		if (cur == null) {
-			throw new IllegalAccessException(
-					"The API-key was either empty or did not match BankDroid's API-key");
-		}
+		final Cursor cur = getUnmanagedBankAccountsCursor(a.getBaseContext());
 
 		a.startManagingCursor(cur);
 
@@ -68,21 +61,53 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 			final String accountId) throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Transactions from Provider");
 
+		final Cursor cur = getUnmanagedTransactionsCursor(a.getBaseContext(),
+				accountId);
+
+		a.startManagingCursor(cur);
+
+		return cur;
+	}
+
+	public static List<BankDroidTransaction> getBankDroidTransactions(
+			final Context ctx, final String accountId) {
+
+		final List<BankDroidTransaction> transactions = new ArrayList<BankDroidTransaction>();
+
+		return transactions;
+	}
+
+	private static Cursor getUnmanagedBankAccountsCursor(final Context ctx)
+			throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ TRANSACTIONS_CAT + "/" + API_KEY
-				+ getApiKey(a.getBaseContext()));
+				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + getApiKey(ctx));
 
-		Log.d(TAG, "Picked Account with id " + accountId);
-
-		final Cursor cur = a.managedQuery(uri, TRANSACTIONS_PROJECTION,
-				ACCOUNT_SELECTION_FILTER, new String[] { accountId }, null);
+		final Cursor cur = ctx.getContentResolver().query(uri,
+				BANK_ACCOUNT_PROJECTION, NO_HIDDEN_ACCOUNTS_FILTER, null, null);
 
 		if (cur == null) {
 			throw new IllegalAccessException(
 					"The API-key was either empty or did not match BankDroid's API-key");
 		}
 
-		a.startManagingCursor(cur);
+		return cur;
+	}
+
+	private static Cursor getUnmanagedTransactionsCursor(final Context ctx,
+			final String accountId) throws IllegalAccessException {
+		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
+				+ TRANSACTIONS_CAT + "/" + API_KEY + getApiKey(ctx));
+
+		Log.d(TAG, "Picked Account with id " + accountId);
+
+		final Cursor cur = ctx.getContentResolver().query(uri,
+				TRANSACTIONS_PROJECTION, ACCOUNT_SELECTION_FILTER,
+				new String[] { accountId }, null);
+
+		if (cur == null) {
+			throw new IllegalAccessException(
+					"The API-key was either empty or did not match BankDroid's API-key");
+		}
 
 		return cur;
 	}
