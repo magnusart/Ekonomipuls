@@ -29,6 +29,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
+import com.magnusart.transtatistics.R;
 
 /**
  * 
