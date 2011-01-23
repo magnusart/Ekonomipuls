@@ -1,5 +1,5 @@
 package se.ekonomipuls;
 
 public interface LogTag {
-	public static final String TAG = "TranStatistics";
+	public static final String TAG = "Ekonomipuls";
 }
