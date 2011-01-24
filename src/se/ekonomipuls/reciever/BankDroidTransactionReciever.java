@@ -15,8 +15,12 @@
  */
 package se.ekonomipuls.reciever;
 
+import java.util.List;
+
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.TranStatistics;
+import se.ekonomipuls.proxy.BankDroidProxy;
+import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +37,7 @@ public class BankDroidTransactionReciever extends BroadcastReceiver implements
 		LogTag {
 
 	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
+	private static final String ACCOUNT_ID = "accountId";
 
 	/** {@inheritDoc} */
 	@Override
@@ -42,8 +47,21 @@ public class BankDroidTransactionReciever extends BroadcastReceiver implements
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
 			Log.d(TAG, "Begin retrieving updated transactions");
 
+			final String accountId = intent.getExtras().getString(ACCOUNT_ID);
+
+			try {
+				final List<BankDroidTransaction> transactions = BankDroidProxy
+						.getBankDroidTransactions(context, accountId);
+
+				Log.d(TAG, "Listing transactions");
+				for (final BankDroidTransaction trans : transactions) {
+					Log.d(TAG, trans.toString());
+				}
+
+			} catch (final IllegalAccessException e) {
+				Log.e(TAG, "Unable to access the content provider.", e);
+			}
 		}
 
 	}
-
 }

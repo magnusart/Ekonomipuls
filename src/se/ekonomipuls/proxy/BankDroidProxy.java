@@ -15,6 +15,7 @@
  */
 package se.ekonomipuls.proxy;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,10 +70,56 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 		return cur;
 	}
 
+	/**
+	 * Get a list of BankDroidTransactions.
+	 * 
+	 * @param ctx
+	 *            The Context.
+	 * @param accountId
+	 *            The Account Id.
+	 * @return List of Transactions
+	 * @throws IllegalAccessException
+	 */
 	public static List<BankDroidTransaction> getBankDroidTransactions(
-			final Context ctx, final String accountId) {
+			final Context ctx, final String accountId)
+			throws IllegalAccessException {
 
 		final List<BankDroidTransaction> transactions = new ArrayList<BankDroidTransaction>();
+		Cursor cur = null;
+
+		try {
+			cur = getUnmanagedTransactionsCursor(ctx, accountId);
+
+			final int tId = cur.getColumnIndexOrThrow(TRANS_ID);
+			final int tDate = cur.getColumnIndexOrThrow(TRANS_DATE);
+			final int tDesc = cur.getColumnIndexOrThrow(TRANS_DESC);
+			final int tAmt = cur.getColumnIndexOrThrow(TRANS_AMT);
+			final int tCur = cur.getColumnIndexOrThrow(TRANS_CUR);
+			final int tAcc = cur.getColumnIndexOrThrow(TRANS_ACCNT);
+
+			Log.d(TAG, "Transactions cursor with " + cur.getCount()
+					+ " number of rows");
+
+			while (cur.moveToNext()) {
+				final String id = cur.getString(tId);
+				final String date = cur.getString(tDate);
+				final String desc = cur.getString(tDesc);
+				final BigDecimal amt = new BigDecimal(cur.getString(tAmt));
+				final String curr = cur.getString(tCur);
+				final String acc = cur.getString(tAcc);
+
+				final BankDroidTransaction trans = new BankDroidTransaction(id,
+						date, desc, amt, curr, acc);
+
+				transactions.add(trans);
+			}
+		} finally {
+			if (cur != null) {
+				cur.close(); // Clean up.
+			}
+		}
+
+		Log.d(TAG, "Got " + transactions.size() + " number of transactions");
 
 		return transactions;
 	}

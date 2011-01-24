@@ -15,10 +15,88 @@
  */
 package se.ekonomipuls.proxy;
 
+import java.math.BigDecimal;
+
 /**
  * @author Magnus Andersson
  * @since 23 jan 2011
  */
 public class BankDroidTransaction {
+
+	private final String id;
+	private final String date;
+	private final String description;
+	private final BigDecimal amount;
+	private final String currency;
+	private final String accountId;
+
+	/**
+	 * @param id
+	 * @param date
+	 * @param desc
+	 * @param amt
+	 * @param acc
+	 * @param acc
+	 */
+	BankDroidTransaction(final String id, final String date,
+			final String description, final BigDecimal amount,
+			final String currency, final String accountId) {
+		this.id = id;
+		this.date = date;
+		this.description = description;
+		this.amount = amount;
+		this.currency = currency;
+		this.accountId = accountId;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public String getDate() {
+		return date;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @return the amount
+	 */
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	/**
+	 * @return the currency
+	 */
+	public String getCurrency() {
+		return currency;
+	}
+
+	/**
+	 * @return the accountId
+	 */
+	public String getAccountId() {
+		return accountId;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "BankDroidTransaction [id=" + id + ", date=" + date
+				+ ", description=" + description + ", amount=" + amount
+				+ ", currency=" + currency + ", accountId=" + accountId + "]";
+	}
 
 }
