@@ -15,15 +15,13 @@
  */
 package se.ekonomipuls.reciever;
 
-import java.util.List;
-
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.TranStatistics;
-import se.ekonomipuls.proxy.BankDroidProxy;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.service.BankDroidTransactionsImportService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -33,11 +31,10 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 30 dec 2010
  */
-public class BankDroidTransactionReciever extends BroadcastReceiver implements
+public class BankDroidTransactionsReciever extends BroadcastReceiver implements
 		LogTag {
 
 	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
-	private static final String ACCOUNT_ID = "accountId";
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,20 +44,16 @@ public class BankDroidTransactionReciever extends BroadcastReceiver implements
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
 			Log.d(TAG, "Begin retrieving updated transactions");
 
-			final String accountId = intent.getExtras().getString(ACCOUNT_ID);
+			final Bundle bundle = intent.getExtras();
 
-			try {
-				final List<BankDroidTransaction> transactions = BankDroidProxy
-						.getBankDroidTransactions(context, accountId);
+			final Intent importService = new Intent(context,
+					BankDroidTransactionsImportService.class);
 
-				Log.d(TAG, "Listing transactions");
-				for (final BankDroidTransaction trans : transactions) {
-					Log.d(TAG, trans.toString());
-				}
+			importService.putExtras(bundle);
 
-			} catch (final IllegalAccessException e) {
-				Log.e(TAG, "Unable to access the content provider.", e);
-			}
+			// Hand over to service queue since broadcast receivers have a very
+			// short timeout.
+			context.startService(importService);
 		}
 
 	}
