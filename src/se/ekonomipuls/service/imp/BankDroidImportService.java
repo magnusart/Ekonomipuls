@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.service;
+package se.ekonomipuls.service.imp;
 
 import java.util.List;
 
@@ -21,7 +21,9 @@ import se.ekonomipuls.LogTag;
 import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.service.filter.TransactionsFilterService;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -29,16 +31,15 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 25 jan 2011
  */
-public class BankDroidTransactionsImportService extends IntentService implements
-		LogTag {
+public class BankDroidImportService extends IntentService implements LogTag {
 
 	private static final String ACCOUNT_ID = "accountId";
 
 	/**
-	 * @param name
+	 * 
 	 */
-	public BankDroidTransactionsImportService() {
-		super(BankDroidTransactionsImportService.class.getClass().getName());
+	public BankDroidImportService() {
+		super(BankDroidImportService.class.getClass().getName());
 	}
 
 	/** {@inheritDoc} */
@@ -55,6 +56,16 @@ public class BankDroidTransactionsImportService extends IntentService implements
 
 			EkonomipulsDbAdapter.bulkInsertBdTransactions(getBaseContext(),
 					transactions);
+
+			// Hand over to filtering.
+			final Context context = getBaseContext();
+			final Intent importFilter = new Intent(context,
+					TransactionsFilterService.class);
+
+			importFilter.putExtra(TransactionsFilterService.FILTER_CHAIN,
+					TransactionsFilterService.IMPORT_FILTER_TYPES);
+
+			context.startService(importFilter);
 
 		} catch (final IllegalAccessException e) {
 			Log.e(TAG, "Unable to access the content provider.", e);

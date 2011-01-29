@@ -17,7 +17,7 @@ package se.ekonomipuls.reciever;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.TranStatistics;
-import se.ekonomipuls.service.BankDroidTransactionsImportService;
+import se.ekonomipuls.service.imp.BankDroidImportService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +47,7 @@ public class BankDroidTransactionsReciever extends BroadcastReceiver implements
 			final Bundle bundle = intent.getExtras();
 
 			final Intent importService = new Intent(context,
-					BankDroidTransactionsImportService.class);
+					BankDroidImportService.class);
 
 			importService.putExtras(bundle);
 
