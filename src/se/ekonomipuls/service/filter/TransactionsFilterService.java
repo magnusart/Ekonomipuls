@@ -26,8 +26,9 @@ import android.content.Intent;
 public class TransactionsFilterService extends IntentService implements LogTag {
 
 	public static final int IMPORT_FILTER_TYPES = 0;
-	public static final int GUI_FILTER_TYPES = 1;
-	public static final int ALL_FILTER_TYPES = 2;
+	// Not supported yet.
+	// public static final int GUI_FILTER_TYPES = 1;
+	// public static final int ALL_FILTER_TYPES = 2;
 
 	public static final String FILTER_CHAIN = "filterChain";
 
@@ -47,13 +48,13 @@ public class TransactionsFilterService extends IntentService implements LogTag {
 		switch (filterType) {
 			case IMPORT_FILTER_TYPES:
 				break;
-			case GUI_FILTER_TYPES:
-				break;
-			case ALL_FILTER_TYPES:
-				break;
 			default:
 				assert false : "Unrechable clause: default is import filters"; // We should never reach this state.
 		}
+
+		// TODO: Read filters based on type
+
+		// TODO: Read and apply filters on unfiltered transactions
 
 	}
 }

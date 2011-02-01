@@ -27,7 +27,7 @@ import android.webkit.WebView;
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class BudgetOverview extends Activity implements LogTag {
+public class CashJournal extends Activity implements LogTag {
 
 	private static final String STROKE_COLOR = "#FFF";
 	private static final int STROKE_WIDTH = 3;
