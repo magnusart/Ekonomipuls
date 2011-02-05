@@ -15,12 +15,15 @@
  */
 package se.ekonomipuls.adapter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -72,7 +75,6 @@ public class EkonomipulsDbAdapter implements LogTag {
 
 		public DbHelper(final Context context) {
 			super(context, DB_NAME, null, DB_VERSION);
-			// TODO Auto-generated constructor stub
 		}
 
 		/** {@inheritDoc} */
@@ -118,14 +120,57 @@ public class EkonomipulsDbAdapter implements LogTag {
 
 			db.setTransactionSuccessful();
 		} finally {
-			shutdownWriteDb(db, dbHelper);
+			shutdownDb(db, dbHelper);
 		}
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param bdAccountId
+	 * @return
+	 */
+	public static List<Transaction> getTransactions(final Context ctx,
+			final String bdAccountId) {
+		final List<Transaction> transactions = new ArrayList<Transaction>();
+
+		final DbHelper dbHelper = new DbHelper(ctx);
+		final SQLiteDatabase db = prepareReadDb(dbHelper);
+
+		try {
+			final Cursor c = db.query(DbConstants.TRANSACTIONS_TABLE,
+					new String[] { DbConstants.ID, DbConstants.DATE,
+							DbConstants.AMOUNT, DbConstants.CURRENCY },
+					DbConstants.BD_ACCOUNT + "= ? ",
+					new String[] { bdAccountId }, "", null, DbConstants.DATE
+							+ " DESC");
+
+			final int idIdx = c.getColumnIndexOrThrow(DbConstants.ID);
+			final int dateIdx = c.getColumnIndexOrThrow(DbConstants.DATE);
+			final int descIdx = c
+					.getColumnIndexOrThrow(DbConstants.DESCRIPTION);
+			final int amtIdx = c.getColumnIndexOrThrow(DbConstants.AMOUNT);
+			final int currIdx = c.getColumnIndexOrThrow(DbConstants.CURRENCY);
+
+			while (c.moveToNext()) {
+				final Transaction trans = new Transaction(c.getLong(idIdx),
+						c.getString(dateIdx), c.getString(descIdx),
+						new BigDecimal(c.getString(amtIdx)),
+						c.getString(currIdx));
+
+				transactions.add(trans);
+			}
+		} finally {
+			shutdownDb(db, dbHelper);
+		}
+
+		return transactions;
 	}
 
 	/**
 	 * @param db
 	 */
-	private static void shutdownWriteDb(final SQLiteDatabase db,
+	private static void shutdownDb(final SQLiteDatabase db,
 			final DbHelper dbHelper) {
 		db.endTransaction();
 		db.close();
@@ -139,6 +184,16 @@ public class EkonomipulsDbAdapter implements LogTag {
 	 */
 	private static SQLiteDatabase prepareWriteDb(final DbHelper dbHelper) {
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		db.beginTransaction();
+		return db;
+	}
+
+	/**
+	 * @param dbHelper
+	 * @return
+	 */
+	private static SQLiteDatabase prepareReadDb(final DbHelper dbHelper) {
+		final SQLiteDatabase db = dbHelper.getReadableDatabase();
 		db.beginTransaction();
 		return db;
 	}

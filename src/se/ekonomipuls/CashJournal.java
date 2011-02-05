@@ -30,10 +30,11 @@ import android.webkit.WebView;
 public class CashJournal extends Activity implements LogTag {
 
 	private static final String STROKE_COLOR = "#FFF";
-	private static final int STROKE_WIDTH = 3;
+	private static final int STROKE_WIDTH = 1;
 	private static final double PIE_RADIUS = 0.7;
 	private static final double LABEL_RADIUS = 1D;
-	private WebView budget;
+	private static final String PIE_HTML = "file:///android_asset/charts/pie.html";
+	private static final String HANDLER_NAME = "budgetHandler";
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class CashJournal extends Activity implements LogTag {
 	}
 
 	private void setUpBudgetPieChart() {
-		budget = (WebView) findViewById(R.id.budgetWebview);
+		final WebView budget = (WebView) findViewById(R.id.budgetWebview);
 
 		final Slice[] slices = { new Slice(15000D, "Balance", "#31b320"),
 				new Slice(5000D, "Savings", "#2078b3"),
@@ -58,9 +59,10 @@ public class CashJournal extends Activity implements LogTag {
 				slices);
 
 		budget.getSettings().setJavaScriptEnabled(true);
-		budget.addJavascriptInterface(budgetHandler, "budgetHandler");
+		budget.addJavascriptInterface(budgetHandler, HANDLER_NAME);
 		budget.setScrollContainer(false);
 		budget.setBackgroundColor(0);
-		budget.loadUrl("file:///android_asset/charts/pie.html");
+		budget.loadUrl(PIE_HTML);
+
 	}
 }
