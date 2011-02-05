@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.charting;
+package se.ekonomipuls.charts;
 
 /**
  * JSON Structure for PieChart Flot. Use builder to setup.

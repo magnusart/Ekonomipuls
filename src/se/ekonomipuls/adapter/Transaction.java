@@ -25,7 +25,7 @@ import java.math.BigDecimal;
  */
 public class Transaction {
 
-	private final long id;
+	private final int id;
 	private final String date;
 	private final String description;
 	private final BigDecimal amount;
@@ -44,7 +44,7 @@ public class Transaction {
 	 * @param currency
 	 *            the currency.
 	 */
-	Transaction(final long id, final String date, final String description,
+	Transaction(final int id, final String date, final String description,
 				final BigDecimal amount, final String currency) {
 		this.id = id;
 		this.date = date;
@@ -56,7 +56,7 @@ public class Transaction {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 

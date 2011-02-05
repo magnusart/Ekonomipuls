@@ -138,25 +138,29 @@ public class EkonomipulsDbAdapter implements LogTag {
 		final SQLiteDatabase db = prepareReadDb(dbHelper);
 
 		try {
-			final Cursor c = db.query(DbConstants.TRANSACTIONS_TABLE,
+			final Cursor cur = db.query(DbConstants.TRANSACTIONS_TABLE,
 					new String[] { DbConstants.ID, DbConstants.DATE,
-							DbConstants.AMOUNT, DbConstants.CURRENCY },
-					DbConstants.BD_ACCOUNT + "= ? ",
-					new String[] { bdAccountId }, "", null, DbConstants.DATE
-							+ " DESC");
+							DbConstants.DESCRIPTION, DbConstants.AMOUNT,
+							DbConstants.CURRENCY }, DbConstants.BD_ACCOUNT
+							+ "= ? ", new String[] { bdAccountId }, "", null,
+					DbConstants.DATE + " DESC");
 
-			final int idIdx = c.getColumnIndexOrThrow(DbConstants.ID);
-			final int dateIdx = c.getColumnIndexOrThrow(DbConstants.DATE);
-			final int descIdx = c
+			final int tId = cur.getColumnIndexOrThrow(DbConstants.ID);
+			final int tDate = cur.getColumnIndexOrThrow(DbConstants.DATE);
+			final int tDesc = cur
 					.getColumnIndexOrThrow(DbConstants.DESCRIPTION);
-			final int amtIdx = c.getColumnIndexOrThrow(DbConstants.AMOUNT);
-			final int currIdx = c.getColumnIndexOrThrow(DbConstants.CURRENCY);
+			final int tAmt = cur.getColumnIndexOrThrow(DbConstants.AMOUNT);
+			final int tCur = cur.getColumnIndexOrThrow(DbConstants.CURRENCY);
 
-			while (c.moveToNext()) {
-				final Transaction trans = new Transaction(c.getLong(idIdx),
-						c.getString(dateIdx), c.getString(descIdx),
-						new BigDecimal(c.getString(amtIdx)),
-						c.getString(currIdx));
+			while (cur.moveToNext()) {
+				final int id = cur.getInt(tId);
+				final String date = cur.getString(tDate);
+				final String desc = cur.getString(tDesc);
+				final BigDecimal amt = new BigDecimal(cur.getString(tAmt));
+				final String curr = cur.getString(tCur);
+
+				final Transaction trans = new Transaction(id, date, desc, amt,
+						curr);
 
 				transactions.add(trans);
 			}

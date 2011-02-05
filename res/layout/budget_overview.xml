@@ -3,9 +3,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:background="#000000">
-  
-  <WebView android:id="@+id/budgetWebview"
+  android:background="@drawable/gradient_background">
+
+<WebView android:id="@+id/budgetWebview"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:layout_gravity="center_horizontal"/>

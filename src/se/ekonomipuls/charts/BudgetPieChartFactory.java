@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.charting;
+package se.ekonomipuls.charts;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class BudgetPieChartFactory {
 			final String strokeColor, final int strokeWidth,
 			final double pieRadius, final double labelRadius) {
 		final boolean seriesPieShow = true;
-		final boolean labelShow = true;
+		final boolean labelShow = false;
 		final boolean legendShow = false;
 		final PieChartConfiguration config = new PieChartConfiguration(
 				strokeColor, strokeWidth, pieRadius, seriesPieShow,

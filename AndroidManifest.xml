@@ -15,7 +15,7 @@
 			</intent-filter>
 		</receiver>
 		<service android:enabled="true"
-			android:name=".service.BankDroidTransactionsImportService"></service>
+			android:name=".service.imp.BankDroidImportService"></service>
 	</application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

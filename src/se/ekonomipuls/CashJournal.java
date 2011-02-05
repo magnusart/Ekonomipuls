@@ -15,12 +15,19 @@
  */
 package se.ekonomipuls;
 
-import se.ekonomipuls.charting.BudgetPieChartFactory;
-import se.ekonomipuls.charting.PieChartConfiguration;
-import se.ekonomipuls.charting.PieHandler;
-import se.ekonomipuls.charting.Slice;
+import java.util.List;
+
+import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
+import se.ekonomipuls.adapter.Transaction;
+import se.ekonomipuls.charts.BudgetPieChartFactory;
+import se.ekonomipuls.charts.PieChartConfiguration;
+import se.ekonomipuls.charts.PieHandler;
+import se.ekonomipuls.charts.Slice;
+import se.ekonomipuls.util.ColorUtil;
 import android.app.Activity;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.Window;
 import android.webkit.WebView;
 
 /**
@@ -30,27 +37,56 @@ import android.webkit.WebView;
 public class CashJournal extends Activity implements LogTag {
 
 	private static final String STROKE_COLOR = "#FFF";
-	private static final int STROKE_WIDTH = 1;
-	private static final double PIE_RADIUS = 0.7;
+	private static final int STROKE_WIDTH = 2;
+	private static final double PIE_RADIUS = 1D;
 	private static final double LABEL_RADIUS = 1D;
 	private static final String PIE_HTML = "file:///android_asset/charts/pie.html";
 	private static final String HANDLER_NAME = "budgetHandler";
+	private static final String REMAINING_COLOR = "#b3b3b3";
+
+	private final ColorUtil data = new ColorUtil();
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.budget_overview);
 
-		setUpBudgetPieChart();
+		removeGradientBanding();
 
+		setUpBudgetPieChart();
+	}
+
+	/**
+	 * Some voodoo I found that prevents color banding on the background
+	 * gradient.
+	 * http://stuffthathappens.com/blog/2010/06/04/android-color-banding/
+	 */
+	private void removeGradientBanding() {
+		final Window window = getWindow();
+		window.setFormat(PixelFormat.RGBA_8888);
 	}
 
 	private void setUpBudgetPieChart() {
 		final WebView budget = (WebView) findViewById(R.id.budgetWebview);
 
-		final Slice[] slices = { new Slice(15000D, "Balance", "#31b320"),
-				new Slice(5000D, "Savings", "#2078b3"),
-				new Slice(12000D, "Expenses", "#b32020") };
+		final List<Transaction> transactions = EkonomipulsDbAdapter
+				.getTransactions(getBaseContext(), "1_1");
+
+		final Slice[] slices = new Slice[transactions.size()];
+
+		final ColorUtil color = new ColorUtil();
+
+		int i = 0;
+		for (final Transaction trans : transactions) {
+			final Slice s = new Slice((double) trans.getAmount().abs()
+					.floatValue(), trans.getDescription(), color.getNextColor());
+			slices[i] = s;
+			i++;
+		}
+
+		//final Slice[] slices = { new Slice(15000D, "Balance", getNextColor()),
+		//		new Slice(5000D, "Savings", getNextColor()),
+		//		new Slice(12000D, "Expenses", getNextColor()) };
 
 		final PieChartConfiguration configuration = BudgetPieChartFactory
 				.getConfiguration(STROKE_COLOR, STROKE_WIDTH, PIE_RADIUS,
@@ -65,4 +101,5 @@ public class CashJournal extends Activity implements LogTag {
 		budget.loadUrl(PIE_HTML);
 
 	}
+
 }
