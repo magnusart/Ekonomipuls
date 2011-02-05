@@ -20,10 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import se.ekonomipuls.LogTag;
-
 import android.util.Log;
 import android.webkit.WebView;
-
 
 /**
  * @author Magnus Andersson
@@ -42,7 +40,8 @@ public class PieHandler implements LogTag {
 	 *            Budget WebView
 	 */
 	public PieHandler(final WebView chartWebView,
-			final PieChartConfiguration configuration, final Slice[] slices) {
+						final PieChartConfiguration configuration,
+						final Slice[] slices) {
 		this.chartWebView = chartWebView;
 		this.slices = slices;
 		this.conf = configuration;
@@ -64,8 +63,8 @@ public class PieHandler implements LogTag {
 			Log.d(TAG, data.toString(4));
 			Log.d(TAG, series.toString(4));
 
-			chartWebView.loadUrl("javascript:gotGraph(" + data.toString() + ", "
-					+ series.toString() + ")");
+			chartWebView.loadUrl("javascript:gotGraph(" + data.toString()
+					+ ", " + series.toString() + ")");
 		} catch (final Exception ex) {
 			// do something
 		}
@@ -90,7 +89,6 @@ public class PieHandler implements LogTag {
 	private JSONObject flowPiePluginSettings() throws JSONException {
 		final JSONObject root = new JSONObject();
 		final JSONObject series = new JSONObject();
-		final JSONObject label = new JSONObject();
 		final JSONObject stroke = new JSONObject();
 		final JSONObject pie = new JSONObject();
 
@@ -98,16 +96,12 @@ public class PieHandler implements LogTag {
 
 		stroke.put("width", conf.getSeriesPieStrokeWidth());
 		stroke.put("color", conf.getSeriesPieStrokeColor());
-		pie.put("show", conf.isSeriesPieShow());
+		pie.put("show", true);
 		pie.put("radius", conf.getSeriesPieRadius());
 		pie.put("stroke", stroke);
 		series.put("pie", pie);
 
-		label.put("show", conf.isSeriesLabelShow());
-		label.put("radius", conf.getSeriesLabelRadius());
-
-		series.put("label", label);
-		legend.put("show", conf.isLedgendShow());
+		legend.put("show", true);
 
 		root.put("series", series);
 		root.put("legend", legend);

@@ -26,23 +26,14 @@ public class PieChartConfiguration {
 	final private String seriesPieStrokeColor;
 	final private int seriesPieStrokeWidth;
 	final private double seriesPieRadius;
-	final private boolean seriesPieShow;
-	final private double seriesLabelRadius;
-	final private boolean seriesLabelShow;
-	final private boolean ledgendShow;
 
-	PieChartConfiguration(final String seriesPieStrokeColor, final int seriesPieStrokeWidth,
-			final double seriesPieRadius, final boolean seriesPieShow,
-			final double seriesLabelRadius, final boolean seriesLabelShow,
-			final boolean ledgendShow) {
+	PieChartConfiguration(final String seriesPieStrokeColor,
+							final int seriesPieStrokeWidth,
+							final double seriesPieRadius) {
 
 		this.seriesPieStrokeColor = seriesPieStrokeColor;
 		this.seriesPieStrokeWidth = seriesPieStrokeWidth;
 		this.seriesPieRadius = seriesPieRadius;
-		this.seriesPieShow = seriesPieShow;
-		this.seriesLabelRadius = seriesLabelRadius;
-		this.seriesLabelShow = seriesLabelShow;
-		this.ledgendShow = ledgendShow;
 	}
 
 	/**
@@ -66,31 +57,4 @@ public class PieChartConfiguration {
 		return seriesPieRadius;
 	}
 
-	/**
-	 * @return the seriesPieShow
-	 */
-	public boolean isSeriesPieShow() {
-		return seriesPieShow;
-	}
-
-	/**
-	 * @return the seriesLabelRadius
-	 */
-	public double getSeriesLabelRadius() {
-		return seriesLabelRadius;
-	}
-
-	/**
-	 * @return the seriesLabelShow
-	 */
-	public boolean isSeriesLabelShow() {
-		return seriesLabelShow;
-	}
-
-	/**
-	 * @return the ledgendShow
-	 */
-	public boolean isLedgendShow() {
-		return ledgendShow;
-	}
 }

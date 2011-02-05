@@ -42,13 +42,9 @@ public class BudgetPieChartFactory {
 	 */
 	public static PieChartConfiguration getConfiguration(
 			final String strokeColor, final int strokeWidth,
-			final double pieRadius, final double labelRadius) {
-		final boolean seriesPieShow = true;
-		final boolean labelShow = false;
-		final boolean legendShow = false;
+			final double pieRadius) {
 		final PieChartConfiguration config = new PieChartConfiguration(
-				strokeColor, strokeWidth, pieRadius, seriesPieShow,
-				labelRadius, labelShow, legendShow);
+				strokeColor, strokeWidth, pieRadius);
 		return config;
 	}
 }

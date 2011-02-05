@@ -37,9 +37,8 @@ import android.webkit.WebView;
 public class CashJournal extends Activity implements LogTag {
 
 	private static final String STROKE_COLOR = "#FFF";
-	private static final int STROKE_WIDTH = 2;
-	private static final double PIE_RADIUS = 1D;
-	private static final double LABEL_RADIUS = 1D;
+	private static final int STROKE_WIDTH = 1;
+	private static final double PIE_RADIUS = 0.9D;
 	private static final String PIE_HTML = "file:///android_asset/charts/pie.html";
 	private static final String HANDLER_NAME = "budgetHandler";
 	private static final String REMAINING_COLOR = "#b3b3b3";
@@ -89,8 +88,7 @@ public class CashJournal extends Activity implements LogTag {
 		//		new Slice(12000D, "Expenses", getNextColor()) };
 
 		final PieChartConfiguration configuration = BudgetPieChartFactory
-				.getConfiguration(STROKE_COLOR, STROKE_WIDTH, PIE_RADIUS,
-						LABEL_RADIUS);
+				.getConfiguration(STROKE_COLOR, STROKE_WIDTH, PIE_RADIUS);
 		final PieHandler budgetHandler = new PieHandler(budget, configuration,
 				slices);
 
