@@ -18,6 +18,7 @@ package se.ekonomipuls;
 import java.util.List;
 
 import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
+import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.adapter.Transaction;
 import se.ekonomipuls.charts.BudgetPieChartFactory;
 import se.ekonomipuls.charts.PieChartConfiguration;
@@ -25,10 +26,12 @@ import se.ekonomipuls.charts.PieHandler;
 import se.ekonomipuls.charts.Slice;
 import se.ekonomipuls.util.ColorUtil;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.Window;
 import android.webkit.WebView;
+import android.widget.ListView;
 
 /**
  * @author Magnus Andersson
@@ -42,21 +45,22 @@ public class CashJournal extends Activity implements LogTag {
 	private static final String PIE_HTML = "file:///android_asset/charts/pie.html";
 	private static final String HANDLER_NAME = "budgetHandler";
 	private static final String REMAINING_COLOR = "#b3b3b3";
-
-	private final ColorUtil data = new ColorUtil();
+	private static final String ACCOUNT_ID = "1_1";
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.budget_overview);
+		setContentView(R.layout.cash_journal);
 
 		removeGradientBanding();
 
-		setUpBudgetPieChart();
+		setUpBudgetPieChart(ACCOUNT_ID);
+
+		populateLegendList(ACCOUNT_ID);
 	}
 
 	/**
-	 * Some voodoo I found that prevents color banding on the background
+	 * Some Voodoo that prevents color banding on the background
 	 * gradient.
 	 * http://stuffthathappens.com/blog/2010/06/04/android-color-banding/
 	 */
@@ -65,11 +69,11 @@ public class CashJournal extends Activity implements LogTag {
 		window.setFormat(PixelFormat.RGBA_8888);
 	}
 
-	private void setUpBudgetPieChart() {
-		final WebView budget = (WebView) findViewById(R.id.budgetWebview);
+	private void setUpBudgetPieChart(final String accountId) {
+		final WebView budget = (WebView) findViewById(R.id.pieChart);
 
 		final List<Transaction> transactions = EkonomipulsDbAdapter
-				.getTransactions(getBaseContext(), "1_1");
+				.getTransactions(getBaseContext(), accountId);
 
 		final Slice[] slices = new Slice[transactions.size()];
 
@@ -83,10 +87,6 @@ public class CashJournal extends Activity implements LogTag {
 			i++;
 		}
 
-		//final Slice[] slices = { new Slice(15000D, "Balance", getNextColor()),
-		//		new Slice(5000D, "Savings", getNextColor()),
-		//		new Slice(12000D, "Expenses", getNextColor()) };
-
 		final PieChartConfiguration configuration = BudgetPieChartFactory
 				.getConfiguration(STROKE_COLOR, STROKE_WIDTH, PIE_RADIUS);
 		final PieHandler budgetHandler = new PieHandler(budget, configuration,
@@ -98,6 +98,18 @@ public class CashJournal extends Activity implements LogTag {
 		budget.setBackgroundColor(0);
 		budget.loadUrl(PIE_HTML);
 
+	}
+
+	private void populateLegendList(final String accountId) {
+		final ListView legendList = (ListView) findViewById(R.id.legendList);
+		final Context ctx = getBaseContext();
+		final List<Transaction> transactions = EkonomipulsDbAdapter
+				.getTransactions(ctx, accountId);
+
+		final LegendAdapter adapter = new LegendAdapter(ctx,
+				R.layout.legend_row, transactions);
+
+		legendList.setAdapter(adapter);
 	}
 
 }

@@ -88,4 +88,12 @@ public class Transaction {
 		return currency;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "Transaction [id=" + id + ", date=" + date + ", description="
+				+ description + ", amount=" + amount + ", currency=" + currency
+				+ "]";
+	}
+
 }
