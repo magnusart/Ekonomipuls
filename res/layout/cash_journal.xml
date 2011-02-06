@@ -4,13 +4,21 @@
   android:layout_height="fill_parent"
   android:background="@drawable/gradient_background"
   android:orientation="vertical">
-
+<!-- 
 <WebView android:id="@+id/pieChart"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
             android:layout_weight="1"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"/>  -->
+<se.ekonomipuls.charts.PieChartView
+	android:id="@+id/pieChart"
+ 	android:layout_width="fill_parent" 
+    android:layout_height="0dip"
+    android:layout_weight="1"
+ 	android:layout_margin="10dip"
+/>         
 <ListView android:id="@+id/legendList" 
+			
 			android:layout_width="fill_parent" 
 			android:layout_height="0dip"
 			android:layout_weight="1"

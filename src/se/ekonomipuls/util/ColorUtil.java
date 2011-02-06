@@ -15,8 +15,6 @@
  */
 package se.ekonomipuls.util;
 
-import java.util.Random;
-
 import android.graphics.Color;
 
 /**
@@ -24,42 +22,42 @@ import android.graphics.Color;
  * @since 5 feb 2011
  */
 public class ColorUtil {
-	private static final float BRIGHTNESS = 0.716814159F;
-	private static final float SATURATION = 0.716814159F;
+	private static final float BRIGHTNESS = 0.8F;
+	private static final float SATURATION = 0.75F;
 
 	private static final int MAX_HUE_INCREMENT = 36; // Hue increments has to be <= to this.
 	private static final int HUE_STEP_SIZE = 10;
-	private static final int HUE_OFFSET = 5;
+	private static final int HUE_OFFSET = 1;
 
 	private static int hueCounter = 0;
-	private final Random rnd;
 
-	/**
-	 * 
-	 */
-	public ColorUtil() {
-		rnd = new Random();
+	private ColorUtil() {
+		// No constructor
 	}
 
 	/**
 	 * @return HTML Hexadecimal value for color.
 	 */
-	public String getNextColor() {
-
-		final float hue = getNextHueIncrement();
-
-		final int color = Color.HSVToColor(new float[] { hue, SATURATION,
-				BRIGHTNESS });
-
+	public static String getNextHexColor() {
+		final int color = getNextColor();
 		final String hex = Integer.toHexString(color);
 		final String hexColor = "#" + hex.substring(2); // Strip alpha information
 		return hexColor;
 	}
 
+	public static int getNextColor() {
+		final float hue = getNextHueIncrement();
+
+		final int color = Color.HSVToColor(new float[] { hue, SATURATION,
+				BRIGHTNESS });
+
+		return color;
+	}
+
 	/**
 	 * @return
 	 */
-	float getNextHueIncrement() {
+	static float getNextHueIncrement() {
 		if (hueCounter < MAX_HUE_INCREMENT) {
 			hueCounter++;
 		} else {

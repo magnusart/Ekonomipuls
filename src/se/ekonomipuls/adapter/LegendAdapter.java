@@ -47,7 +47,6 @@ public class LegendAdapter extends ArrayAdapter<Transaction> {
 		super(context, layoutViewResourceId, objects);
 		this.context = context;
 		this.layoutViewResourceId = layoutViewResourceId;
-		// TODO Auto-generated constructor stub
 		this.objects = objects;
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

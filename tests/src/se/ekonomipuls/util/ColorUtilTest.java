@@ -23,14 +23,11 @@ import junit.framework.TestCase;
  */
 public class ColorUtilTest extends TestCase {
 
-	private ColorUtil color;
-
 	/** {@inheritDoc} */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		color = new ColorUtil();
 	}
 
 	/**
@@ -43,7 +40,7 @@ public class ColorUtilTest extends TestCase {
 		final boolean[] foundValues = new boolean[36];
 
 		for (int i = 0; i < 36; i++) {
-			final int increment = (int) color.getNextHueIncrement();
+			final int increment = (int) ColorUtil.getNextHueIncrement();
 			foundValues[increment / 10] = true;
 		}
 
@@ -62,7 +59,7 @@ public class ColorUtilTest extends TestCase {
 		final int[] valuesOrder = new int[36];
 
 		for (int i = 0; i < 36; i++) {
-			final int increment = (int) color.getNextHueIncrement();
+			final int increment = (int) ColorUtil.getNextHueIncrement();
 			valuesOrder[increment / 10] = i;
 		}
 

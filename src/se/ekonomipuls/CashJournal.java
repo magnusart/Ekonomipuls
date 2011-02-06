@@ -15,22 +15,24 @@
  */
 package se.ekonomipuls;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import se.ekonomipuls.adapter.Category;
+import se.ekonomipuls.adapter.ChartSeriesAdaper;
 import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
 import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.adapter.Transaction;
-import se.ekonomipuls.charts.BudgetPieChartFactory;
-import se.ekonomipuls.charts.PieChartConfiguration;
-import se.ekonomipuls.charts.PieHandler;
-import se.ekonomipuls.charts.Slice;
+import se.ekonomipuls.charts.PieChartView;
+import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.util.ColorUtil;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.ListView;
 
 /**
@@ -39,12 +41,6 @@ import android.widget.ListView;
  */
 public class CashJournal extends Activity implements LogTag {
 
-	private static final String STROKE_COLOR = "#FFF";
-	private static final int STROKE_WIDTH = 1;
-	private static final double PIE_RADIUS = 0.9D;
-	private static final String PIE_HTML = "file:///android_asset/charts/pie.html";
-	private static final String HANDLER_NAME = "budgetHandler";
-	private static final String REMAINING_COLOR = "#b3b3b3";
 	private static final String ACCOUNT_ID = "1_1";
 
 	@Override
@@ -54,8 +50,9 @@ public class CashJournal extends Activity implements LogTag {
 
 		removeGradientBanding();
 
-		setUpBudgetPieChart(ACCOUNT_ID);
+		//setUpReportPieChart(ACCOUNT_ID);
 
+		populatePieChart(ACCOUNT_ID);
 		populateLegendList(ACCOUNT_ID);
 	}
 
@@ -69,35 +66,57 @@ public class CashJournal extends Activity implements LogTag {
 		window.setFormat(PixelFormat.RGBA_8888);
 	}
 
-	private void setUpBudgetPieChart(final String accountId) {
-		final WebView budget = (WebView) findViewById(R.id.pieChart);
+	private void populatePieChart(final String accountId) {
+		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 
+		final Context ctx = getBaseContext();
 		final List<Transaction> transactions = EkonomipulsDbAdapter
-				.getTransactions(getBaseContext(), accountId);
+				.getTransactions(ctx, accountId);
 
-		final Slice[] slices = new Slice[transactions.size()];
+		final ChartSeriesAdaper chartAdapter = new ChartSeriesAdaper(ctx,
+				R.layout.cash_journal, R.id.pieChart, transactions);
 
-		final ColorUtil color = new ColorUtil();
+		tmpSetSeriesEntries(transactions, pieChart);
 
-		int i = 0;
-		for (final Transaction trans : transactions) {
-			final Slice s = new Slice((double) trans.getAmount().abs()
-					.floatValue(), trans.getDescription(), color.getNextColor());
-			slices[i] = s;
-			i++;
-		}
+		//pieChart.setAdapter(chartAdapter);
+	}
 
-		final PieChartConfiguration configuration = BudgetPieChartFactory
-				.getConfiguration(STROKE_COLOR, STROKE_WIDTH, PIE_RADIUS);
-		final PieHandler budgetHandler = new PieHandler(budget, configuration,
-				slices);
+	/**
+	 * @param transactions
+	 * @param pieChart
+	 */
+	private void tmpSetSeriesEntries(final List<Transaction> transactions,
+			final PieChartView pieChart) {
+		final List<SeriesEntry> series = new ArrayList<SeriesEntry>();
 
-		budget.getSettings().setJavaScriptEnabled(true);
-		budget.addJavascriptInterface(budgetHandler, HANDLER_NAME);
-		budget.setScrollContainer(false);
-		budget.setBackgroundColor(0);
-		budget.loadUrl(PIE_HTML);
+		final Category cat1 = new Category(0, "Cat1", transactions.subList(0,
+				transactions.size() / 4));
 
+		final Category cat2 = new Category(0, "Cat2", transactions.subList(
+				transactions.size() / 4, (transactions.size() / 4) * 2));
+
+		final Category cat3 = new Category(0, "Cat3", transactions.subList(
+				(transactions.size() / 4) * 2, (transactions.size() / 4) * 3));
+
+		final Category cat4 = new Category(0, "Cat4", transactions.subList(
+				(transactions.size() / 4) * 3, transactions.size()));
+
+		BigDecimal total = new BigDecimal(0.0);
+
+		series.add(new SeriesEntry(cat1, ColorUtil.getNextColor())); //Color.CYAN
+		total = total.add(cat1.getSum());
+
+		series.add(new SeriesEntry(cat2, ColorUtil.getNextColor()));
+		total = total.add(cat2.getSum());
+
+		series.add(new SeriesEntry(cat3, ColorUtil.getNextColor()));
+		total = total.add(cat3.getSum());
+
+		series.add(new SeriesEntry(cat4, Color.LTGRAY));
+		total = total.add(cat4.getSum());
+
+		pieChart.setSeries(series);
+		pieChart.setSeriesTotal(total);
 	}
 
 	private void populateLegendList(final String accountId) {
