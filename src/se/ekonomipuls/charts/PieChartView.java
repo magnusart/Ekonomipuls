@@ -235,7 +235,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		final int baseColor = entry.getBaseColor();
 		int dark = 0;
 		int light = 0;
-		if (baseColor != Color.GRAY) {
+		if ((baseColor != Color.GRAY) || (baseColor != Color.WHITE)
+				|| (baseColor != Color.BLACK)) {
 
 			final float[] hsv = new float[3];
 
@@ -261,12 +262,15 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 			light = Color.HSVToColor(hsv);
 
-		} else {
-			dark = Color.DKGRAY;
+		} else { // Special treatment for gray
 			if (!entry.isSelected()) {
 				dark = Color.GRAY;
+				light = Color.LTGRAY;
+			} else {
+				dark = Color.DKGRAY;
+				light = Color.GRAY;
 			}
-			light = Color.LTGRAY;
+
 		}
 
 		return new RadialGradient(oval.centerX(), oval.centerY(),

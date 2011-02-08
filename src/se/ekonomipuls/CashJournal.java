@@ -108,22 +108,22 @@ public class CashJournal extends Activity implements LogTag {
 
 		BigDecimal total = new BigDecimal(0.0);
 
-		series.add(new SeriesEntry(cat1, Color.CYAN)); //Color.CYAN
+		series.add(new SeriesEntry(cat1, Color.CYAN).setSelected(true)); //Color.CYAN
 		total = total.add(cat1.getSum());
 
-		series.add(new SeriesEntry(cat2, Color.GRAY));
+		series.add(new SeriesEntry(cat2, Color.GRAY).setSelected(true));
 		total = total.add(cat2.getSum());
 
-		series.add(new SeriesEntry(cat3, Color.RED));
+		series.add(new SeriesEntry(cat3, Color.RED).setSelected(true));
 		total = total.add(cat3.getSum());
 
-		series.add(new SeriesEntry(cat4, Color.YELLOW));
+		series.add(new SeriesEntry(cat4, Color.YELLOW).setSelected(true));
 		total = total.add(cat4.getSum());
 
 		series.add(new SeriesEntry(cat5, Color.GREEN).setSelected(true));
 		total = total.add(cat5.getSum());
 
-		series.add(new SeriesEntry(cat6, Color.BLUE));
+		series.add(new SeriesEntry(cat6, Color.BLUE).setSelected(true));
 		total = total.add(cat6.getSum());
 
 		pieChart.setSeries(series);
