@@ -25,6 +25,7 @@ public class SeriesEntry {
 
 	private final int baseColor;
 	private final Category category;
+	private boolean selected;
 
 	/**
 	 * 
@@ -34,6 +35,7 @@ public class SeriesEntry {
 	public SeriesEntry(final Category category, final int baseColor) {
 		this.category = category;
 		this.baseColor = baseColor;
+		this.selected = false;
 	}
 
 	/**
@@ -50,11 +52,27 @@ public class SeriesEntry {
 		return category;
 	}
 
+	/**
+	 * @return the selected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
+
+	/**
+	 * @param selected
+	 *            the selected to set
+	 */
+	public SeriesEntry setSelected(final boolean selected) {
+		this.selected = selected;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "SeriesEntry [baseColor=" + baseColor + ", category=" + category
-				+ "]";
+				+ ", selected=" + selected + "]";
 	}
 
 }

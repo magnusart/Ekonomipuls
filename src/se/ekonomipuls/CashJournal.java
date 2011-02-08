@@ -26,7 +26,6 @@ import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.adapter.Transaction;
 import se.ekonomipuls.charts.PieChartView;
 import se.ekonomipuls.charts.SeriesEntry;
-import se.ekonomipuls.util.ColorUtil;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -90,30 +89,42 @@ public class CashJournal extends Activity implements LogTag {
 		final List<SeriesEntry> series = new ArrayList<SeriesEntry>();
 
 		final Category cat1 = new Category(0, "Cat1", transactions.subList(0,
-				transactions.size() / 4));
+				transactions.size() / 6));
 
 		final Category cat2 = new Category(0, "Cat2", transactions.subList(
-				transactions.size() / 4, (transactions.size() / 4) * 2));
+				transactions.size() / 6, (transactions.size() / 6) * 2));
 
 		final Category cat3 = new Category(0, "Cat3", transactions.subList(
-				(transactions.size() / 4) * 2, (transactions.size() / 4) * 3));
+				(transactions.size() / 6) * 2, (transactions.size() / 6) * 3));
 
 		final Category cat4 = new Category(0, "Cat4", transactions.subList(
-				(transactions.size() / 4) * 3, transactions.size()));
+				(transactions.size() / 6) * 3, (transactions.size() / 6) * 4));
+
+		final Category cat5 = new Category(0, "Cat5", transactions.subList(
+				(transactions.size() / 6) * 4, (transactions.size() / 6) * 5));
+
+		final Category cat6 = new Category(0, "Cat6", transactions.subList(
+				(transactions.size() / 6) * 5, transactions.size()));
 
 		BigDecimal total = new BigDecimal(0.0);
 
-		series.add(new SeriesEntry(cat1, ColorUtil.getNextColor())); //Color.CYAN
+		series.add(new SeriesEntry(cat1, Color.CYAN)); //Color.CYAN
 		total = total.add(cat1.getSum());
 
-		series.add(new SeriesEntry(cat2, ColorUtil.getNextColor()));
+		series.add(new SeriesEntry(cat2, Color.GRAY));
 		total = total.add(cat2.getSum());
 
-		series.add(new SeriesEntry(cat3, ColorUtil.getNextColor()));
+		series.add(new SeriesEntry(cat3, Color.RED));
 		total = total.add(cat3.getSum());
 
-		series.add(new SeriesEntry(cat4, Color.LTGRAY));
+		series.add(new SeriesEntry(cat4, Color.YELLOW));
 		total = total.add(cat4.getSum());
+
+		series.add(new SeriesEntry(cat5, Color.GREEN).setSelected(true));
+		total = total.add(cat5.getSum());
+
+		series.add(new SeriesEntry(cat6, Color.BLUE));
+		total = total.add(cat6.getSum());
 
 		pieChart.setSeries(series);
 		pieChart.setSeriesTotal(total);

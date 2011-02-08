@@ -15,7 +15,8 @@
  */
 package se.ekonomipuls.charts;
 
-import se.ekonomipuls.util.ColorUtil;
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -26,9 +27,12 @@ import android.graphics.Paint.Style;
 import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 /**
  * Pie chart diagram. Use as a normal view.
@@ -36,15 +40,33 @@ import android.util.AttributeSet;
  * @author Magnus Andersson
  * @since 6 feb 2011
  */
-public class PieChartView extends AbstractChartView {
+public class PieChartView extends AbstractChartView implements OnTouchListener {
 	protected static final int STROKE_WIDTH = 2;
 
+	private static final boolean ENABLE_GRADIENT = true;
 	private static final boolean SKEW_CHART = false;
 	private static final boolean DROP_SHADOW = true;
 
 	private static final int SHADOW_COLOR = Color.BLACK;
 	private static final int BLUR_RADIUS = 8;
 	private static final int SHADOW_OFFSET = 6;
+
+	private static final float DARK_GRAD_SATURATION = 0.8f;
+	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
+
+	private static final float LIGHT_GRAD_SATURATION = 0.5f;
+	private static final float LIGHT_GRAD_BRIGHTNESS = 0.95f;
+
+	// When a slice is unselected
+	private static final float SELECT_DESATURATION = 0.3f;
+	private static final float SELECT_DIM = 0.1f;
+
+	private ArrayList<Arc> arcs;
+
+	{
+		arcs = new ArrayList<Arc>();
+		this.setOnTouchListener(this);
+	}
 
 	/**
 	 * @param context
@@ -97,6 +119,50 @@ public class PieChartView extends AbstractChartView {
 		paintPieChartArcs(canvas, oval, height, width);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event) {
+		final float x = event.getX();
+		final float y = event.getY();
+
+		Log.d(TAG, "Clicked at [" + x + ", " + y + "]");
+		double angle = Math.atan2(y, x);
+		angle *= 100;
+		Log.d(TAG, "Angle is: " + angle);
+
+		if (angle < 0.0D) {
+			angle = -angle;
+		}
+
+		boolean success = false;
+
+		for (final Arc arc : arcs) {
+
+			// TODO Check if within circle.
+
+			//			def in_circle(center_x, center_y, radius, x, y):
+			//			    square_dist = (center_x - x) ** 2 + (center_y - y) ** 2
+			//			    return square_dist <= radius ** 2
+
+			// Ex: 20 < 25 < 30 means that the point is within the arc.
+			if ((arc.getDegrees() < (float) angle)
+					&& ((float) angle < (arc.getDegrees() + arc.getSweep()))) {
+				Log.d(TAG, "Found at (" + arc.getDegrees() + ", " + angle
+						+ ", " + (arc.getDegrees() + arc.getSweep() + ")"));
+
+				arc.getEntry().setSelected(true);
+				success = true;
+			} else {
+				arc.getEntry().setSelected(false);
+			}
+		}
+
+		this.invalidate();
+		this.forceLayout();
+
+		return success;
+	}
+
 	private void paintDropShadow(final Canvas canvas, final RectF oval,
 			final int height, final int width) {
 
@@ -129,10 +195,11 @@ public class PieChartView extends AbstractChartView {
 		// The style we will paint with
 		final Style[] styles = new Style[] { Style.FILL, Style.STROKE };
 
-		final Paint paint = new Paint();
-		paint.setAntiAlias(true);
+		arcs.clear();
 
 		for (final Style style : styles) {
+			final Paint paint = new Paint();
+			paint.setAntiAlias(true);
 			paint.setStyle(style);
 
 			for (final SeriesEntry entry : series) {
@@ -142,21 +209,68 @@ public class PieChartView extends AbstractChartView {
 					paint.setStrokeCap(Cap.SQUARE);
 				} else {
 					paint.setColor(entry.getBaseColor());
-					//paint.setShader(getNextRadialGradient(x, y, radius, mode));
+
+					if (ENABLE_GRADIENT) {
+						final RadialGradient radGrad = createGradientFromBaseColor(
+								oval, entry);
+
+						paint.setShader(radGrad);
+					}
 				}
 
-				final float categorySum = entry.getCategory().getSum()
-						.abs().floatValue();
+				final Arc arc = new Arc(entry, arcPosDegrees, getTotalAmt());
+				arcs.add(arc);
 
-				final float arcSweep = categorySum == 0.0F ? 0.0F : 360
-						* categorySum / getTotalAmt().floatValue();
-
-				canvas.drawArc(oval, arcPosDegrees, arcSweep, true, paint);
+				canvas.drawArc(oval, arc.getDegrees(), arc.getSweep(), true,
+						paint);
 
 				// Increment for next arc sweep.
-				arcPosDegrees += arcSweep;
+				arcPosDegrees += arc.getSweep();
 			}
 		}
+	}
+
+	private RadialGradient createGradientFromBaseColor(final RectF oval,
+			final SeriesEntry entry) {
+		final int baseColor = entry.getBaseColor();
+		int dark = 0;
+		int light = 0;
+		if (baseColor != Color.GRAY) {
+
+			final float[] hsv = new float[3];
+
+			Color.colorToHSV(baseColor, hsv);
+
+			hsv[1] = DARK_GRAD_SATURATION;
+			hsv[2] = DARK_GRAD_BRIGHTNESS;
+
+			if (!entry.isSelected()) {
+				hsv[1] -= SELECT_DESATURATION;
+				hsv[2] -= SELECT_DIM;
+			}
+
+			dark = Color.HSVToColor(hsv);
+
+			hsv[1] = LIGHT_GRAD_SATURATION;
+			hsv[2] = LIGHT_GRAD_BRIGHTNESS;
+
+			if (!entry.isSelected()) {
+				hsv[1] -= SELECT_DESATURATION;
+				hsv[2] -= SELECT_DIM;
+			}
+
+			light = Color.HSVToColor(hsv);
+
+		} else {
+			dark = Color.DKGRAY;
+			if (!entry.isSelected()) {
+				dark = Color.GRAY;
+			}
+			light = Color.LTGRAY;
+		}
+
+		return new RadialGradient(oval.centerX(), oval.centerY(),
+				oval.width() / 2, dark, light, TileMode.CLAMP);
 	}
 
 	private void perfectlyRoundAndCenter(int width, int height,
@@ -188,23 +302,6 @@ public class PieChartView extends AbstractChartView {
 					calulatedHeight);
 
 		}
-	}
-
-	//	    final float x = (width - STROKE_WIDTH * 2) / 2;
-	//		final float y = (height - STROKE_WIDTH * 2) / 2;
-	//		final float radius = width;
-	//		final TileMode mode = TileMode.CLAMP;
-	private Shader getNextRadialGradient(final float x, final float y,
-			final float radius, final TileMode mode) {
-
-		final int color = ColorUtil.getNextColor();
-		// TODO Gör så att det går från en mörk del av en färg till en ljus
-
-		final RadialGradient radGrad = new RadialGradient(x, y, radius, color,
-				color, mode);
-
-		return radGrad;
-
 	}
 
 }
