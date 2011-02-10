@@ -66,6 +66,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	private static final float TEXT_BLUR_RADIUS = 2.0f;
 	private static final float TEXT_SHADOW_OFFSET = 1.0f;
 
+	private static final int PERCENTAGE_LOWER_LIMIT = 5;
+
 	private ArrayList<Arc> arcs;
 
 	{
@@ -253,21 +255,23 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		for (final Arc arc : arcs) {
 			final int percentage = Math
 					.round((arc.getCategorySum() / seriesTotal.floatValue()) * 100);
+			if (percentage >= PERCENTAGE_LOWER_LIMIT) {
+				final double angle = arc.getDegrees() + arc.getSweep() / 2;
 
-			final double angle = arc.getDegrees() + arc.getSweep() / 2;
+				final double x = Math.cos(Math.toRadians(angle)) * radius;
+				final double y = Math.sin(Math.toRadians(angle)) * radius;
 
-			final double x = Math.cos(Math.toRadians(angle)) * radius;
-			final double y = Math.sin(Math.toRadians(angle)) * radius;
+				final String outText = percentage + "%";
 
-			final String outText = percentage + "%";
+				final Rect textBounds = new Rect();
+				paint.getTextBounds(outText, 0, outText.length(), textBounds);
 
-			final Rect textBounds = new Rect();
-			paint.getTextBounds(outText, 0, outText.length(), textBounds);
+				final float alignY = (float) y + oval.centerY()
+						+ textBounds.height() / 2;
 
-			final float alignY = (float) y + oval.centerY()
-					+ textBounds.height() / 2;
-
-			canvas.drawText(outText, (float) x + oval.centerX(), alignY, paint);
+				canvas.drawText(outText, (float) x + oval.centerX(), alignY,
+						paint);
+			}
 		}
 	}
 
