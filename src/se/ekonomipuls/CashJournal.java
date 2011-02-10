@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.adapter.Category;
-import se.ekonomipuls.adapter.ChartSeriesAdaper;
 import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
 import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.adapter.Transaction;
@@ -72,8 +71,8 @@ public class CashJournal extends Activity implements LogTag {
 		final List<Transaction> transactions = EkonomipulsDbAdapter
 				.getTransactions(ctx, accountId);
 
-		final ChartSeriesAdaper chartAdapter = new ChartSeriesAdaper(ctx,
-				R.layout.cash_journal, R.id.pieChart, transactions);
+		//		final ChartSeriesAdaper chartAdapter = new ChartSeriesAdaper(ctx,
+		//				R.layout.cash_journal, R.id.pieChart, transactions);
 
 		tmpSetSeriesEntries(transactions, pieChart);
 

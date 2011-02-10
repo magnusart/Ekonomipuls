@@ -18,10 +18,10 @@ package se.ekonomipuls.charts;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.graphics.RadialGradient;
@@ -47,25 +47,31 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	private static final boolean SKEW_CHART = false;
 	private static final boolean DROP_SHADOW = true;
 
-	private static final int SHADOW_COLOR = Color.BLACK;
+	private static final int CHART_SHADOW_ALPHA = 100;
 	private static final int BLUR_RADIUS = 8;
 	private static final int SHADOW_OFFSET = 6;
 
-	private static final float DARK_GRAD_SATURATION = 0.8f;
-	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
+	private static final float DARK_GRAD_SATURATION = 0.6f;
+	private static final float DARK_GRAD_BRIGHTNESS = 0.5f;
 
-	private static final float LIGHT_GRAD_SATURATION = 0.5f;
+	private static final float LIGHT_GRAD_SATURATION = 0.4f;
 	private static final float LIGHT_GRAD_BRIGHTNESS = 0.95f;
 
 	// When a slice is unselected
-	private static final float SELECT_DESATURATION = 0.3f;
+	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
+
+	private static final boolean PAINT_PERCENTAGES = true;
+	private static final int TEXT_SHADOW_ALPHA = 110;
+	private static final float TEXT_BLUR_RADIUS = 2.0f;
+	private static final float TEXT_SHADOW_OFFSET = 1.0f;
 
 	private ArrayList<Arc> arcs;
 
 	{
 		arcs = new ArrayList<Arc>();
-		this.setOnTouchListener(this);
+		// TODO Fix the on touch listener.
+		//this.setOnTouchListener(this);
 	}
 
 	/**
@@ -113,83 +119,33 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		final RectF oval = new RectF(canvasRect);
 
 		if (DROP_SHADOW) {
-			paintDropShadow(canvas, oval, height, width);
+			paintDropShadow(canvas, oval);
 		}
 
-		paintPieChartArcs(canvas, oval, height, width);
+		paintPieChartArcs(canvas, oval);
+
+		if (PAINT_PERCENTAGES) {
+			paintPercentages(canvas, oval, this.arcs);
+		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean onTouch(final View v, final MotionEvent event) {
-		final float x = event.getX();
-		final float y = event.getY();
-
-		Log.d(TAG, "Clicked at [" + x + ", " + y + "]");
-		double angle = Math.atan2(y, x);
-		angle *= 100;
-		Log.d(TAG, "Angle is: " + angle);
-
-		if (angle < 0.0D) {
-			angle = -angle;
-		}
-
-		boolean success = false;
-
-		for (final Arc arc : arcs) {
-
-			// TODO Check if within circle.
-
-			//			def in_circle(center_x, center_y, radius, x, y):
-			//			    square_dist = (center_x - x) ** 2 + (center_y - y) ** 2
-			//			    return square_dist <= radius ** 2
-
-			// Ex: 20 < 25 < 30 means that the point is within the arc.
-			if ((arc.getDegrees() < (float) angle)
-					&& ((float) angle < (arc.getDegrees() + arc.getSweep()))) {
-				Log.d(TAG, "Found at (" + arc.getDegrees() + ", " + angle
-						+ ", " + (arc.getDegrees() + arc.getSweep() + ")"));
-
-				arc.getEntry().setSelected(true);
-				success = true;
-			} else {
-				arc.getEntry().setSelected(false);
-			}
-		}
-
-		this.invalidate();
-		this.forceLayout();
-
-		return success;
-	}
-
-	private void paintDropShadow(final Canvas canvas, final RectF oval,
-			final int height, final int width) {
-
-		// Setup blur filter
-		final BlurMaskFilter blurFilter = new BlurMaskFilter(BLUR_RADIUS,
-				BlurMaskFilter.Blur.NORMAL);
+	private void paintDropShadow(final Canvas canvas, final RectF oval) {
 
 		// Apply filter mask to paint
 		final Paint paint = new Paint();
 		paint.setAntiAlias(true);
-		paint.setMaskFilter(blurFilter);
-		paint.setColor(SHADOW_COLOR);
+		paint.setColor(Color.argb(0, 0, 0, 0));
 
-		// Create a copy of the oval
+		final int shadowColor = Color.argb(CHART_SHADOW_ALPHA, 0, 0, 0);
+		paint.setShadowLayer(BLUR_RADIUS, SHADOW_OFFSET, SHADOW_OFFSET,
+				shadowColor);
+
 		final RectF offsetOval = new RectF(oval);
-
-		// Shrink (elevate) the oval by the same amount as the offset
-		offsetOval.inset(SHADOW_OFFSET, SHADOW_OFFSET);
-
-		// Determine light direction (offset shadow)
-		offsetOval.offset(SHADOW_OFFSET, SHADOW_OFFSET);
 
 		canvas.drawOval(offsetOval, paint);
 	}
 
-	private void paintPieChartArcs(final Canvas canvas, final RectF oval,
-			final int height, final int width) {
+	private void paintPieChartArcs(final Canvas canvas, final RectF oval) {
 		float arcPosDegrees = 0.0F;
 
 		// The style we will paint with
@@ -235,46 +191,84 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		final int baseColor = entry.getBaseColor();
 		int dark = 0;
 		int light = 0;
-		if ((baseColor != Color.GRAY) || (baseColor != Color.WHITE)
-				|| (baseColor != Color.BLACK)) {
 
-			final float[] hsv = new float[3];
+		final float[] hsv = new float[3];
 
-			Color.colorToHSV(baseColor, hsv);
+		Color.colorToHSV(baseColor, hsv);
 
-			hsv[1] = DARK_GRAD_SATURATION;
-			hsv[2] = DARK_GRAD_BRIGHTNESS;
+		float saturation = DARK_GRAD_SATURATION;
 
-			if (!entry.isSelected()) {
-				hsv[1] -= SELECT_DESATURATION;
-				hsv[2] -= SELECT_DIM;
-			}
-
-			dark = Color.HSVToColor(hsv);
-
-			hsv[1] = LIGHT_GRAD_SATURATION;
-			hsv[2] = LIGHT_GRAD_BRIGHTNESS;
-
-			if (!entry.isSelected()) {
-				hsv[1] -= SELECT_DESATURATION;
-				hsv[2] -= SELECT_DIM;
-			}
-
-			light = Color.HSVToColor(hsv);
-
-		} else { // Special treatment for gray
-			if (!entry.isSelected()) {
-				dark = Color.GRAY;
-				light = Color.LTGRAY;
-			} else {
-				dark = Color.DKGRAY;
-				light = Color.GRAY;
-			}
-
+		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
+				|| (baseColor == Color.BLACK)) {
+			saturation = 0.0f;
 		}
+
+		hsv[1] = saturation;
+		hsv[2] = DARK_GRAD_BRIGHTNESS;
+
+		if (!entry.isSelected()) {
+			hsv[1] -= SELECT_DESATURATION;
+			hsv[2] -= SELECT_DIM;
+		}
+
+		dark = Color.HSVToColor(hsv);
+		saturation = LIGHT_GRAD_SATURATION;
+
+		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
+				|| (baseColor == Color.BLACK)) {
+			saturation = 0.0f;
+		}
+
+		hsv[1] = saturation;
+		hsv[2] = LIGHT_GRAD_BRIGHTNESS;
+
+		if (!entry.isSelected()) {
+			hsv[1] -= SELECT_DESATURATION;
+			hsv[2] -= SELECT_DIM;
+		}
+
+		light = Color.HSVToColor(hsv);
 
 		return new RadialGradient(oval.centerX(), oval.centerY(),
 				oval.width() / 2, dark, light, TileMode.CLAMP);
+	}
+
+	private void paintPercentages(final Canvas canvas, final RectF oval,
+			final ArrayList<Arc> arcs) {
+
+		final int textSize = Math.round(oval.height() / 10);
+
+		final Paint paint = new Paint();
+		paint.setColor(Color.WHITE);
+		paint.setAntiAlias(true);
+		paint.setTextSize(textSize);
+		paint.setTextAlign(Align.CENTER);
+
+		final int shadowColor = Color.argb(TEXT_SHADOW_ALPHA, 0, 0, 0);
+		paint.setShadowLayer(TEXT_BLUR_RADIUS, TEXT_SHADOW_OFFSET,
+				TEXT_SHADOW_OFFSET, shadowColor);
+
+		final double radius = oval.width() / 3;
+
+		for (final Arc arc : arcs) {
+			final int percentage = Math
+					.round((arc.getCategorySum() / seriesTotal.floatValue()) * 100);
+
+			final double angle = arc.getDegrees() + arc.getSweep() / 2;
+
+			final double x = Math.cos(Math.toRadians(angle)) * radius;
+			final double y = Math.sin(Math.toRadians(angle)) * radius;
+
+			final String outText = percentage + "%";
+
+			final Rect textBounds = new Rect();
+			paint.getTextBounds(outText, 0, outText.length(), textBounds);
+
+			final float alignY = (float) y + oval.centerY()
+					+ textBounds.height() / 2;
+
+			canvas.drawText(outText, (float) x + oval.centerX(), alignY, paint);
+		}
 	}
 
 	private void perfectlyRoundAndCenter(int width, int height,
@@ -308,4 +302,47 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		}
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public boolean onTouch(final View v, final MotionEvent event) {
+		final float x = event.getX();
+		final float y = event.getY();
+
+		Log.d(TAG, "Clicked at [" + x + ", " + y + "]");
+		double angle = Math.atan2(y, x);
+		angle *= 100;
+		Log.d(TAG, "Angle is: " + angle);
+
+		if (angle < 0.0D) {
+			angle = -angle;
+		}
+
+		boolean success = false;
+
+		for (final Arc arc : arcs) {
+
+			// TODO Check if within circle.
+
+			//			def in_circle(center_x, center_y, radius, x, y):
+			//			    square_dist = (center_x - x) ** 2 + (center_y - y) ** 2
+			//			    return square_dist <= radius ** 2
+
+			// Ex: 20 < 25 < 30 means that the point is within the arc.
+			if ((arc.getDegrees() < (float) angle)
+					&& ((float) angle < (arc.getDegrees() + arc.getSweep()))) {
+				Log.d(TAG, "Found at (" + arc.getDegrees() + ", " + angle
+						+ ", " + (arc.getDegrees() + arc.getSweep() + ")"));
+
+				arc.getEntry().setSelected(true);
+				success = true;
+			} else {
+				arc.getEntry().setSelected(false);
+			}
+		}
+
+		this.invalidate();
+		this.forceLayout();
+
+		return success;
+	}
 }
