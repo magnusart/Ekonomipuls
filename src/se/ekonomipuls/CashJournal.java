@@ -30,8 +30,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * @author Magnus Andersson
@@ -40,6 +42,8 @@ import android.widget.ListView;
 public class CashJournal extends Activity implements LogTag {
 
 	private static final String ACCOUNT_ID = "1_1";
+	private ArrayList<SeriesEntry> series;
+	private BigDecimal total;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -85,27 +89,28 @@ public class CashJournal extends Activity implements LogTag {
 	 */
 	private void tmpSetSeriesEntries(final List<Transaction> transactions,
 			final PieChartView pieChart) {
-		final List<SeriesEntry> series = new ArrayList<SeriesEntry>();
+		series = new ArrayList<SeriesEntry>();
 
-		final Category cat1 = new Category(0, "Cat1", transactions.subList(0,
+		final Category cat1 = new Category(0, "Mat", transactions.subList(0,
 				transactions.size() / 6));
 
-		final Category cat2 = new Category(0, "Cat2", transactions.subList(
-				transactions.size() / 6, (transactions.size() / 6) * 2));
+		final Category cat2 = new Category(0, "Ospecificierat",
+				transactions.subList(transactions.size() / 6,
+						(transactions.size() / 6) * 2));
 
-		final Category cat3 = new Category(0, "Cat3", transactions.subList(
+		final Category cat3 = new Category(0, "Hyra", transactions.subList(
 				(transactions.size() / 6) * 2, (transactions.size() / 6) * 3));
 
-		final Category cat4 = new Category(0, "Cat4", transactions.subList(
+		final Category cat4 = new Category(0, "Kläder", transactions.subList(
 				(transactions.size() / 6) * 3, (transactions.size() / 6) * 4));
 
-		final Category cat5 = new Category(0, "Cat5", transactions.subList(
+		final Category cat5 = new Category(0, "Fest", transactions.subList(
 				(transactions.size() / 6) * 4, (transactions.size() / 6) * 5));
 
-		final Category cat6 = new Category(0, "Cat6", transactions.subList(
+		final Category cat6 = new Category(0, "El", transactions.subList(
 				(transactions.size() / 6) * 5, transactions.size()));
 
-		BigDecimal total = new BigDecimal(0.0);
+		total = new BigDecimal(0.0);
 
 		series.add(new SeriesEntry(cat1, Color.CYAN).setSelected(true)); //Color.CYAN
 		total = total.add(cat1.getSum());
@@ -130,13 +135,19 @@ public class CashJournal extends Activity implements LogTag {
 	}
 
 	private void populateLegendList(final String accountId) {
+
 		final ListView legendList = (ListView) findViewById(R.id.legendList);
+		if (series.size() == 0) {
+			legendList.setVisibility(View.GONE);
+		} else {
+			((TextView) findViewById(R.id.noCategories))
+					.setVisibility(View.GONE);
+		}
+
 		final Context ctx = getBaseContext();
-		final List<Transaction> transactions = EkonomipulsDbAdapter
-				.getTransactions(ctx, accountId);
 
 		final LegendAdapter adapter = new LegendAdapter(ctx,
-				R.layout.legend_row, transactions);
+				R.layout.legend_row, series, total);
 
 		legendList.setAdapter(adapter);
 	}

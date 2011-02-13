@@ -7,15 +7,36 @@
 <se.ekonomipuls.charts.PieChartView
 	android:id="@+id/pieChart"
  	android:layout_width="fill_parent" 
-    android:layout_height="0dip"
+    android:layout_height="0dp"
     android:layout_weight="1"
- 	android:layout_margin="10dip"
+ 	android:layout_margin="10dp"
 />         
-<ListView android:id="@+id/legendList" 
-			
-			android:layout_width="fill_parent" 
-			android:layout_height="0dip"
-			android:layout_weight="1"
-			android:cacheColorHint="#00000000">
-</ListView>
+<TextView android:text="Månadsrapport" 
+	android:id="@+id/categoriesHeader" 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:paddingLeft="10dp" 
+	android:paddingTop="4dp"
+	android:paddingBottom="4dp"
+	android:background="@drawable/categories_header_background"
+	android:textColor="#FFFFFF"
+	android:textStyle="bold"
+	android:textSize="15sp"/>
+<ListView 
+	android:id="@+id/legendList" 
+	android:layout_width="fill_parent" 
+	android:layout_height="0dp"
+	android:layout_weight="1"
+	android:cacheColorHint="#00000000"
+	android:fitsSystemWindows="true"
+	android:dividerHeight="2dp"
+	/>
+<TextView android:text="@string/no_data"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:id="@+id/noCategories" 
+	android:textColor="#FFFFFF"
+	android:layout_gravity="center_horizontal"
+	android:layout_weight="1"
+	android:textSize="15sp" />
 </LinearLayout>

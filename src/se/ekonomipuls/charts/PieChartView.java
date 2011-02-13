@@ -17,6 +17,7 @@ package se.ekonomipuls.charts;
 
 import java.util.ArrayList;
 
+import se.ekonomipuls.util.GraphUtil;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,7 +28,6 @@ import android.graphics.Paint.Style;
 import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -50,16 +50,6 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	private static final int CHART_SHADOW_ALPHA = 100;
 	private static final int BLUR_RADIUS = 8;
 	private static final int SHADOW_OFFSET = 6;
-
-	private static final float DARK_GRAD_SATURATION = 0.6f;
-	private static final float DARK_GRAD_BRIGHTNESS = 0.5f;
-
-	private static final float LIGHT_GRAD_SATURATION = 0.4f;
-	private static final float LIGHT_GRAD_BRIGHTNESS = 0.95f;
-
-	// When a slice is unselected
-	private static final float SELECT_DESATURATION = 0.2f;
-	private static final float SELECT_DIM = 0.1f;
 
 	private static final boolean PAINT_PERCENTAGES = true;
 	private static final int TEXT_SHADOW_ALPHA = 110;
@@ -169,8 +159,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					paint.setColor(entry.getBaseColor());
 
 					if (ENABLE_GRADIENT) {
-						final RadialGradient radGrad = createGradientFromBaseColor(
-								oval, entry);
+						final RadialGradient radGrad = GraphUtil
+								.createGradientFromBaseColor(oval, entry);
 
 						paint.setShader(radGrad);
 					}
@@ -186,53 +176,6 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 				arcPosDegrees += arc.getSweep();
 			}
 		}
-	}
-
-	private RadialGradient createGradientFromBaseColor(final RectF oval,
-			final SeriesEntry entry) {
-		final int baseColor = entry.getBaseColor();
-		int dark = 0;
-		int light = 0;
-
-		final float[] hsv = new float[3];
-
-		Color.colorToHSV(baseColor, hsv);
-
-		float saturation = DARK_GRAD_SATURATION;
-
-		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
-				|| (baseColor == Color.BLACK)) {
-			saturation = 0.0f;
-		}
-
-		hsv[1] = saturation;
-		hsv[2] = DARK_GRAD_BRIGHTNESS;
-
-		if (!entry.isSelected()) {
-			hsv[1] -= SELECT_DESATURATION;
-			hsv[2] -= SELECT_DIM;
-		}
-
-		dark = Color.HSVToColor(hsv);
-		saturation = LIGHT_GRAD_SATURATION;
-
-		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
-				|| (baseColor == Color.BLACK)) {
-			saturation = 0.0f;
-		}
-
-		hsv[1] = saturation;
-		hsv[2] = LIGHT_GRAD_BRIGHTNESS;
-
-		if (!entry.isSelected()) {
-			hsv[1] -= SELECT_DESATURATION;
-			hsv[2] -= SELECT_DIM;
-		}
-
-		light = Color.HSVToColor(hsv);
-
-		return new RadialGradient(oval.centerX(), oval.centerY(),
-				oval.width() / 2, dark, light, TileMode.CLAMP);
 	}
 
 	private void paintPercentages(final Canvas canvas, final RectF oval,
@@ -253,8 +196,9 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		final double radius = oval.width() / 3;
 
 		for (final Arc arc : arcs) {
-			final int percentage = Math
-					.round((arc.getCategorySum() / seriesTotal.floatValue()) * 100);
+
+			final int percentage = GraphUtil.getPercentage(
+					arc.getCategorySum(), seriesTotal.floatValue());
 			if (percentage >= PERCENTAGE_LOWER_LIMIT) {
 				final double angle = arc.getDegrees() + arc.getSweep() / 2;
 

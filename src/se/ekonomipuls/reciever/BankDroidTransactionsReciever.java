@@ -16,7 +16,6 @@
 package se.ekonomipuls.reciever;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.TranStatistics;
 import se.ekonomipuls.service.imp.BankDroidImportService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,7 +38,7 @@ public class BankDroidTransactionsReciever extends BroadcastReceiver implements
 	/** {@inheritDoc} */
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		Log.d(TranStatistics.TAG, "Recieved intent");
+		Log.d(TAG, "Recieved intent");
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
 			Log.d(TAG, "Begin retrieving updated transactions");

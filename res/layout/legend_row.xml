@@ -3,37 +3,39 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
-  android:paddingLeft="0dp"
-  android:paddingRight="0dp">
-  <TextView
-    android:layout_alignParentLeft="true" 
-	android:layout_alignParentTop="true" 
-	android:layout_alignParentBottom="true"
-	android:text="[date]" 
-	android:id="@+id/tDate" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content" 
-	android:layout_marginLeft="2dp"
-	android:gravity="center_vertical" />
-	<TextView 
-	android:layout_alignParentTop="true"
-	android:layout_alignParentBottom="true"
-	android:gravity="center_horizontal|center_vertical"
-	android:layout_toRightOf="@+id/tDate"
-	android:text="[desc]" 
-	android:id="@+id/tDesc" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content" 
-	android:layout_marginLeft="5dp"/>
-<TextView 
-    android:layout_alignParentTop="true" 
-	android:layout_alignParentBottom="true"
-	android:layout_alignParentRight="true"
-	android:text="[amt]" 
-	android:id="@+id/tAmt" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content"
-	android:layout_marginLeft="5dp"
-	android:paddingRight="5dp"
-	android:gravity="center_vertical"/>
+  android:paddingLeft="4dp"
+  android:paddingRight="0dp"
+  android:paddingTop="4dp"
+  android:paddingBottom="4dp">
+
+
+<View
+	 	android:id="@+id/colorShape"
+		android:layout_alignParentLeft="true"
+		android:layout_width="18sp"
+		android:layout_height="18sp"
+		android:background="@drawable/category_color_shape"
+		android:layout_alignTop="@+id/categoryNameText"
+/>		
+
+<TextView android:id="@+id/categoryNameText"
+		android:layout_alignParentTop="true"
+		android:layout_marginLeft="6dp" 
+		android:layout_toRightOf="@+id/colorShape"
+		android:layout_width="wrap_content"
+		android:layout_height="21sp"
+		android:textColor="#FFFFFF"
+		android:textSize="20sp"
+		android:textStyle="bold"
+		android:gravity="bottom"
+		android:text="[Category Name]" />
+<TextView android:id="@+id/line2Text"
+ 		android:layout_below="@+id/categoryNameText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/colorShape"
+		android:textColor="#b1b1b1"
+		android:textSize="14sp" 
+		android:text="[Percentage], [Amount], [NumTransactions], "
+/>
 </RelativeLayout>

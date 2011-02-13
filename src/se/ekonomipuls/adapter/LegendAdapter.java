@@ -15,39 +15,47 @@
  */
 package se.ekonomipuls.adapter;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.R;
+import se.ekonomipuls.charts.SeriesEntry;
+import se.ekonomipuls.util.GraphUtil;
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
  * @author Magnus Andersson
  * @since 6 feb 2011
  */
-public class LegendAdapter extends ArrayAdapter<Transaction> {
+public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
-	private final List<Transaction> objects;
+	private final List<SeriesEntry> objects;
 	private final int layoutViewResourceId;
 	private final LayoutInflater inflater;
 	private final Context context;
+	private final BigDecimal total;
 
 	/**
 	 * @param context
 	 * @param textViewResourceId
-	 * @param objects
+	 * @param series
+	 * @param total
 	 */
 	public LegendAdapter(final Context context, final int layoutViewResourceId,
-							final List<Transaction> objects) {
-		super(context, layoutViewResourceId, objects);
+							final ArrayList<SeriesEntry> series,
+							final BigDecimal total) {
+		super(context, layoutViewResourceId, series);
 		this.context = context;
 		this.layoutViewResourceId = layoutViewResourceId;
-		this.objects = objects;
+		this.objects = series;
+		this.total = total;
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -57,7 +65,6 @@ public class LegendAdapter extends ArrayAdapter<Transaction> {
 	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
 		View view;
-		final LinearLayout layout;
 
 		if (convertView == null) {
 			view = inflater.inflate(layoutViewResourceId, parent, false);
@@ -65,15 +72,31 @@ public class LegendAdapter extends ArrayAdapter<Transaction> {
 			view = convertView;
 		}
 
-		final Transaction trans = getItem(position);
+		final SeriesEntry entry = getItem(position);
 
-		final TextView date = (TextView) view.findViewById(R.id.tDate);
-		final TextView desc = (TextView) view.findViewById(R.id.tDesc);
-		final TextView amt = (TextView) view.findViewById(R.id.tAmt);
+		final GradientDrawable color = (GradientDrawable) view.findViewById(
+				R.id.colorShape).getBackground();
 
-		date.setText(trans.getDate());
-		desc.setText(trans.getDescription());
-		amt.setText(trans.getAmount().toPlainString());
+		color.setColor(GraphUtil.getDarkColor(entry.getBaseColor(),
+				entry.isSelected()));
+
+		final TextView categoryName = (TextView) view
+				.findViewById(R.id.categoryNameText);
+		final TextView line2Text = (TextView) view.findViewById(R.id.line2Text);
+
+		final Category cat = entry.getCategory();
+
+		categoryName.setText(cat.getName());
+
+		final int percentage = GraphUtil.getPercentage(cat.getSum()
+				.floatValue(), total.floatValue());
+		line2Text.setText(percentage + "%, "
+				+ Math.round(cat.getSum().floatValue()) + " SEK, "
+				+ cat.getNumTransactions() + " Transaktioner");
+
+		//		date.setText(trans.getDate());
+		//		desc.setText(trans.getDescription());
+		//		amt.setText(trans.getAmount().toPlainString());
 
 		return view;
 	}
