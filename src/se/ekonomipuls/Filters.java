@@ -22,13 +22,12 @@ import android.os.Bundle;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public class CashJournal extends Activity implements LogTag {
+public class Filters extends Activity implements LogTag {
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 }

@@ -5,4 +5,6 @@
 
 
 <string name="no_data">No data</string>
+<string name="cash_journal">Setup Cash Journal</string>
+<string name="filters_menu">Filters</string>
 </resources>

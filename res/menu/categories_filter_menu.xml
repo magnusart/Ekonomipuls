@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:alphabeticShortcut="s" android:numericShortcut="1" android:title="@string/cash_journal" android:id="@+id/cash_journal_menu_item"></item>
+	<item android:id="@+id/filters_menu_item" android:alphabeticShortcut="f" android:numericShortcut="2" android:title="@string/filters_menu"></item>
+
+</menu>
