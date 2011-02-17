@@ -18,7 +18,7 @@ package se.ekonomipuls.service.imp;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.adapter.EkonomipulsDbAdapter;
+import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.filter.TransactionsFilterService;
@@ -54,7 +54,7 @@ public class BankDroidImportService extends IntentService implements LogTag {
 
 			// TODO: Cleanse incoming transactions from duplicates.
 
-			EkonomipulsDbAdapter.bulkInsertBdTransactions(getBaseContext(),
+			DbFacade.bulkInsertBdTransactions(getBaseContext(),
 					transactions);
 
 			// Hand over to filtering.

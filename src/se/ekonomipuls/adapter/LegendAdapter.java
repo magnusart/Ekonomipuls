@@ -17,10 +17,10 @@ package se.ekonomipuls.adapter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 import se.ekonomipuls.R;
 import se.ekonomipuls.charts.SeriesEntry;
+import se.ekonomipuls.database.Category;
 import se.ekonomipuls.util.GraphUtil;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -36,10 +36,8 @@ import android.widget.TextView;
  */
 public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
-	private final List<SeriesEntry> objects;
 	private final int layoutViewResourceId;
 	private final LayoutInflater inflater;
-	private final Context context;
 	private final BigDecimal total;
 
 	/**
@@ -52,9 +50,7 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 							final ArrayList<SeriesEntry> series,
 							final BigDecimal total) {
 		super(context, layoutViewResourceId, series);
-		this.context = context;
 		this.layoutViewResourceId = layoutViewResourceId;
-		this.objects = series;
 		this.total = total;
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -88,11 +84,11 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 		categoryName.setText(cat.getName());
 
-		final int percentage = GraphUtil.getPercentage(cat.getSum()
+		final int percentage = GraphUtil.getPercentage(entry.getSum()
 				.floatValue(), total.floatValue());
 		line2Text.setText(percentage + "%, "
-				+ Math.round(cat.getSum().floatValue()) + " SEK, "
-				+ cat.getNumTransactions() + " Transaktioner");
+				+ Math.round(entry.getSum().floatValue()) + " SEK, "
+				+ entry.getNumTransactions() + " Transaktioner");
 
 		//		date.setText(trans.getDate());
 		//		desc.setText(trans.getDescription());

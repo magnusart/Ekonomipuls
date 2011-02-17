@@ -23,7 +23,6 @@ import se.ekonomipuls.LogTag;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ListAdapter;
 
 /**
  * @author Magnus Andersson
@@ -35,8 +34,6 @@ public abstract class AbstractChartView extends View implements LogTag {
 	protected List<SeriesEntry> series;
 	protected BigDecimal seriesTotal;
 	protected int position;
-
-	private ListAdapter adapter;
 
 	{
 		series = new ArrayList<SeriesEntry>();
@@ -72,52 +69,6 @@ public abstract class AbstractChartView extends View implements LogTag {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 	}
-
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public ListAdapter getAdapter() {
-	//		return adapter;
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public void setAdapter(final ListAdapter adapter) {
-	//		this.adapter = adapter;
-	//		requestLayout();
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public View getSelectedView() {
-	//		throw new UnsupportedOperationException("Not supported");
-	//	}
-	//
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public void setSelection(final int position) {
-	//		throw new UnsupportedOperationException("Not supported");
-	//	}
-
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	protected void onLayout(final boolean changed, final int left,
-	//			final int top, final int right, final int bottom) {
-	//		// if we don't have an adapter, we don't need to do anything
-	//		if (adapter == null) {
-	//			return;
-	//		}
-	//
-	//		Log.d(TAG, "In onLayout.");
-	//		Log.d(TAG, "Changed = " + changed);
-	//		Log.d(TAG, "Left = " + left);
-	//		Log.d(TAG, "top = " + top);
-	//		Log.d(TAG, "right = " + right);
-	//		Log.d(TAG, "bottom = " + bottom);
-	//
-	//		final View view = adapter.getView(0, this, this);
-	//		view.forceLayout();
-	//
-	//	}
 
 	/**
 	 * @param series

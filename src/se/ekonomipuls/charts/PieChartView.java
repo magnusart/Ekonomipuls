@@ -56,7 +56,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	private static final float TEXT_BLUR_RADIUS = 2.0f;
 	private static final float TEXT_SHADOW_OFFSET = 1.0f;
 
-	private static final int PERCENTAGE_LOWER_LIMIT = 5;
+	private static final int PERCENTAGE_LOWER_LIMIT = 6;
 
 	private ArrayList<Arc> arcs;
 
@@ -293,4 +293,5 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 		return success;
 	}
+
 }

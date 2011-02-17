@@ -13,36 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls;
+package se.ekonomipuls.database;
 
-import java.util.List;
-
-import se.ekonomipuls.database.Category;
-import se.ekonomipuls.database.DbFacade;
-import android.app.Activity;
-import android.os.Bundle;
+import se.ekonomipuls.LogTag;
 
 /**
  * @author Magnus Andersson
- * @since 13 feb 2011
+ * @since 16 feb 2011
  */
-public class CashJournal extends Activity implements LogTag {
+public class Tag implements LogTag {
 
-	/** {@inheritDoc} */
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.cash_journal);
+	private final String name;
+	private final int id;
 
-		populateCategoriesList();
+	/**
+	 * @param i
+	 * @param defaultTagName
+	 */
+	Tag(final int id, final String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	/**
-	 * 
+	 * @return the name
 	 */
-	private void populateCategoriesList() {
-		final List<Category> categories = DbFacade
-				.getCategories(this);
+	public String getName() {
+		return name;
 	}
 
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "Tag [name=" + name + ", id=" + id + "]";
+	}
 }

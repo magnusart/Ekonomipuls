@@ -38,7 +38,7 @@ final class Arc {
 		this.degrees = degrees % 360;
 
 		// Total sum of all pieces of the chart
-		categorySum = entry.getCategory().getSum().abs().floatValue();
+		categorySum = entry.getSum().abs().floatValue();
 
 		// Calculate the arc angle.
 		sweep = categorySum == 0.0F ? 0.0F : 360 * categorySum

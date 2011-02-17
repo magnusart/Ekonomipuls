@@ -15,7 +15,11 @@
  */
 package se.ekonomipuls.charts;
 
-import se.ekonomipuls.adapter.Category;
+import java.math.BigDecimal;
+import java.util.List;
+
+import se.ekonomipuls.database.Category;
+import se.ekonomipuls.database.Transaction;
 
 /**
  * @author Magnus Andersson
@@ -27,15 +31,41 @@ public class SeriesEntry {
 	private final Category category;
 	private boolean selected;
 
+	private final BigDecimal sum;
+	private final int numTransactions;
+
 	/**
 	 * 
 	 * @param category
 	 * @param baseColor
 	 */
-	public SeriesEntry(final Category category, final int baseColor) {
+	public SeriesEntry(final Category category,
+						final List<Transaction> transactions,
+						final int baseColor) {
 		this.category = category;
 		this.baseColor = baseColor;
 		this.selected = false;
+
+		this.sum = sumTranscations(transactions);
+		this.numTransactions = transactions.size();
+	}
+
+	/**
+	 * Run this on creation
+	 * 
+	 * @param transactions
+	 * 
+	 * @return
+	 */
+	private BigDecimal sumTranscations(final List<Transaction> transactions) {
+		BigDecimal total = new BigDecimal(0.0);
+
+		// Get the total
+		for (final Transaction trans : transactions) {
+			total = total.add(trans.getAmount());
+		}
+
+		return total.abs();
 	}
 
 	/**
@@ -68,11 +98,26 @@ public class SeriesEntry {
 		return this;
 	}
 
+	/**
+	 * @return the totalSum
+	 */
+	public BigDecimal getSum() {
+		return sum;
+	}
+
+	/**
+	 * @return the numTransactions
+	 */
+	public int getNumTransactions() {
+		return numTransactions;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "SeriesEntry [baseColor=" + baseColor + ", category=" + category
-				+ ", selected=" + selected + "]";
+				+ ", selected=" + selected + ", sum=" + sum
+				+ ", numTransactions=" + numTransactions + "]";
 	}
 
 }

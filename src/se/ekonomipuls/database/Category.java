@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.adapter;
-
-import java.math.BigDecimal;
-import java.util.List;
+package se.ekonomipuls.database;
 
 /**
  * @author Magnus Andersson
@@ -26,38 +23,15 @@ public class Category {
 
 	private final int id;
 	private final String name;
-	private final BigDecimal sum;
-	private final int numTransactions;
 
 	/**
 	 * @param i
 	 * @param string
 	 * @param subList
 	 */
-	public Category(final int id, final String name,
-					final List<Transaction> transactions) {
+	Category(final int id, final String name) {
 		this.id = id;
 		this.name = name;
-		this.sum = sumTranscations(transactions);
-		this.numTransactions = transactions.size();
-	}
-
-	/**
-	 * Run this on creation
-	 * 
-	 * @param transactions
-	 * 
-	 * @return
-	 */
-	private BigDecimal sumTranscations(final List<Transaction> transactions) {
-		BigDecimal total = new BigDecimal(0.0);
-
-		// Get the total
-		for (final Transaction trans : transactions) {
-			total = total.add(trans.getAmount());
-		}
-
-		return total.abs();
 	}
 
 	/**
@@ -74,25 +48,10 @@ public class Category {
 		return name;
 	}
 
-	/**
-	 * @return the totalSum
-	 */
-	public BigDecimal getSum() {
-		return sum;
-	}
-
-	/**
-	 * @return the numTransactions
-	 */
-	public int getNumTransactions() {
-		return numTransactions;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "Category [id=" + id + ", name=" + name + ", sum=" + sum
-				+ ", numTransactions=" + numTransactions + "]";
+		return "Category [id=" + id + ", name=" + name + "]";
 	}
 
 }

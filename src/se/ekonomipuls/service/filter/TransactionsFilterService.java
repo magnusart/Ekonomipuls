@@ -47,6 +47,7 @@ public class TransactionsFilterService extends IntentService implements LogTag {
 
 		switch (filterType) {
 			case IMPORT_FILTER_TYPES:
+
 				break;
 			default:
 				assert false : "Unrechable clause: default is import filters"; // We should never reach this state.

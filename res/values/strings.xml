@@ -7,4 +7,6 @@
 <string name="no_data">No data</string>
 <string name="cash_journal">Setup Cash Journal</string>
 <string name="filters_menu">Filters</string>
+<string name="default_category_name">Unspecified</string>
+<string name="default_tag_name">Default</string>
 </resources>
