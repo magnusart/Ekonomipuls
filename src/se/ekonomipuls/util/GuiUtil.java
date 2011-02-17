@@ -17,15 +17,17 @@ package se.ekonomipuls.util;
 
 import se.ekonomipuls.charts.SeriesEntry;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
+import android.view.Window;
 
 /**
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public final class GraphUtil {
+public final class GuiUtil {
 
 	private static final float DARK_GRAD_SATURATION = 0.5f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.7f;
@@ -37,7 +39,7 @@ public final class GraphUtil {
 	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
 
-	private GraphUtil() {
+	private GuiUtil() {
 		// Private constructor
 	}
 
@@ -126,5 +128,16 @@ public final class GraphUtil {
 		}
 
 		return Color.HSVToColor(hsv);
+	}
+
+	/**
+	 * Some Voodoo that prevents color banding on the background
+	 * gradient.
+	 * http://stuffthathappens.com/blog/2010/06/04/android-color-banding/
+	 * 
+	 * @param window
+	 */
+	public static void removeGradientBanding(final Window window) {
+		window.setFormat(PixelFormat.RGBA_8888);
 	}
 }

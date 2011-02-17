@@ -25,16 +25,15 @@ import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.database.Category;
 import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -53,7 +52,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		removeGradientBanding();
+		GuiUtil.removeGradientBanding(getWindow());
 
 		populatePieChart(ACCOUNT_ID);
 		populateLegendList(ACCOUNT_ID);
@@ -83,7 +82,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	}
 
 	private void navigateCashJournal() {
-		final Intent intent = new Intent(this, CashJournal.class);
+		final Intent intent = new Intent(this, Reports.class);
 		this.startActivity(intent);
 	}
 
@@ -92,21 +91,11 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		this.startActivity(intent);
 	}
 
-	/**
-	 * Some Voodoo that prevents color banding on the background
-	 * gradient.
-	 * http://stuffthathappens.com/blog/2010/06/04/android-color-banding/
-	 */
-	private void removeGradientBanding() {
-		final Window window = getWindow();
-		window.setFormat(PixelFormat.RGBA_8888);
-	}
-
 	private void populatePieChart(final String accountId) {
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 
-		final List<Transaction> transactions = DbFacade
-				.getTransactions(this, accountId);
+		final List<Transaction> transactions = DbFacade.getTransactionsByAccount(this,
+				accountId);
 
 		populateSeriesEntries(transactions, pieChart);
 
@@ -119,8 +108,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	private void populateSeriesEntries(final List<Transaction> transactions,
 			final PieChartView pieChart) {
 
-		final List<Category> categories = DbFacade
-				.getCategories(this);
+		final List<Category> categories = DbFacade.getCategories(this);
 
 		series = new ArrayList<SeriesEntry>();
 		total = new BigDecimal(0.0);

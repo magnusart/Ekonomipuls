@@ -14,10 +14,12 @@
 				<action android:name="com.liato.bankdroid.action.TRANSACTIONS"></action>
 			</intent-filter>
 		</receiver>
-		<service android:enabled="true"
-			android:name=".service.imp.BankDroidImportService"></service>
-	<activity android:label="@string/app_name" android:name="CashJournal"></activity>
+		<service android:name=".service.imp.BankDroidImportService" android:enabled="true"></service>
+		<service android:name=".service.filter.TransactionsFilterService" android:enabled="true"></service>
+
+	<activity android:label="@string/app_name" android:name="Reports"></activity>
 <activity android:label="@string/app_name" android:name="Filters"></activity>
+
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

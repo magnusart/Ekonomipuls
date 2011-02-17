@@ -30,50 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Magnus Andersson
  * @since 24 jan 2011
  */
-public class DbFacade implements LogTag {
-	/**
-	 * @author Magnus Andersson
-	 * @since 24 jan 2011
-	 */
-	public static interface DbConstants {
-		public static final int DB_VERSION = 1;
-
-		public final static String TRANSACTIONS_TABLE = "transactions";
-		// Columns for transaction table
-		public final static String TRANS_ID = "_id";
-		public final static String TRANS_DATE = "t_date";
-		public final static String TRANS_DESCRIPTION = "description";
-		public static final String TRANS_AMOUNT = "amount";
-		public final static String TRANS_CURRENCY = "currency";
-		public final static String TRANS_BD_ACCOUNT = "bd_account_id";
-
-		public final static String CATEGORIES_TABLE = "categories";
-		// Columns for Categories
-		public final static String CAT_ID = "_id";
-		public final static String CAT_NAME = "name";
-
-		public static final String TAGS_TABLE = "tags";
-		// Columns for Tags
-		public final static String TAG_ID = "_id";
-		public final static String TAG_NAME = "name";
-
-		public final static String CONF_DEF_CAT = "default.category";
-		public final static String CONF_DEF_TAG = "default.tag";
-
-		public final static String CATEGORIES_TAGS_TABLE = "categories_tags";
-		// Columns for Categories/Tags join table
-		public final static String CAT_FK = "category_fk";
-		public final static String TAG_FK_1 = "tag_fk";
-
-		public final static String TRANSACTIONS_TAGS_TABLE = "transactions_tags";
-		// Columns for Transactions/Tags join table
-		public final static String TRANS_FK = "transaction_fk";
-		public final static String TAG_FK_2 = "tag_fk";
-
-		public static final String DB_NAME = "ekonomipuls.db";
-		public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
-
-	}
+public class DbFacade implements LogTag, DbConstants {
 
 	/**
 	 * Bulk insert transactions.
@@ -88,18 +45,48 @@ public class DbFacade implements LogTag {
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
 		try {
 			for (final BankDroidTransaction trans : transactions) {
-				final ContentValues values = new ContentValues();
+				final ContentValues values = new ContentValues(6);
 
-				values.put(DbConstants.TRANS_DATE, trans.getDate());
-				values.put(DbConstants.TRANS_DESCRIPTION,
-						trans.getDescription());
-				values.put(DbConstants.TRANS_AMOUNT, trans.getAmount()
-						.toString());
-				values.put(DbConstants.TRANS_CURRENCY, trans.getCurrency());
-				values.put(DbConstants.TRANS_BD_ACCOUNT, trans.getAccountId());
+				values.put(TRANS_GLOBAL_ID, trans.getId());
+				values.put(TRANS_DATE, trans.getDate());
+				values.put(TRANS_DESCRIPTION, trans.getDescription());
+				values.put(TRANS_AMOUNT, trans.getAmount().toString());
+				values.put(TRANS_CURRENCY, trans.getCurrency());
+				values.put(TRANS_BD_ACCOUNT, trans.getAccountId());
 
-				db.insert(DbConstants.TRANSACTIONS_TABLE, null, values);
+				db.insert(TRANSACTIONS_TABLE, null, values);
 			}
+			// Transaction begun in DbHelper.open();
+			db.setTransactionSuccessful();
+		} finally {
+			shutdownDb(db, dbHelper);
+		}
+	}
+
+	/**
+	 * @param modTrans
+	 * @param defaultTagId
+	 */
+	public static void modifyTransactionsAssignTags(final Context ctx,
+			final Transaction transaction, final long tagId) {
+		final DbHelper dbHelper = new DbHelper(ctx);
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		try {
+			ContentValues values = new ContentValues(3);
+			values.put(TRANS_COMMENT, transaction.getDescription());
+			values.put(TRANS_CURRENCY, transaction.getCurrency());
+			final int filtered = (transaction.isFiltered()) ? 1 : 0;
+			values.put(TRANS_FILTERED, filtered);
+
+			db.update(TRANSACTIONS_TABLE, values, TRANS_ID + " = "
+					+ transaction.getId(), null);
+
+			values = new ContentValues(2);
+			values.put(TRANS_FK, transaction.getId());
+			values.put(TAG_FK_2, tagId);
+
+			db.insert(TRANSACTIONS_TAGS_TABLE, null, values);
+
 			// Transaction begun in DbHelper.open();
 			db.setTransactionSuccessful();
 		} finally {
@@ -113,45 +100,62 @@ public class DbFacade implements LogTag {
 	 * @param bdAccountId
 	 * @return
 	 */
-	public static List<Transaction> getTransactions(final Context ctx,
+	public static List<Transaction> getTransactionsByAccount(final Context ctx,
 			final String bdAccountId) {
+		return getTransactions(ctx, TRANS_BD_ACCOUNT + " = ? ",
+				new String[] { bdAccountId });
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @return
+	 */
+	public static List<Transaction> getUnfilteredTransactions(final Context ctx) {
+		return getTransactions(ctx, TRANS_FILTERED + " = 0 ", null);
+	}
+
+	private static List<Transaction> getTransactions(final Context ctx,
+			final String selection, final String[] selectionArgs) {
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		final DbHelper dbHelper = new DbHelper(ctx);
 		final SQLiteDatabase db = dbHelper.getReadableDatabase();
 
 		try {
-			final Cursor cur = db.query(DbConstants.TRANSACTIONS_TABLE,
-					new String[] { DbConstants.TRANS_ID,
-							DbConstants.TRANS_DATE,
-							DbConstants.TRANS_DESCRIPTION,
-							DbConstants.TRANS_AMOUNT,
-							DbConstants.TRANS_CURRENCY },
-					DbConstants.TRANS_BD_ACCOUNT + "= ? ",
-					new String[] { bdAccountId }, "", null,
-					DbConstants.TRANS_DATE + " DESC");
+			final Cursor cur = db.query(TRANSACTIONS_TABLE, new String[] {
+					TRANS_ID, TRANS_GLOBAL_ID, TRANS_DATE, TRANS_DESCRIPTION,
+					TRANS_COMMENT, TRANS_AMOUNT, TRANS_CURRENCY,
+					TRANS_FILTERED, TRANS_BD_ACCOUNT }, selection,
+					selectionArgs, null, null, TRANS_DATE + " DESC");
 
-			final int tId = cur.getColumnIndexOrThrow(DbConstants.TRANS_ID);
-			final int tDate = cur.getColumnIndexOrThrow(DbConstants.TRANS_DATE);
-			final int tDesc = cur
-					.getColumnIndexOrThrow(DbConstants.TRANS_DESCRIPTION);
-			final int tAmt = cur
-					.getColumnIndexOrThrow(DbConstants.TRANS_AMOUNT);
-			final int tCur = cur
-					.getColumnIndexOrThrow(DbConstants.TRANS_CURRENCY);
+			final int tId = cur.getColumnIndexOrThrow(TRANS_ID);
+			final int tGlob = cur.getColumnIndexOrThrow(TRANS_GLOBAL_ID);
+			final int tDate = cur.getColumnIndexOrThrow(TRANS_DATE);
+			final int tDesc = cur.getColumnIndexOrThrow(TRANS_DESCRIPTION);
+			final int tCmnt = cur.getColumnIndexOrThrow(TRANS_COMMENT);
+			final int tAmt = cur.getColumnIndexOrThrow(TRANS_AMOUNT);
+			final int tCur = cur.getColumnIndexOrThrow(TRANS_CURRENCY);
+			final int tFilt = cur.getColumnIndexOrThrow(TRANS_FILTERED);
+			final int tBdAcc = cur.getColumnIndexOrThrow(TRANS_BD_ACCOUNT);
 
 			while (cur.moveToNext()) {
 				final int id = cur.getInt(tId);
+				final String glob = cur.getString(tGlob);
 				final String date = cur.getString(tDate);
 				final String desc = cur.getString(tDesc);
+				final String cmnt = cur.getString(tCmnt);
 				final BigDecimal amt = new BigDecimal(cur.getString(tAmt));
 				final String curr = cur.getString(tCur);
+				final boolean filt = (cur.getInt(tFilt) != 0) ? true : false;
+				final String bdAcc = cur.getString(tBdAcc);
 
-				final Transaction trans = new Transaction(id, date, desc, amt,
-						curr);
+				final Transaction trans = new Transaction(id, glob, date, desc,
+						cmnt, amt, curr, filt, bdAcc);
 
 				transactions.add(trans);
 			}
+			cur.close();
 		} finally {
 			shutdownDb(db, dbHelper);
 		}
@@ -185,12 +189,11 @@ public class DbFacade implements LogTag {
 		final List<Category> categories = new ArrayList<Category>();
 
 		try {
-			final Cursor cur = db.query(DbConstants.CATEGORIES_TABLE,
-					new String[] { DbConstants.CAT_ID, DbConstants.CAT_NAME },
-					null, null, null, null, null);
+			final Cursor cur = db.query(CATEGORIES_TABLE, new String[] {
+					CAT_ID, CAT_NAME }, null, null, null, null, null);
 
-			final int tId = cur.getColumnIndexOrThrow(DbConstants.CAT_ID);
-			final int tName = cur.getColumnIndexOrThrow(DbConstants.CAT_NAME);
+			final int tId = cur.getColumnIndexOrThrow(CAT_ID);
+			final int tName = cur.getColumnIndexOrThrow(CAT_NAME);
 
 			while (cur.moveToNext()) {
 				final int id = cur.getInt(tId);
@@ -199,8 +202,9 @@ public class DbFacade implements LogTag {
 				final Category cat = new Category(id, name);
 
 				categories.add(cat);
-			}
 
+			}
+			cur.close();
 		} finally {
 			shutdownDb(db, dbHelper);
 		}
@@ -213,12 +217,10 @@ public class DbFacade implements LogTag {
 	 */
 	private static void shutdownDb(final SQLiteDatabase db,
 			final DbHelper dbHelper) {
-
 		if (!db.isReadOnly()) {
 			// Transaction begun in DbHelper.open();
 			db.endTransaction();
 		}
-
 		db.close();
 		dbHelper.close();
 	}

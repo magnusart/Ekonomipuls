@@ -15,22 +15,25 @@
  */
 package se.ekonomipuls.service.filter;
 
+import java.util.List;
+
 import se.ekonomipuls.LogTag;
+import se.ekonomipuls.PropertiesConstants;
+import se.ekonomipuls.commands.ModifiedTransaction;
+import se.ekonomipuls.database.DbFacade;
+import se.ekonomipuls.database.Transaction;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * @author Magnus Andersson
  * @since 29 jan 2011
  */
-public class TransactionsFilterService extends IntentService implements LogTag {
-
-	public static final int IMPORT_FILTER_TYPES = 0;
-	// Not supported yet.
-	// public static final int GUI_FILTER_TYPES = 1;
-	// public static final int ALL_FILTER_TYPES = 2;
-
-	public static final String FILTER_CHAIN = "filterChain";
+public class TransactionsFilterService extends IntentService implements
+		PropertiesConstants, LogTag {
 
 	/**
 	 * 
@@ -42,20 +45,28 @@ public class TransactionsFilterService extends IntentService implements LogTag {
 	/** {@inheritDoc} */
 	@Override
 	protected void onHandleIntent(final Intent intent) {
-		final int filterType = intent.getIntExtra(FILTER_CHAIN,
-				IMPORT_FILTER_TYPES);
+		Log.d(TAG, "Applying filters");
 
-		switch (filterType) {
-			case IMPORT_FILTER_TYPES:
+		final List<Transaction> transactions = DbFacade
+				.getUnfilteredTransactions(getBaseContext());
 
-				break;
-			default:
-				assert false : "Unrechable clause: default is import filters"; // We should never reach this state.
+		for (final Transaction t : transactions) {
+
+			final ModifiedTransaction modTrans = new ModifiedTransaction(t);
+
+			// TODO Apply filters
+
+			modTrans.setFiltered(true);
+
+			// Only if no filters matched, set default tag.
+
+			final SharedPreferences pref = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			final long tagId = pref.getLong(CONF_DEF_TAG, -1);
+
+			assert (tagId != -1);
+
+			DbFacade.modifyTransactionsAssignTags(this, modTrans, tagId);
 		}
-
-		// TODO: Read filters based on type
-
-		// TODO: Read and apply filters on unfiltered transactions
-
 	}
 }

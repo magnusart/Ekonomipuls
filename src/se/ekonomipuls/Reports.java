@@ -19,6 +19,7 @@ import java.util.List;
 
 import se.ekonomipuls.database.Category;
 import se.ekonomipuls.database.DbFacade;
+import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -26,14 +27,14 @@ import android.os.Bundle;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public class CashJournal extends Activity implements LogTag {
+public class Reports extends Activity implements LogTag {
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.cash_journal);
-
+		setContentView(R.layout.reports);
+		GuiUtil.removeGradientBanding(getWindow());
 		populateCategoriesList();
 	}
 
@@ -41,8 +42,7 @@ public class CashJournal extends Activity implements LogTag {
 	 * 
 	 */
 	private void populateCategoriesList() {
-		final List<Category> categories = DbFacade
-				.getCategories(this);
+		final List<Category> categories = DbFacade.getCategories(this);
 	}
 
 }

@@ -25,11 +25,15 @@ import java.math.BigDecimal;
  */
 public class Transaction {
 
-	private final int id;
-	private final String date;
-	private final String description;
-	private final BigDecimal amount;
-	private final String currency;
+	protected long id;
+	protected String date;
+	protected String description;
+	protected BigDecimal amount;
+	protected String currency;
+	protected String comment;
+	protected boolean filtered;
+	protected final String bankdroidAccount;
+	protected final String globalId;
 
 	/**
 	 * 
@@ -39,24 +43,35 @@ public class Transaction {
 	 *            the date.
 	 * @param description
 	 *            the description.
+	 * @param comment
+	 *            user comment.
 	 * @param amount
 	 *            the amount.
 	 * @param currency
 	 *            the currency.
+	 * @param bankdroidAccount
+	 *            the bankdroid account.
 	 */
-	Transaction(final int id, final String date, final String description,
-				final BigDecimal amount, final String currency) {
+	protected Transaction(final long id, final String globalId,
+							final String date, final String description,
+							final String comment, final BigDecimal amount,
+							final String currency, final boolean filtered,
+							final String bankdroidAccount) {
 		this.id = id;
+		this.globalId = globalId;
 		this.date = date;
 		this.description = description;
+		this.comment = comment;
 		this.amount = amount;
 		this.currency = currency;
+		this.filtered = filtered;
+		this.bankdroidAccount = bankdroidAccount;
 	}
 
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -75,6 +90,13 @@ public class Transaction {
 	}
 
 	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return comment;
+	}
+
+	/**
 	 * @return the amount
 	 */
 	public BigDecimal getAmount() {
@@ -88,12 +110,34 @@ public class Transaction {
 		return currency;
 	}
 
+	/**
+	 * @return the filtered
+	 */
+	public boolean isFiltered() {
+		return filtered;
+	}
+
+	/**
+	 * @return the globalId
+	 */
+	public String getGlobalId() {
+		return globalId;
+	}
+
+	/**
+	 * @return the bankdroidAccount
+	 */
+	public String getBankdroidAccount() {
+		return bankdroidAccount;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Transaction [id=" + id + ", date=" + date + ", description="
 				+ description + ", amount=" + amount + ", currency=" + currency
-				+ "]";
+				+ ", comment=" + comment + ", filtered=" + filtered
+				+ ", bankdroidAccount=" + bankdroidAccount + ", globalId="
+				+ globalId + "]";
 	}
-
 }

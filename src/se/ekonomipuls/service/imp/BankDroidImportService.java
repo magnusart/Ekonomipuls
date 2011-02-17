@@ -23,7 +23,6 @@ import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.filter.TransactionsFilterService;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -54,18 +53,14 @@ public class BankDroidImportService extends IntentService implements LogTag {
 
 			// TODO: Cleanse incoming transactions from duplicates.
 
-			DbFacade.bulkInsertBdTransactions(getBaseContext(),
-					transactions);
+			DbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
 
 			// Hand over to filtering.
-			final Context context = getBaseContext();
-			final Intent importFilter = new Intent(context,
+
+			final Intent importFilter = new Intent(this,
 					TransactionsFilterService.class);
 
-			importFilter.putExtra(TransactionsFilterService.FILTER_CHAIN,
-					TransactionsFilterService.IMPORT_FILTER_TYPES);
-
-			context.startService(importFilter);
+			this.startService(importFilter);
 
 		} catch (final IllegalAccessException e) {
 			Log.e(TAG, "Unable to access the content provider.", e);

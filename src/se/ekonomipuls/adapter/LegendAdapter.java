@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import se.ekonomipuls.R;
 import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.database.Category;
-import se.ekonomipuls.util.GraphUtil;
+import se.ekonomipuls.util.GuiUtil;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -73,7 +73,7 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 		final GradientDrawable color = (GradientDrawable) view.findViewById(
 				R.id.colorShape).getBackground();
 
-		color.setColor(GraphUtil.getDarkColor(entry.getBaseColor(),
+		color.setColor(GuiUtil.getDarkColor(entry.getBaseColor(),
 				entry.isSelected()));
 
 		final TextView categoryName = (TextView) view
@@ -84,7 +84,7 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 		categoryName.setText(cat.getName());
 
-		final int percentage = GraphUtil.getPercentage(entry.getSum()
+		final int percentage = GuiUtil.getPercentage(entry.getSum()
 				.floatValue(), total.floatValue());
 		line2Text.setText(percentage + "%, "
 				+ Math.round(entry.getSum().floatValue()) + " SEK, "

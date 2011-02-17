@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <string name="app_name">Ekonomipuls</string>
+	<string name="app_name">Ekonomipuls</string>
+	<string name="no_data">No data</string>
+	<string name="cash_journal">Setup Cash Journal</string>
+	<string name="filters_menu">Filters</string>
+	<string name="default_category_name">Unspecified</string>
+	<string name="default_tag_name">Default</string>
 
-
-<string name="no_data">No data</string>
-<string name="cash_journal">Setup Cash Journal</string>
-<string name="filters_menu">Filters</string>
-<string name="default_category_name">Unspecified</string>
-<string name="default_tag_name">Default</string>
+<string name="economic_overview_name">Economic overview</string>
+<string name="economic_overview_desc">Built in Economic overview report for the current month. </string>
+<string name="economic_overview_date_from">N/A</string>
+<string name="economic_overview_date_to">N/A</string>
 </resources>

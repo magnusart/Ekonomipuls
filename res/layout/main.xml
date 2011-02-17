@@ -11,7 +11,7 @@
     android:layout_weight="1"
  	android:layout_margin="10dp"
 />         
-<TextView android:text="Månadsrapport" 
+<TextView android:text="@string/economic_overview_name" 
 	android:id="@+id/categoriesHeader" 
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
