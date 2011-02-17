@@ -68,6 +68,10 @@ interface DbConstants {
 	public final static String REP_FK = "report_fk";
 	public final static String CAT_FK_2 = "category_fk";
 
+	public final static String TRANSACTIONS_CATEGORY_VIEW = "transactions_category_view";
+	// Special columns for this view
+	public final static String TRANS_CAT_V_CAT_ID = "cat_id";
+
 	public static final String DB_NAME = "ekonomipuls.db";
 	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
 }

@@ -94,8 +94,8 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	private void populatePieChart(final String accountId) {
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 
-		final List<Transaction> transactions = DbFacade.getTransactionsByAccount(this,
-				accountId);
+		final List<Transaction> transactions = DbFacade
+				.getTransactionsByAccount(this, accountId);
 
 		populateSeriesEntries(transactions, pieChart);
 
@@ -112,17 +112,16 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 		series = new ArrayList<SeriesEntry>();
 		total = new BigDecimal(0.0);
-		for (int i = 0; i < categories.size(); i++) {
-			SeriesEntry ser = null;
-			if (i == 0) {
-				ser = new SeriesEntry(categories.get(i), transactions.subList(
-						0, transactions.size() / categories.size()), Color.CYAN);
-			} else {
-				ser = new SeriesEntry(categories.get(i), transactions.subList(
-						transactions.size() / categories.size(),
-						(transactions.size() / categories.size()) * (i + 1)),
-						Color.YELLOW);
-			}
+
+		// Get the transactions given this category's tags
+		for (final Category cat : categories) {
+
+			final List<Transaction> catTransactions = DbFacade
+					.getTransactionsByCategory(this, cat);
+
+			final SeriesEntry ser = new SeriesEntry(cat, catTransactions,
+					Color.MAGENTA);
+
 			total = total.add(ser.getSum());
 			series.add(ser);
 		}

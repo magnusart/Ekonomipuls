@@ -153,6 +153,80 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ "UNIQUE ( "
 			+ REP_FK + ", " + CAT_FK_2 + " )" + ")";
 
+	private static final String DB_CREATE_TRANSACTIONS_CATEGORY_VIEW = "CREATE VIEW IF NOT EXISTS "
+			+ TRANSACTIONS_CATEGORY_VIEW
+			+ " AS "
+			+ "SELECT "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_ID
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_GLOBAL_ID
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_DATE
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_DESCRIPTION
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_COMMENT
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_AMOUNT
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_CURRENCY
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_BD_ACCOUNT
+			+ ", "
+			+ TRANSACTIONS_TABLE
+			+ "."
+			+ TRANS_FILTERED
+			+ ", "
+			+ CATEGORIES_TABLE
+			+ "."
+			+ CAT_ID
+			+ " AS "
+			+ TRANS_CAT_V_CAT_ID
+			+ " FROM "
+			+ CATEGORIES_TABLE
+			+ " LEFT OUTER JOIN "
+			+ CATEGORIES_TAGS_TABLE
+			+ " ON "
+			+ CATEGORIES_TABLE
+			+ "."
+			+ CAT_ID
+			+ " = "
+			+ CATEGORIES_TAGS_TABLE
+			+ "."
+			+ CAT_FK_1
+			+ " LEFT OUTER JOIN "
+			+ TRANSACTIONS_TAGS_TABLE
+			+ " ON "
+			+ CATEGORIES_TAGS_TABLE
+			+ "."
+			+ TAG_FK_1
+			+ " = "
+			+ TRANSACTIONS_TAGS_TABLE
+			+ "."
+			+ TAG_FK_2
+			+ " LEFT OUTER JOIN "
+			+ TRANSACTIONS_TABLE
+			+ " ON "
+			+ TRANSACTIONS_TAGS_TABLE
+			+ "."
+			+ TRANS_FK + " = " + TRANSACTIONS_TABLE + "." + TRANS_ID;
+
 	private final String defaultCategoryName;
 	private final String defaultTagName;
 
@@ -224,6 +298,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 		Log.d(TAG, "Creating join table with "
 				+ DB_CREATE_REPORTS_CATEGORIES_JOIN_TABLE);
 		db.execSQL(DB_CREATE_REPORTS_CATEGORIES_JOIN_TABLE);
+
+		Log.d(TAG, "Creating Transactions by Category View with "
+				+ DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
+		db.execSQL(DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
 	}
 
 	private void populateWithDefaultCategoryAndTag(final SQLiteDatabase db) {

@@ -102,8 +102,8 @@ public class DbFacade implements LogTag, DbConstants {
 	 */
 	public static List<Transaction> getTransactionsByAccount(final Context ctx,
 			final String bdAccountId) {
-		return getTransactions(ctx, TRANS_BD_ACCOUNT + " = ? ",
-				new String[] { bdAccountId });
+		return getTransactions(ctx, TRANSACTIONS_TABLE, TRANS_BD_ACCOUNT
+				+ " = ? ", new String[] { bdAccountId });
 	}
 
 	/**
@@ -112,19 +112,33 @@ public class DbFacade implements LogTag, DbConstants {
 	 * @return
 	 */
 	public static List<Transaction> getUnfilteredTransactions(final Context ctx) {
-		return getTransactions(ctx, TRANS_FILTERED + " = 0 ", null);
+		return getTransactions(ctx, TRANSACTIONS_TABLE, TRANS_FILTERED
+				+ " = 0 ", null);
+	}
+
+	/**
+	 * 
+	 * @param ctx
+	 * @param cat
+	 * @return
+	 */
+	public static List<Transaction> getTransactionsByCategory(
+			final Context ctx, final Category cat) {
+		return getTransactions(ctx, TRANSACTIONS_CATEGORY_VIEW,
+				TRANS_CAT_V_CAT_ID + " = " + cat.getId(), null);
 	}
 
 	private static List<Transaction> getTransactions(final Context ctx,
-			final String selection, final String[] selectionArgs) {
+			final String table, final String selection,
+			final String[] selectionArgs) {
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		final DbHelper dbHelper = new DbHelper(ctx);
 		final SQLiteDatabase db = dbHelper.getReadableDatabase();
 
 		try {
-			final Cursor cur = db.query(TRANSACTIONS_TABLE, new String[] {
-					TRANS_ID, TRANS_GLOBAL_ID, TRANS_DATE, TRANS_DESCRIPTION,
+			final Cursor cur = db.query(table, new String[] { TRANS_ID,
+					TRANS_GLOBAL_ID, TRANS_DATE, TRANS_DESCRIPTION,
 					TRANS_COMMENT, TRANS_AMOUNT, TRANS_CURRENCY,
 					TRANS_FILTERED, TRANS_BD_ACCOUNT }, selection,
 					selectionArgs, null, null, TRANS_DATE + " DESC");
