@@ -194,17 +194,35 @@ public class DbFacade implements LogTag, DbConstants {
 	/**
 	 * 
 	 * @param ctx
+	 * @param report
 	 * @return
 	 */
-	public static List<Category> getCategories(final Context ctx) {
+	public static List<Category> getCategoriesByReport(final Context ctx,
+			final long reportId) {
+		return getCategories(ctx, CATEGORIES_REPORT_VIEW, REP_CAT_REP_ID
+				+ " = " + reportId, null);
+	}
+
+	/**
+	 * @param ctx
+	 * @return
+	 */
+	public static List<Category> getAllCategories(final Context ctx) {
+		return getCategories(ctx, CATEGORIES_TABLE, null, null);
+	}
+
+	private static List<Category> getCategories(final Context ctx,
+			final String table, final String selection,
+			final String[] selectionArgs) {
 		final DbHelper dbHelper = new DbHelper(ctx);
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
 		final List<Category> categories = new ArrayList<Category>();
 
 		try {
-			final Cursor cur = db.query(CATEGORIES_TABLE, new String[] {
-					CAT_ID, CAT_NAME }, null, null, null, null, null);
+			final Cursor cur = db.query(table,
+					new String[] { CAT_ID, CAT_NAME }, selection,
+					selectionArgs, null, null, null);
 
 			final int tId = cur.getColumnIndexOrThrow(CAT_ID);
 			final int tName = cur.getColumnIndexOrThrow(CAT_NAME);

@@ -24,5 +24,5 @@ public interface PropertiesConstants {
 	public final static String CONF_DEF_CAT = "default.category";
 	public final static String CONF_DEF_TAG = "default.tag";
 
-	public final static String CASH_JOURNAL_REPORT_ID = "cashjournal.report_id";
+	public final static String ECONOMIC_OVERVIEW_REPORT_ID = "cashjournal.report_id";
 }

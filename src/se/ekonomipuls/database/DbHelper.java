@@ -200,7 +200,7 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ TRANS_CAT_V_CAT_ID
 			+ " FROM "
 			+ CATEGORIES_TABLE
-			+ " LEFT OUTER JOIN "
+			+ " INNER JOIN "
 			+ CATEGORIES_TAGS_TABLE
 			+ " ON "
 			+ CATEGORIES_TABLE
@@ -210,7 +210,7 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ CATEGORIES_TAGS_TABLE
 			+ "."
 			+ CAT_FK_1
-			+ " LEFT OUTER JOIN "
+			+ " INNER JOIN "
 			+ TRANSACTIONS_TAGS_TABLE
 			+ " ON "
 			+ CATEGORIES_TAGS_TABLE
@@ -220,12 +220,50 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ TRANSACTIONS_TAGS_TABLE
 			+ "."
 			+ TAG_FK_2
-			+ " LEFT OUTER JOIN "
+			+ " INNER JOIN "
 			+ TRANSACTIONS_TABLE
 			+ " ON "
 			+ TRANSACTIONS_TAGS_TABLE
 			+ "."
-			+ TRANS_FK + " = " + TRANSACTIONS_TABLE + "." + TRANS_ID;
+			+ TRANS_FK
+			+ " = "
+			+ TRANSACTIONS_TABLE + "." + TRANS_ID;
+
+	private static final String DB_CREATE_CATEGORIES_REPORT_VIEW = "CREATE VIEW IF NOT EXISTS "
+			+ CATEGORIES_REPORT_VIEW
+			+ " AS "
+			+ "SELECT "
+			+ CATEGORIES_TABLE
+			+ "."
+			+ CAT_ID
+			+ ", "
+			+ CATEGORIES_TABLE
+			+ "."
+			+ CAT_NAME
+			+ ", "
+			+ REPORTS_TABLE
+			+ "."
+			+ REP_ID
+			+ " AS "
+			+ REP_CAT_REP_ID
+			+ " FROM "
+			+ REPORTS_TABLE
+			+ " INNER JOIN "
+			+ REPORTS_CATEGORIES_TABLE
+			+ " ON "
+			+ REPORTS_TABLE
+			+ "."
+			+ REP_ID
+			+ " = "
+			+ REPORTS_CATEGORIES_TABLE
+			+ "."
+			+ REP_FK
+			+ " INNER JOIN "
+			+ CATEGORIES_TABLE
+			+ " ON "
+			+ REPORTS_CATEGORIES_TABLE
+			+ "."
+			+ CAT_FK_2 + " = " + CATEGORIES_TABLE + "." + CAT_ID;
 
 	private final String defaultCategoryName;
 	private final String defaultTagName;
@@ -302,6 +340,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 		Log.d(TAG, "Creating Transactions by Category View with "
 				+ DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
 		db.execSQL(DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
+
+		Log.d(TAG, "Creating Categories by Report View wiht "
+				+ DB_CREATE_CATEGORIES_REPORT_VIEW);
+		db.execSQL(DB_CREATE_CATEGORIES_REPORT_VIEW);
 	}
 
 	private void populateWithDefaultCategoryAndTag(final SQLiteDatabase db) {
@@ -342,7 +384,7 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 		// Commit to preferences
 		editor.putLong(CONF_DEF_CAT, catId);
 		editor.putLong(CONF_DEF_TAG, tagId);
-		editor.putLong(CASH_JOURNAL_REPORT_ID, repId);
+		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
 		editor.commit();
 
 		Log.d(TAG, "Added default values for Category and Tag");

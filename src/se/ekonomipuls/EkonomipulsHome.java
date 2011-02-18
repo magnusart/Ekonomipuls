@@ -28,8 +28,10 @@ import se.ekonomipuls.database.Transaction;
 import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +43,8 @@ import android.widget.TextView;
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class EkonomipulsHome extends Activity implements LogTag {
+public class EkonomipulsHome extends Activity implements PropertiesConstants,
+		LogTag {
 
 	private static final String ACCOUNT_ID = "1_1";
 	private ArrayList<SeriesEntry> series;
@@ -108,7 +111,14 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	private void populateSeriesEntries(final List<Transaction> transactions,
 			final PieChartView pieChart) {
 
-		final List<Category> categories = DbFacade.getCategories(this);
+		final SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final long reportId = pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+
+		assert (reportId != -1);
+
+		final List<Category> categories = DbFacade.getCategoriesByReport(this,
+				reportId);
 
 		series = new ArrayList<SeriesEntry>();
 		total = new BigDecimal(0.0);

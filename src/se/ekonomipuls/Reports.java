@@ -42,7 +42,7 @@ public class Reports extends Activity implements LogTag {
 	 * 
 	 */
 	private void populateCategoriesList() {
-		final List<Category> categories = DbFacade.getCategories(this);
+		final List<Category> categories = DbFacade.getAllCategories(this);
 	}
 
 }
