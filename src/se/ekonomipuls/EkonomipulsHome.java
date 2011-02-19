@@ -29,7 +29,6 @@ import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -129,8 +128,7 @@ public class EkonomipulsHome extends Activity implements PropertiesConstants,
 			final List<Transaction> catTransactions = DbFacade
 					.getTransactionsByCategory(this, cat);
 
-			final SeriesEntry ser = new SeriesEntry(cat, catTransactions,
-					Color.MAGENTA);
+			final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
 
 			total = total.add(ser.getSum());
 			series.add(ser);
@@ -139,12 +137,16 @@ public class EkonomipulsHome extends Activity implements PropertiesConstants,
 		pieChart.setSeries(series);
 		pieChart.setSeriesTotal(total);
 
+		if (total.longValue() == 0) {
+			pieChart.setVisibility(View.GONE);
+		}
 	}
 
 	private void populateLegendList(final String accountId) {
 
 		final ListView legendList = (ListView) findViewById(R.id.legendList);
-		if (series.size() == 0) {
+		if (total.longValue() == 0) {
+
 			legendList.setVisibility(View.GONE);
 		} else {
 			((TextView) findViewById(R.id.noCategories))

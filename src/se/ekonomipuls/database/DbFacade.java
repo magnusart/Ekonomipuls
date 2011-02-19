@@ -220,18 +220,20 @@ public class DbFacade implements LogTag, DbConstants {
 		final List<Category> categories = new ArrayList<Category>();
 
 		try {
-			final Cursor cur = db.query(table,
-					new String[] { CAT_ID, CAT_NAME }, selection,
-					selectionArgs, null, null, null);
+			final Cursor cur = db.query(table, new String[] { CAT_ID,
+					CAT_COLOR, CAT_NAME }, selection, selectionArgs, null,
+					null, null);
 
 			final int tId = cur.getColumnIndexOrThrow(CAT_ID);
+			final int tColor = cur.getColumnIndexOrThrow(CAT_COLOR);
 			final int tName = cur.getColumnIndexOrThrow(CAT_NAME);
 
 			while (cur.moveToNext()) {
 				final int id = cur.getInt(tId);
+				final int color = cur.getInt(tColor);
 				final String name = cur.getString(tName);
 
-				final Category cat = new Category(id, name);
+				final Category cat = new Category(id, color, name);
 
 				categories.add(cat);
 

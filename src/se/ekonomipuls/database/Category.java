@@ -22,6 +22,7 @@ package se.ekonomipuls.database;
 public class Category {
 
 	private final int id;
+	private final int color;
 	private final String name;
 
 	/**
@@ -29,8 +30,9 @@ public class Category {
 	 * @param string
 	 * @param subList
 	 */
-	Category(final int id, final String name) {
+	Category(final int id, final int color, final String name) {
 		this.id = id;
+		this.color = color;
 		this.name = name;
 	}
 
@@ -39,6 +41,13 @@ public class Category {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * @return the color
+	 */
+	public int getColor() {
+		return color;
 	}
 
 	/**
@@ -51,7 +60,7 @@ public class Category {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "Category [id=" + id + ", name=" + name + "]";
+		return "Category [id=" + id + ", color=" + color + ", name=" + name
+				+ "]";
 	}
-
 }

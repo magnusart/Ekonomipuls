@@ -39,6 +39,7 @@ interface DbConstants {
 	// Columns for Categories
 	public final static String CAT_ID = "_id";
 	public final static String CAT_NAME = "name";
+	public final static String CAT_COLOR = "color";
 
 	public static final String TAGS_TABLE = "tags";
 	// Columns for Tags

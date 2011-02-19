@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -60,7 +61,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ CAT_ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ CAT_NAME
-			+ " TEXT NOT NULL, " + "UNIQUE( " + CAT_NAME + " ) " + " )";
+			+ " TEXT NOT NULL, "
+			+ CAT_COLOR
+			+ " INTEGER NOT NULL, "
+			+ "UNIQUE( " + CAT_NAME + " ) " + " )";
 
 	private static final String DB_CREATE_TAGS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ TAGS_TABLE
@@ -241,6 +245,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ "."
 			+ CAT_NAME
 			+ ", "
+			+ CATEGORIES_TABLE
+			+ "."
+			+ CAT_COLOR
+			+ ", "
 			+ REPORTS_TABLE
 			+ "."
 			+ REP_ID
@@ -263,7 +271,9 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ " ON "
 			+ REPORTS_CATEGORIES_TABLE
 			+ "."
-			+ CAT_FK_2 + " = " + CATEGORIES_TABLE + "." + CAT_ID;
+			+ CAT_FK_2
+			+ " = "
+			+ CATEGORIES_TABLE + "." + CAT_ID;
 
 	private final String defaultCategoryName;
 	private final String defaultTagName;
@@ -293,7 +303,7 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
 		if (!db.isReadOnly()) {
-			db.execSQL(DbConstants.TURN_ON_FK);
+			db.execSQL(TURN_ON_FK);
 			db.beginTransaction();
 		}
 	}
@@ -301,8 +311,8 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	/** {@inheritDoc} */
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
+		db.execSQL(TURN_ON_FK); // Has to be outside an transaction
 		db.beginTransaction();
-		db.execSQL(TURN_ON_FK);
 
 		setupTables(db);
 
@@ -349,8 +359,9 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	private void populateWithDefaultCategoryAndTag(final SQLiteDatabase db) {
 
 		// Add default category
-		final ContentValues catValues = new ContentValues(1);
+		final ContentValues catValues = new ContentValues(2);
 		catValues.put(CAT_NAME, defaultCategoryName);
+		catValues.put(CAT_COLOR, Color.GRAY);
 		final long catId = db.insert(CATEGORIES_TABLE, null, catValues);
 
 		// Add default tag

@@ -40,10 +40,9 @@ public class SeriesEntry {
 	 * @param baseColor
 	 */
 	public SeriesEntry(final Category category,
-						final List<Transaction> transactions,
-						final int baseColor) {
+						final List<Transaction> transactions) {
 		this.category = category;
-		this.baseColor = baseColor;
+		this.baseColor = category.getColor(); // TODO Fix so that other Classes uses category to get the color.
 		this.selected = false;
 
 		this.sum = sumTranscations(transactions);
