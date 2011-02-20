@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
-    <string name="app_name">Ekonomipuls</string>
+	<string name="app_name">Ekonomipuls</string>
+	<string name="no_data">Ingen data</string>
+	<string name="settings_item">Inställningar Ekonomisk Översikt</string>
+	
+	<string name="default_category_name">Ospecificerat</string>
+	<string name="default_tag_name">Standard</string>
 
-
-<string name="no_data">Ingen data</string>
-<string name="cash_journal">Inställningar för Kassabok</string>
-<string name="filters_menu">Filter</string>
+<string name="economic_overview_name">Ekonomisk Översikt</string>
+<string name="economic_overview_desc">Inbyggd Ekonomisk Översikt för innevarande månad.</string>
+<string name="economic_overview_date_from">N/A</string>
+<string name="economic_overview_date_to">N/A</string>
 </resources>

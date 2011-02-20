@@ -16,7 +16,7 @@
 package se.ekonomipuls.adapter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 
 import se.ekonomipuls.R;
 import se.ekonomipuls.charts.SeriesEntry;
@@ -36,6 +36,16 @@ import android.widget.TextView;
  */
 public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
+	/**
+	 * @author Magnus Andersson
+	 * @since 19 feb 2011
+	 */
+	private static class ViewHolder {
+		GradientDrawable color;
+		TextView categoryName;
+		TextView line2Text;
+	}
+
 	private final int layoutViewResourceId;
 	private final LayoutInflater inflater;
 	private final BigDecimal total;
@@ -47,7 +57,7 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 	 * @param total
 	 */
 	public LegendAdapter(final Context context, final int layoutViewResourceId,
-							final ArrayList<SeriesEntry> series,
+							final List<SeriesEntry> series,
 							final BigDecimal total) {
 		super(context, layoutViewResourceId, series);
 		this.layoutViewResourceId = layoutViewResourceId;
@@ -58,42 +68,43 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 	/** {@inheritDoc} */
 	@Override
-	public View getView(final int position, final View convertView,
+	public View getView(final int position, View convertView,
 			final ViewGroup parent) {
-		View view;
+		ViewHolder holder;
 
 		if (convertView == null) {
-			view = inflater.inflate(layoutViewResourceId, parent, false);
+			convertView = inflater.inflate(layoutViewResourceId, parent, false);
+			holder = new ViewHolder();
+
+			holder.color = (GradientDrawable) convertView.findViewById(
+					R.id.colorShape).getBackground();
+
+			holder.categoryName = (TextView) convertView
+					.findViewById(R.id.categoryNameText);
+			holder.line2Text = (TextView) convertView
+					.findViewById(R.id.line2Text);
+
+			convertView.setTag(holder);
 		} else {
-			view = convertView;
+			holder = (ViewHolder) convertView.getTag();
 		}
 
 		final SeriesEntry entry = getItem(position);
 
-		final GradientDrawable color = (GradientDrawable) view.findViewById(
-				R.id.colorShape).getBackground();
-
-		color.setColor(GuiUtil.getDarkColor(entry.getBaseColor(),
+		holder.color.setColor(GuiUtil.getDarkColor(entry.getBaseColor(),
 				entry.isSelected()));
-
-		final TextView categoryName = (TextView) view
-				.findViewById(R.id.categoryNameText);
-		final TextView line2Text = (TextView) view.findViewById(R.id.line2Text);
 
 		final Category cat = entry.getCategory();
 
-		categoryName.setText(cat.getName());
+		holder.categoryName.setText(cat.getName());
 
 		final int percentage = GuiUtil.getPercentage(entry.getSum()
 				.floatValue(), total.floatValue());
-		line2Text.setText(percentage + "%, "
+
+		holder.line2Text.setText(percentage + "%, "
 				+ Math.round(entry.getSum().floatValue()) + " SEK, "
 				+ entry.getNumTransactions() + " Transaktioner");
 
-		//		date.setText(trans.getDate());
-		//		desc.setText(trans.getDescription());
-		//		amt.setText(trans.getAmount().toPlainString());
-
-		return view;
+		return convertView;
 	}
 }

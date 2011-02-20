@@ -100,10 +100,8 @@ public class DbFacade implements LogTag, DbConstants {
 	 * @param bdAccountId
 	 * @return
 	 */
-	public static List<Transaction> getTransactionsByAccount(final Context ctx,
-			final String bdAccountId) {
-		return getTransactions(ctx, TRANSACTIONS_TABLE, TRANS_BD_ACCOUNT
-				+ " = ? ", new String[] { bdAccountId });
+	public static List<Transaction> getAllTransactions(final Context ctx) {
+		return getTransactions(ctx, TRANSACTIONS_TABLE, null, null);
 	}
 
 	/**

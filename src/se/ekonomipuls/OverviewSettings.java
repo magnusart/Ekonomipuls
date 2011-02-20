@@ -27,13 +27,15 @@ import android.os.Bundle;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public class Reports extends Activity implements LogTag {
+public class OverviewSettings extends Activity implements LogTag {
+
+	private List<Category> reportCategories;
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.reports);
+		setContentView(R.layout.overview_settings);
 		GuiUtil.removeGradientBanding(getWindow());
 		populateCategoriesList();
 	}
@@ -42,7 +44,13 @@ public class Reports extends Activity implements LogTag {
 	 * 
 	 */
 	private void populateCategoriesList() {
-		final List<Category> categories = DbFacade.getAllCategories(this);
+
+		final List<Category> allCategories = DbFacade.getAllCategories(this);
+
+		final long reportId = GuiUtil.getEconomicOverviewId(this);
+		reportCategories = DbFacade.getCategoriesByReport(this, reportId);
+
+		//		final List<ReportCategory> reportCategories = new ArrayList<ReportCategory>();
 	}
 
 }

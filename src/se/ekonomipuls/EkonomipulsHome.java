@@ -28,9 +28,7 @@ import se.ekonomipuls.database.Transaction;
 import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,85 +40,80 @@ import android.widget.TextView;
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class EkonomipulsHome extends Activity implements PropertiesConstants,
-		LogTag {
+public class EkonomipulsHome extends Activity implements LogTag {
 
-	private static final String ACCOUNT_ID = "1_1";
-	private ArrayList<SeriesEntry> series;
-	private BigDecimal total;
+	private LegendAdapter legendAdapter;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.home);
 
 		GuiUtil.removeGradientBanding(getWindow());
 
-		populatePieChart(ACCOUNT_ID);
-		populateLegendList(ACCOUNT_ID);
+		populateData();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		legendAdapter.notifyDataSetInvalidated();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		final MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.categories_filter_menu, menu);
+		inflater.inflate(R.menu.home_menu, menu);
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
+		Intent intent = null;
+
 		switch (item.getItemId()) {
-			case (R.id.cash_journal_menu_item):
-				navigateCashJournal();
-				return true;
-			case (R.id.filters_menu_item):
-				navigateFilters();
-				return true;
+			case (R.id.settings_item):
+				intent = new Intent(this, OverviewSettings.class);
+				break;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
-	}
 
-	private void navigateCashJournal() {
-		final Intent intent = new Intent(this, Reports.class);
 		this.startActivity(intent);
+		return true;
 	}
 
-	private void navigateFilters() {
-		final Intent intent = new Intent(this, Filters.class);
-		this.startActivity(intent);
-	}
-
-	private void populatePieChart(final String accountId) {
+	private void populateData() {
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
+		final ListView legendList = (ListView) findViewById(R.id.legendList);
 
 		final List<Transaction> transactions = DbFacade
-				.getTransactionsByAccount(this, accountId);
+				.getAllTransactions(this);
 
 		populateSeriesEntries(transactions, pieChart);
+		populateLegendList(legendList, pieChart.getSeries(),
+				pieChart.getTotalAmt());
+
+		pieChart.requestLayout();
 
 	}
 
-	/**
-	 * @param transactions
-	 * @param pieChart
-	 */
 	private void populateSeriesEntries(final List<Transaction> transactions,
 			final PieChartView pieChart) {
 
-		final SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		final long reportId = pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+		final long reportId = GuiUtil.getEconomicOverviewId(this);
 
 		assert (reportId != -1);
 
 		final List<Category> categories = DbFacade.getCategoriesByReport(this,
 				reportId);
 
-		series = new ArrayList<SeriesEntry>();
-		total = new BigDecimal(0.0);
+		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
+		BigDecimal total = new BigDecimal(0.0);
 
 		// Get the transactions given this category's tags
 		for (final Category cat : categories) {
@@ -142,21 +135,21 @@ public class EkonomipulsHome extends Activity implements PropertiesConstants,
 		}
 	}
 
-	private void populateLegendList(final String accountId) {
+	private void populateLegendList(final ListView legendList,
+			final List<SeriesEntry> series, final BigDecimal total) {
 
-		final ListView legendList = (ListView) findViewById(R.id.legendList);
 		if (total.longValue() == 0) {
-
 			legendList.setVisibility(View.GONE);
 		} else {
 			((TextView) findViewById(R.id.noCategories))
 					.setVisibility(View.GONE);
 		}
 
-		final LegendAdapter adapter = new LegendAdapter(this,
-				R.layout.legend_row, series, total);
+		legendAdapter = new LegendAdapter(this, R.layout.legend_row, series,
+				total);
 
-		legendList.setAdapter(adapter);
+		legendList.setAdapter(legendAdapter);
+
 	}
 
 }

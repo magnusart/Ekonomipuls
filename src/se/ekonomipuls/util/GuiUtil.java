@@ -15,19 +15,23 @@
  */
 package se.ekonomipuls.util;
 
+import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.charts.SeriesEntry;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
+import android.preference.PreferenceManager;
 import android.view.Window;
 
 /**
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public final class GuiUtil {
+public final class GuiUtil implements PropertiesConstants {
 
 	private static final float DARK_GRAD_SATURATION = 0.5f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.7f;
@@ -140,4 +144,14 @@ public final class GuiUtil {
 	public static void removeGradientBanding(final Window window) {
 		window.setFormat(PixelFormat.RGBA_8888);
 	}
+
+	/**
+	 * @return The Report Id for Economic Overview
+	 */
+	public static long getEconomicOverviewId(final Context ctx) {
+		final SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+	}
+
 }

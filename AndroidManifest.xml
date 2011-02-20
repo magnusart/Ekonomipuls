@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="se.ekonomipuls" android:versionCode="1" android:versionName="1.0">
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application android:label="@string/app_name" android:icon="@drawable/ekonomipuls_logo">
 		<activity android:label="@string/app_name" android:name="EkonomipulsHome">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -17,8 +17,8 @@
 		<service android:name=".service.imp.BankDroidImportService" android:enabled="true"></service>
 		<service android:name=".service.filter.TransactionsFilterService" android:enabled="true"></service>
 
-	<activity android:label="@string/app_name" android:name="Reports"></activity>
-<activity android:label="@string/app_name" android:name="Filters"></activity>
+	<activity android:label="@string/app_name" android:name="OverviewSettings"></activity>
+
 
 </application>
 	<uses-sdk android:minSdkVersion="7" />
