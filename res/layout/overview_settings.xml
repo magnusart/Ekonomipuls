@@ -4,10 +4,71 @@
 	android:layout_height="fill_parent"
 	android:background="@drawable/gradient_background" 
 	android:orientation="vertical">
-	<LinearLayout 
-		android:layout_width="fill_parent"
-		android:layout_height="40dp" 
-		android:orientation="horizontal">
+		<LinearLayout 
+			android:layout_width="fill_parent"
+			android:layout_height="0dp" 
+			android:orientation="vertical"
+			android:layout_weight="0.4"	>
+			<TextView android:text="@string/economic_overview_name" 
+				android:id="@+id/economicOverviewHeader" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingLeft="10dp" 
+				android:paddingTop="4dp"
+				android:paddingBottom="4dp"
+				android:background="@drawable/light_header_background"
+				android:textColor="#FFFFFF"
+				android:textStyle="bold"
+				android:textSize="20sp"/>
+			<TextView android:text="@string/economic_overview_desc" 
+				android:id="@+id/economicOverviewDescription" 
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#FFFFFF"
+				android:textSize="17sp"
+				android:paddingLeft="10dp" 
+				android:paddingTop="4dp" />				
+		</LinearLayout>
+		<TextView android:text="@string/economic_overview_categories_name" 
+			android:id="@+id/categoriesHeader" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="10dp" 
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp"
+			android:background="@drawable/dark_header_background"
+			android:textColor="#FFFFFF"
+			android:textStyle="bold"
+			android:textSize="15sp"/>
+			
+		<ListView 
+			android:id="@+id/categoriesList" 
+			android:layout_width="fill_parent" 
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:cacheColorHint="#00000000"
+			android:fitsSystemWindows="true"
+			android:dividerHeight="1dp"
+			android:divider="#19FFFFFF"
+			android:choiceMode="multipleChoice"
+			/>
 
+	<LinearLayout 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+			
+		<Button 
+			android:text="TmpUpdate" 
+			android:id="@+id/updateCategories" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"/>
+		<Button 
+			android:text="TmpAdd" 
+			android:id="@+id/addCategories" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:onClick="addCategory"
+			/>
 	</LinearLayout>
 </LinearLayout>

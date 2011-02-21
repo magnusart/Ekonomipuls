@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="se.ekonomipuls" android:versionCode="1" android:versionName="1.0">
-	<application android:label="@string/app_name" android:icon="@drawable/ekonomipuls_logo">
-		<activity android:label="@string/app_name" android:name="EkonomipulsHome">
+	<application android:label="@string/app_homescreen" android:debuggable="true" android:icon="@drawable/ic_launcher_ekonomipuls_logo">
+		<activity android:name="EkonomipulsHome" android:theme="@android:style/Theme.NoTitleBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -17,11 +17,13 @@
 		<service android:name=".service.imp.BankDroidImportService" android:enabled="true"></service>
 		<service android:name=".service.filter.TransactionsFilterService" android:enabled="true"></service>
 
-	<activity android:label="@string/app_name" android:name="OverviewSettings"></activity>
+	<activity android:name="OverviewSettings" android:theme="@android:style/Theme.NoTitleBar"></activity>
 
 
+<activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission
 		android:name="com.liato.bankdroid.permission.READ_ACCESS_BANK_TRANSACTIONS" />
+
 </manifest> 

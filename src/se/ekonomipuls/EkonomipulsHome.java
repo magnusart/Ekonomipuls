@@ -50,16 +50,17 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		setContentView(R.layout.home);
 
 		GuiUtil.removeGradientBanding(getWindow());
-
-		populateData();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		populateData(); // TODO: Fix so that PieChart has an adapter.
 		legendAdapter.notifyDataSetInvalidated();
+		
+		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
+		pieChart.invalidate();
 	}
 
 	/** {@inheritDoc} */

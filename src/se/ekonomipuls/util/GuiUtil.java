@@ -37,7 +37,7 @@ public final class GuiUtil implements PropertiesConstants {
 	private static final float DARK_GRAD_BRIGHTNESS = 0.7f;
 
 	private static final float LIGHT_GRAD_SATURATION = 0.4f;
-	private static final float LIGHT_GRAD_BRIGHTNESS = 1.1f;
+	private static final float LIGHT_GRAD_BRIGHTNESS = 0.95f;
 
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;

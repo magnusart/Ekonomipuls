@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.commands;
+package se.ekonomipuls.actions;
 
 import java.math.BigDecimal;
 
@@ -25,13 +25,13 @@ import se.ekonomipuls.database.Transaction;
  * @author Magnus Andersson
  * @since 17 feb 2011
  */
-public final class ModifiedTransaction extends Transaction {
+public final class UpdateTransactionAction extends Transaction {
 
 	/**
 	 * @param transaction
 	 *            Transaction that should be modified
 	 */
-	public ModifiedTransaction(final Transaction t) {
+	public UpdateTransactionAction(final Transaction t) {
 		// Pass through
 		super(t.getId(), t.getGlobalId(), t.getDate(), t.getDescription(), t
 				.getComment(), new BigDecimal(t.getAmount().toString()), t

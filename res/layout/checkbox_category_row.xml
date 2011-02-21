@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="50dp"
+  android:orientation="horizontal"
+  android:paddingLeft="4dp"
+  android:paddingRight="0dp"
+  android:paddingTop="4dp"
+  android:paddingBottom="4dp">
+
+	<CheckBox 
+		android:id="@+id/checkBox"
+		android:layout_width="42dp"
+		android:layout_height="42dp"
+		/>	
+
+	<TextView 
+		android:id="@+id/categoryNameText"
+		android:layout_width="wrap_content"
+		android:layout_height="21sp"
+		android:layout_gravity="center_vertical"
+		android:textColor="#FFFFFF"
+		android:textSize="20sp"
+		android:textStyle="bold"
+		android:gravity="bottom"
+		android:text="[Category Name]" />
+		
+	
+</LinearLayout>

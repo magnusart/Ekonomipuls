@@ -21,7 +21,11 @@ import se.ekonomipuls.database.Category;
 import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * @author Magnus Andersson
@@ -29,7 +33,9 @@ import android.os.Bundle;
  */
 public class OverviewSettings extends Activity implements LogTag {
 
+	private static final int ADD_CATEGORY = 0;
 	private List<Category> reportCategories;
+	private ArrayAdapter<Category> tmpAdapter;
 
 	/** {@inheritDoc} */
 	@Override
@@ -38,6 +44,14 @@ public class OverviewSettings extends Activity implements LogTag {
 		setContentView(R.layout.overview_settings);
 		GuiUtil.removeGradientBanding(getWindow());
 		populateCategoriesList();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		populateCategoriesList();
+		tmpAdapter.notifyDataSetInvalidated();
 	}
 
 	/**
@@ -50,7 +64,23 @@ public class OverviewSettings extends Activity implements LogTag {
 		final long reportId = GuiUtil.getEconomicOverviewId(this);
 		reportCategories = DbFacade.getCategoriesByReport(this, reportId);
 
-		//		final List<ReportCategory> reportCategories = new ArrayList<ReportCategory>();
+		final ListView categories = (ListView) findViewById(R.id.categoriesList);
+
+		tmpAdapter = new ArrayAdapter<Category>(this,
+				R.layout.checkbox_category_row, R.id.categoryNameText,
+				allCategories);
+
+		categories.setAdapter(tmpAdapter);
+
+	}
+
+	/**
+	 * 
+	 * @param v
+	 */
+	public void addCategory(final View v) {
+		final Intent i = new Intent(this, AddEditCategory.class);
+		startActivityForResult(i, ADD_CATEGORY);
 	}
 
 }

@@ -41,7 +41,7 @@ import android.view.View.OnTouchListener;
  * @since 6 feb 2011
  */
 public class PieChartView extends AbstractChartView implements OnTouchListener {
-	protected static final int STROKE_WIDTH = 2;
+	protected static final int STROKE_WIDTH = 4;  // TODO: Make this into DIP-units.
 
 	private static final boolean ENABLE_GRADIENT = true;
 	private static final boolean SKEW_CHART = false;

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
+import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentValues;
 import android.content.Context;
@@ -64,10 +65,40 @@ public class DbFacade implements LogTag, DbConstants {
 	}
 
 	/**
+	 * @param action
+	 */
+	public static void insertAssignCategoryReport(final Context ctx,
+			final AddCategoryReportAction action) {
+		final DbHelper dbHelper = new DbHelper(ctx);
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		try {
+			ContentValues values = new ContentValues(2);
+
+			// Add the category
+			values.put(CAT_NAME, action.getCategory().getName());
+			values.put(CAT_COLOR, action.getCategory().getColor());
+
+			final long catId = db.insert(CATEGORIES_TABLE, null, values);
+
+			// Add the category to the report
+			values = new ContentValues(2);
+			values.put(REP_FK, action.getReportId());
+			values.put(CAT_FK_2, catId);
+
+			db.insert(REPORTS_CATEGORIES_TABLE, null, values);
+
+			// Transaction begun in DbHelper.open();
+			db.setTransactionSuccessful();
+		} finally {
+			shutdownDb(db, dbHelper);
+		}
+	}
+
+	/**
 	 * @param modTrans
 	 * @param defaultTagId
 	 */
-	public static void modifyTransactionsAssignTags(final Context ctx,
+	public static void updateTransactionsAssignTags(final Context ctx,
 			final Transaction transaction, final long tagId) {
 		final DbHelper dbHelper = new DbHelper(ctx);
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();

@@ -1,0 +1,69 @@
+/**
+ * Copyright 2011 Magnus Andersson
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package se.ekonomipuls.actions;
+
+import se.ekonomipuls.LogTag;
+import se.ekonomipuls.database.Category;
+
+/**
+ * 
+ * @author Magnus Andersson
+ * @since 21 feb 2011
+ */
+public class AddCategoryReportAction implements LogTag {
+
+	public static class AddCategoryAction extends Category {
+
+		/**
+		 * @param id
+		 * @param color
+		 * @param name
+		 */
+		AddCategoryAction(final int color, final String name) {
+			super(0, color, name);
+		}
+	}
+
+	private final AddCategoryAction category;
+	private final long reportId;
+
+	/**
+	 * @param id
+	 * @param color
+	 * @param name
+	 * @param l
+	 */
+	public AddCategoryReportAction(final int color, final String name,
+									final long reportId) {
+		this.reportId = reportId;
+		category = new AddCategoryAction(color, name);
+	}
+
+	/**
+	 * @return the category
+	 */
+	public AddCategoryAction getCategory() {
+		return category;
+	}
+
+	/**
+	 * @return the reportId
+	 */
+	public long getReportId() {
+		return reportId;
+	}
+
+}

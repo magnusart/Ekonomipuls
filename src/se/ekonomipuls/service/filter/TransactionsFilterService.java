@@ -19,7 +19,7 @@ import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
-import se.ekonomipuls.commands.ModifiedTransaction;
+import se.ekonomipuls.actions.UpdateTransactionAction;
 import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.database.Transaction;
 import android.app.IntentService;
@@ -52,7 +52,7 @@ public class TransactionsFilterService extends IntentService implements
 
 		for (final Transaction t : transactions) {
 
-			final ModifiedTransaction modTrans = new ModifiedTransaction(t);
+			final UpdateTransactionAction modTrans = new UpdateTransactionAction(t);
 
 			// TODO Apply filters
 
@@ -66,7 +66,7 @@ public class TransactionsFilterService extends IntentService implements
 
 			assert (tagId != -1);
 
-			DbFacade.modifyTransactionsAssignTags(this, modTrans, tagId);
+			DbFacade.updateTransactionsAssignTags(this, modTrans, tagId);
 		}
 	}
 }
