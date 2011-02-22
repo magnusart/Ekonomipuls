@@ -25,9 +25,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
-import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -41,7 +41,7 @@ import android.view.View.OnTouchListener;
  * @since 6 feb 2011
  */
 public class PieChartView extends AbstractChartView implements OnTouchListener {
-	protected static final int STROKE_WIDTH = 4;  // TODO: Make this into DIP-units.
+	protected static final int STROKE_WIDTH = 4; // TODO: Make this into DIP-units.
 
 	private static final boolean ENABLE_GRADIENT = true;
 	private static final boolean SKEW_CHART = false;
@@ -159,10 +159,10 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					paint.setColor(entry.getBaseColor());
 
 					if (ENABLE_GRADIENT) {
-						final RadialGradient radGrad = GuiUtil
+						final Shader grad = GuiUtil
 								.createGradientFromBaseColor(oval, entry);
 
-						paint.setShader(radGrad);
+						paint.setShader(grad);
 					}
 				}
 
@@ -197,8 +197,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 		for (final Arc arc : arcs) {
 
-			final int percentage = GuiUtil.getPercentage(
-					arc.getCategorySum(), seriesTotal.floatValue());
+			final int percentage = GuiUtil.getPercentage(arc.getCategorySum(),
+					seriesTotal.floatValue());
 			if (percentage >= PERCENTAGE_LOWER_LIMIT) {
 				final double angle = arc.getDegrees() + arc.getSweep() / 2;
 

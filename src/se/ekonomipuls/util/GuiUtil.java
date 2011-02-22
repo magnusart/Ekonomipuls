@@ -20,9 +20,10 @@ import se.ekonomipuls.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.PixelFormat;
-import android.graphics.RadialGradient;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.preference.PreferenceManager;
 import android.view.Window;
@@ -33,11 +34,11 @@ import android.view.Window;
  */
 public final class GuiUtil implements PropertiesConstants {
 
-	private static final float DARK_GRAD_SATURATION = 0.5f;
-	private static final float DARK_GRAD_BRIGHTNESS = 0.7f;
+	private static final float DARK_GRAD_SATURATION = 1.0f;
+	private static final float DARK_GRAD_BRIGHTNESS = 0.5f;
 
-	private static final float LIGHT_GRAD_SATURATION = 0.4f;
-	private static final float LIGHT_GRAD_BRIGHTNESS = 0.95f;
+	private static final float LIGHT_GRAD_SATURATION = 1.0f;
+	private static final float LIGHT_GRAD_BRIGHTNESS = 0.2f;
 
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;
@@ -63,7 +64,7 @@ public final class GuiUtil implements PropertiesConstants {
 	 * @param entry
 	 * @return
 	 */
-	public static RadialGradient createGradientFromBaseColor(final RectF oval,
+	public static Shader createGradientFromBaseColor(final RectF oval,
 			final SeriesEntry entry) {
 		final int baseColor = entry.getBaseColor();
 		int dark = 0;
@@ -72,8 +73,14 @@ public final class GuiUtil implements PropertiesConstants {
 		dark = getDarkColor(baseColor, entry.isSelected());
 		light = getLightColor(baseColor, entry.isSelected());
 
-		return new RadialGradient(oval.centerX(), oval.centerY(),
-				oval.width() / 2, dark, light, TileMode.CLAMP);
+		final float skewLeft = (oval.width() / 3);
+		final float skewRight = (oval.width() / 3) * 2;
+
+		return new LinearGradient(skewLeft, 0L, skewRight, oval.height(),
+				new int[] { dark, light }, null, TileMode.CLAMP);
+
+		//		return new RadialGradient(oval.centerX(), oval.centerY(),
+		//				oval.width() / 2, dark, light, TileMode.CLAMP);
 	}
 
 	/**
@@ -88,14 +95,16 @@ public final class GuiUtil implements PropertiesConstants {
 		Color.colorToHSV(baseColor, hsv);
 
 		float saturation = LIGHT_GRAD_SATURATION;
+		float brightness = LIGHT_GRAD_BRIGHTNESS;
 
 		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
 				|| (baseColor == Color.BLACK)) {
 			saturation = 0.0f;
+			brightness += 0.2f;
 		}
 
 		hsv[1] = saturation;
-		hsv[2] = LIGHT_GRAD_BRIGHTNESS;
+		hsv[2] = brightness;
 
 		if (!entrySelected) {
 			hsv[1] -= SELECT_DESATURATION;
@@ -117,14 +126,15 @@ public final class GuiUtil implements PropertiesConstants {
 		Color.colorToHSV(baseColor, hsv);
 
 		float saturation = DARK_GRAD_SATURATION;
-
+		float brightness = DARK_GRAD_BRIGHTNESS;
 		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
 				|| (baseColor == Color.BLACK)) {
 			saturation = 0.0f;
+			brightness += 0.2f;
 		}
 
 		hsv[1] = saturation;
-		hsv[2] = DARK_GRAD_BRIGHTNESS;
+		hsv[2] = brightness;
 
 		if (!entrySelected) {
 			hsv[1] -= SELECT_DESATURATION;
