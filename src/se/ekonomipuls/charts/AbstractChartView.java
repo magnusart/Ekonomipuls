@@ -56,7 +56,6 @@ public abstract class AbstractChartView extends View implements LogTag {
 	public AbstractChartView(final Context context, final AttributeSet attrs,
 								final int defStyle) {
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		this.context = context;
 	}
 
@@ -66,7 +65,6 @@ public abstract class AbstractChartView extends View implements LogTag {
 	 */
 	public AbstractChartView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		this.context = context;
 	}
 

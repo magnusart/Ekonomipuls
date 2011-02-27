@@ -150,6 +150,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 			paint.setAntiAlias(true);
 			paint.setStyle(style);
 
+			// FIXME These should be sorted in the order of smallest to largest to avoid drawing bug
 			for (final SeriesEntry entry : series) {
 				if (style == Style.STROKE) {
 					paint.setColor(Color.WHITE);

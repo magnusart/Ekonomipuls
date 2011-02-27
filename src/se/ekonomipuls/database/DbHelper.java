@@ -34,246 +34,251 @@ import android.util.Log;
 final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 		PropertiesConstants, LogTag {
 	private static final String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ " ( "
-			+ TRANS_ID
+			+ Transactions.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ TRANS_GLOBAL_ID
+			+ Transactions.GLOBAL_ID
 			+ " STRING NOT NULL, "
-			+ TRANS_DATE
+			+ Transactions.DATE
 			+ " TEXT NOT NULL, "
-			+ TRANS_AMOUNT
+			+ Transactions.AMOUNT
 			+ " TEXT NOT NULL, "
-			+ TRANS_DESCRIPTION
+			+ Transactions.DESCRIPTION
 			+ " TEXT NOT NULL, "
-			+ TRANS_COMMENT
+			+ Transactions.COMMENT
 			+ " TEXT, "
-			+ TRANS_CURRENCY
+			+ Transactions.CURRENCY
 			+ " TEXT NOT NULL, "
-			+ TRANS_FILTERED
+			+ Transactions.FILTERED
 			+ " INTEGER NOT NULL DEFAULT 0, "
-			+ TRANS_BD_ACCOUNT
-			+ " TEXT NOT NULL, " + "UNIQUE( " + TRANS_GLOBAL_ID + " ) " + ")";
+			+ Transactions.BD_ACCOUNT
+			+ " TEXT NOT NULL, "
+			+ "UNIQUE( "
+			+ Transactions.GLOBAL_ID
+			+ " ) "
+			+ ")";
 
 	private static final String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ " ( "
-			+ CAT_ID
+			+ Categories.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ CAT_NAME
+			+ Categories.NAME
 			+ " TEXT NOT NULL, "
-			+ CAT_COLOR
+			+ Categories.COLOR
 			+ " INTEGER NOT NULL, "
-			+ "UNIQUE( " + CAT_NAME + " ) " + " )";
+			+ "UNIQUE( " + Categories.NAME + " ) " + " )";
 
 	private static final String DB_CREATE_TAGS_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ TAGS_TABLE
+			+ Tags.TABLE
 			+ " ( "
-			+ TAG_ID
+			+ Tags.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ TAG_NAME
-			+ " TEXT NOT NULL, " + "UNIQUE ( " + TAG_NAME + " )" + " )";
+			+ Tags.NAME
+			+ " TEXT NOT NULL, " + "UNIQUE ( " + Tags.NAME + " )" + " )";
 
 	private static final String DB_CREATE_REPORTS_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ REPORTS_TABLE
+			+ Reports.TABLE
 			+ " ( "
-			+ REP_ID
+			+ Reports.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ REP_NAME
+			+ Reports.NAME
 			+ " TEXT NOT NULL, "
-			+ REP_DESC
+			+ Reports.DESC
 			+ " TEXT, "
-			+ REP_DATE_FROM
-			+ " TEXT NOT NULL, " + REP_DATE_TO + " TEXT NOT NULL " + " )";
+			+ Reports.DATE_FROM
+			+ " TEXT NOT NULL, " + Reports.DATE_TO + " TEXT NOT NULL " + " )";
 
 	private static final String DB_CREATE_CATEGORIES_TAGS_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ CATEGORIES_TAGS_TABLE
+			+ Joins.CATEGORIES_TAGS_TABLE
 			+ " ( "
-			+ CAT_FK_1
+			+ Joins.CAT_FK_1
 			+ " INTEGER NOT NULL, "
-			+ TAG_FK_1
+			+ Joins.TAG_FK_1
 			+ " INTEGER NOT NULL, "
 			+ "FOREIGN KEY("
-			+ CAT_FK_1
+			+ Joins.CAT_FK_1
 			+ ") REFERENCES "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ " ("
-			+ CAT_ID
+			+ Categories.ID
 			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "FOREIGN KEY("
-			+ TAG_FK_1
+			+ Joins.TAG_FK_1
 			+ ") REFERENCES "
-			+ TAGS_TABLE
+			+ Tags.TABLE
 			+ "( "
-			+ TAG_ID
+			+ Tags.ID
 			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "UNIQUE ( "
-			+ CAT_FK_1 + ", " + TAG_FK_1 + " )" + ")";
+			+ Joins.CAT_FK_1 + ", " + Joins.TAG_FK_1 + " )" + ")";
 
 	private static final String DB_CREATE_TRANSACTIONS_TAGS_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ TRANSACTIONS_TAGS_TABLE
+			+ Joins.TRANSACTIONS_TAGS_TABLE
 			+ " ( "
-			+ TRANS_FK
+			+ Joins.TRANS_FK
 			+ " INTEGER NOT NULL, "
-			+ TAG_FK_2
+			+ Joins.TAG_FK_2
 			+ " INTEGER NOT NULL, "
 			+ "FOREIGN KEY("
-			+ TRANS_FK
+			+ Joins.TRANS_FK
 			+ ") REFERENCES "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ " ("
-			+ TRANS_ID
+			+ Transactions.ID
 			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "FOREIGN KEY("
-			+ TAG_FK_2
+			+ Joins.TAG_FK_2
 			+ ") REFERENCES "
-			+ TAGS_TABLE
+			+ Tags.TABLE
 			+ "( "
-			+ TAG_ID
-			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
-			+ "UNIQUE ( " + TRANS_FK + ", " + TAG_FK_2 + " )" + ")";
-
-	private static final String DB_CREATE_REPORTS_CATEGORIES_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
-			+ REPORTS_CATEGORIES_TABLE
-			+ " ( "
-			+ REP_FK
-			+ " INTEGER NOT NULL, "
-			+ CAT_FK_2
-			+ " INTEGER NOT NULL, "
-			+ "FOREIGN KEY("
-			+ REP_FK
-			+ ") REFERENCES "
-			+ REPORTS_TABLE
-			+ " ("
-			+ REP_ID
-			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
-			+ "FOREIGN KEY("
-			+ CAT_FK_2
-			+ ") REFERENCES "
-			+ CATEGORIES_TABLE
-			+ "( "
-			+ CAT_ID
+			+ Tags.ID
 			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "UNIQUE ( "
-			+ REP_FK + ", " + CAT_FK_2 + " )" + ")";
+			+ Joins.TRANS_FK + ", " + Joins.TAG_FK_2 + " )" + ")";
+
+	private static final String DB_CREATE_REPORTS_CATEGORIES_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
+			+ Joins.REPORTS_CATEGORIES_TABLE
+			+ " ( "
+			+ Joins.REP_FK
+			+ " INTEGER NOT NULL, "
+			+ Joins.CAT_FK_2
+			+ " INTEGER NOT NULL, "
+			+ "FOREIGN KEY("
+			+ Joins.REP_FK
+			+ ") REFERENCES "
+			+ Reports.TABLE
+			+ " ("
+			+ Reports.ID
+			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ "FOREIGN KEY("
+			+ Joins.CAT_FK_2
+			+ ") REFERENCES "
+			+ Categories.TABLE
+			+ "( "
+			+ Categories.ID
+			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ "UNIQUE ( "
+			+ Joins.REP_FK + ", " + Joins.CAT_FK_2 + " )" + ")";
 
 	private static final String DB_CREATE_TRANSACTIONS_CATEGORY_VIEW = "CREATE VIEW IF NOT EXISTS "
-			+ TRANSACTIONS_CATEGORY_VIEW
+			+ Views.TRANSACTIONS_CATEGORY_VIEW
 			+ " AS "
 			+ "SELECT "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_ID
+			+ Transactions.ID
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_GLOBAL_ID
+			+ Transactions.GLOBAL_ID
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_DATE
+			+ Transactions.DATE
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_DESCRIPTION
+			+ Transactions.DESCRIPTION
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_COMMENT
+			+ Transactions.COMMENT
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_AMOUNT
+			+ Transactions.AMOUNT
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_CURRENCY
+			+ Transactions.CURRENCY
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_BD_ACCOUNT
+			+ Transactions.BD_ACCOUNT
 			+ ", "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ "."
-			+ TRANS_FILTERED
+			+ Transactions.FILTERED
 			+ ", "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ "."
-			+ CAT_ID
+			+ Categories.ID
 			+ " AS "
-			+ TRANS_CAT_V_CAT_ID
+			+ Views.TRANS_CAT_V_CAT_ID
 			+ " FROM "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ " INNER JOIN "
-			+ CATEGORIES_TAGS_TABLE
+			+ Joins.CATEGORIES_TAGS_TABLE
 			+ " ON "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ "."
-			+ CAT_ID
+			+ Categories.ID
 			+ " = "
-			+ CATEGORIES_TAGS_TABLE
+			+ Joins.CATEGORIES_TAGS_TABLE
 			+ "."
-			+ CAT_FK_1
+			+ Joins.CAT_FK_1
 			+ " INNER JOIN "
-			+ TRANSACTIONS_TAGS_TABLE
+			+ Joins.TRANSACTIONS_TAGS_TABLE
 			+ " ON "
-			+ CATEGORIES_TAGS_TABLE
+			+ Joins.CATEGORIES_TAGS_TABLE
 			+ "."
-			+ TAG_FK_1
+			+ Joins.TAG_FK_1
 			+ " = "
-			+ TRANSACTIONS_TAGS_TABLE
+			+ Joins.TRANSACTIONS_TAGS_TABLE
 			+ "."
-			+ TAG_FK_2
+			+ Joins.TAG_FK_2
 			+ " INNER JOIN "
-			+ TRANSACTIONS_TABLE
+			+ Transactions.TABLE
 			+ " ON "
-			+ TRANSACTIONS_TAGS_TABLE
+			+ Joins.TRANSACTIONS_TAGS_TABLE
 			+ "."
-			+ TRANS_FK
+			+ Joins.TRANS_FK
 			+ " = "
-			+ TRANSACTIONS_TABLE + "." + TRANS_ID;
+			+ Transactions.TABLE + "." + Transactions.ID;
 
 	private static final String DB_CREATE_CATEGORIES_REPORT_VIEW = "CREATE VIEW IF NOT EXISTS "
-			+ CATEGORIES_REPORT_VIEW
+			+ Views.CATEGORIES_REPORT_VIEW
 			+ " AS "
 			+ "SELECT "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ "."
-			+ CAT_ID
+			+ Categories.ID
 			+ ", "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ "."
-			+ CAT_NAME
+			+ Categories.NAME
 			+ ", "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ "."
-			+ CAT_COLOR
+			+ Categories.COLOR
 			+ ", "
-			+ REPORTS_TABLE
+			+ Reports.TABLE
 			+ "."
-			+ REP_ID
+			+ Reports.ID
 			+ " AS "
-			+ REP_CAT_REP_ID
+			+ Views.REP_CAT_REP_ID
 			+ " FROM "
-			+ REPORTS_TABLE
+			+ Reports.TABLE
 			+ " INNER JOIN "
-			+ REPORTS_CATEGORIES_TABLE
+			+ Joins.REPORTS_CATEGORIES_TABLE
 			+ " ON "
-			+ REPORTS_TABLE
+			+ Reports.TABLE
 			+ "."
-			+ REP_ID
+			+ Reports.ID
 			+ " = "
-			+ REPORTS_CATEGORIES_TABLE
+			+ Joins.REPORTS_CATEGORIES_TABLE
 			+ "."
-			+ REP_FK
+			+ Joins.REP_FK
 			+ " INNER JOIN "
-			+ CATEGORIES_TABLE
+			+ Categories.TABLE
 			+ " ON "
-			+ REPORTS_CATEGORIES_TABLE
+			+ Joins.REPORTS_CATEGORIES_TABLE
 			+ "."
-			+ CAT_FK_2
+			+ Joins.CAT_FK_2
 			+ " = "
-			+ CATEGORIES_TABLE + "." + CAT_ID;
+			+ Categories.TABLE + "." + Categories.ID;
 
 	private final String defaultCategoryName;
 	private final String defaultTagName;
@@ -360,34 +365,34 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 
 		// Add default category
 		final ContentValues catValues = new ContentValues(2);
-		catValues.put(CAT_NAME, defaultCategoryName);
-		catValues.put(CAT_COLOR, Color.GRAY);
-		final long catId = db.insert(CATEGORIES_TABLE, null, catValues);
+		catValues.put(Categories.NAME, defaultCategoryName);
+		catValues.put(Categories.COLOR, Color.GRAY);
+		final long catId = db.insert(Categories.TABLE, null, catValues);
 
 		// Add default tag
 		final ContentValues tagsValues = new ContentValues(1);
-		tagsValues.put(TAG_NAME, defaultTagName);
-		final long tagId = db.insert(TAGS_TABLE, null, tagsValues);
+		tagsValues.put(Tags.NAME, defaultTagName);
+		final long tagId = db.insert(Tags.TABLE, null, tagsValues);
 
 		// Add the values to the join table
 		final ContentValues catTagsJoinValues = new ContentValues(2);
-		catTagsJoinValues.put(CAT_FK_1, catId);
-		catTagsJoinValues.put(TAG_FK_1, tagId);
-		db.insert(CATEGORIES_TAGS_TABLE, null, catTagsJoinValues);
+		catTagsJoinValues.put(Joins.CAT_FK_1, catId);
+		catTagsJoinValues.put(Joins.TAG_FK_1, tagId);
+		db.insert(Joins.CATEGORIES_TAGS_TABLE, null, catTagsJoinValues);
 
 		// Add the default report on the home screen
 		final ContentValues reportValues = new ContentValues(4);
-		reportValues.put(REP_NAME, reportName);
-		reportValues.put(REP_DESC, reportDesc);
-		reportValues.put(REP_DATE_FROM, reportFrom);
-		reportValues.put(REP_DATE_TO, reportTo);
-		final long repId = db.insert(REPORTS_TABLE, null, reportValues);
+		reportValues.put(Reports.NAME, reportName);
+		reportValues.put(Reports.DESC, reportDesc);
+		reportValues.put(Reports.DATE_FROM, reportFrom);
+		reportValues.put(Reports.DATE_TO, reportTo);
+		final long repId = db.insert(Reports.TABLE, null, reportValues);
 
 		// Add the default category to the default report
 		final ContentValues repCatJoinValues = new ContentValues(2);
-		repCatJoinValues.put(REP_FK, repId);
-		repCatJoinValues.put(CAT_FK_2, catId);
-		db.insert(REPORTS_CATEGORIES_TABLE, null, repCatJoinValues);
+		repCatJoinValues.put(Joins.REP_FK, repId);
+		repCatJoinValues.put(Joins.CAT_FK_2, catId);
+		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, repCatJoinValues);
 
 		final SharedPreferences.Editor editor = PreferenceManager
 				.getDefaultSharedPreferences(context).edit();
@@ -405,8 +410,8 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	@Override
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
 			final int newVersion) {
-		//		db.execSQL(DB_UPGRADE_TRANSACTIONS_TABLE);
-		//		db.execSQL(DB_CREATE_TRANSACTIONS_TABLE);
+		//		db.execSQL(DB_UPGRADE_Transactions.TABLE);
+		//		db.execSQL(DB_CREATE_Transactions.TABLE);
 	}
 
 }

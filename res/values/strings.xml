@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="provider_authority">se.ekonomipuls.provider</string>
 	<string name="app_homescreen">Economy</string>
 	<string name="app_name">Ekonomipuls</string>
 	<string name="no_data">No data</string>
@@ -14,6 +15,6 @@
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Categories</string>
-<string name="category_name">Category name</string>
+<string name="category_name_new">Category name...</string><string name="category_name">Category name</string>
 
 </resources>

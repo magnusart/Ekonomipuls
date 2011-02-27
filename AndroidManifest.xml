@@ -21,9 +21,12 @@
 
 
 <activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
+<provider android:name=".database.DbProvider" android:authorities="@string/provider_authority" android:exported="false" android:enabled="true" android:multiprocess="true" android:syncable="false"></provider>
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission
 		android:name="com.liato.bankdroid.permission.READ_ACCESS_BANK_TRANSACTIONS" />
 
+<instrumentation android:targetPackage="se.ekonomipuls" android:name="android.test.InstrumentationTestRunner"></instrumentation>
+<uses-library android:name="android.test.InstrumentationTestRunner" />
 </manifest> 

@@ -25,6 +25,7 @@ import se.ekonomipuls.database.Transaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -47,26 +48,33 @@ public class TransactionsFilterService extends IntentService implements
 	protected void onHandleIntent(final Intent intent) {
 		Log.d(TAG, "Applying filters");
 
-		final List<Transaction> transactions = DbFacade
-				.getUnfilteredTransactions(getBaseContext());
+		List<Transaction> transactions;
+		try {
+			transactions = DbFacade.getUnfilteredTransactions(getBaseContext());
 
-		for (final Transaction t : transactions) {
+			for (final Transaction t : transactions) {
 
-			final UpdateTransactionAction modTrans = new UpdateTransactionAction(t);
+				final UpdateTransactionAction modTrans = new UpdateTransactionAction(
+						t);
 
-			// TODO Apply filters
+				// TODO Apply filters
 
-			modTrans.setFiltered(true);
+				modTrans.setFiltered(true);
 
-			// Only if no filters matched, set default tag.
+				// Only if no filters matched, set default tag.
 
-			final SharedPreferences pref = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			final long tagId = pref.getLong(CONF_DEF_TAG, -1);
+				final SharedPreferences pref = PreferenceManager
+						.getDefaultSharedPreferences(this);
+				final long tagId = pref.getLong(CONF_DEF_TAG, -1);
 
-			assert (tagId != -1);
+				assert (tagId != -1);
 
-			DbFacade.updateTransactionsAssignTags(this, modTrans, tagId);
+				DbFacade.updateTransactionsAssignTags(this, modTrans, tagId);
+			}
+		} catch (final RemoteException e) {
+			// TODO Handle exception
+			e.printStackTrace();
+
 		}
 	}
 }

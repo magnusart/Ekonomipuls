@@ -15,6 +15,7 @@
  */
 package se.ekonomipuls.util;
 
+import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.charts.SeriesEntry;
 import android.content.Context;
@@ -25,20 +26,23 @@ import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Window;
+import android.widget.Toast;
 
 /**
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public final class GuiUtil implements PropertiesConstants {
+public final class GuiUtil implements PropertiesConstants, LogTag {
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
-	private static final float DARK_GRAD_BRIGHTNESS = 0.5f;
+	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
 
-	private static final float LIGHT_GRAD_SATURATION = 1.0f;
-	private static final float LIGHT_GRAD_BRIGHTNESS = 0.2f;
+	private static final float LIGHT_GRAD_SATURATION = 0.85f;
+	private static final float LIGHT_GRAD_BRIGHTNESS = 1.0f;
 
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;
@@ -73,10 +77,10 @@ public final class GuiUtil implements PropertiesConstants {
 		dark = getDarkColor(baseColor, entry.isSelected());
 		light = getLightColor(baseColor, entry.isSelected());
 
-		final float skewLeft = (oval.width() / 3);
-		final float skewRight = (oval.width() / 3) * 2;
+		final float skewTop = (oval.width() / 3);
+		final float skewBottom = (oval.width() / 3) * 2;
 
-		return new LinearGradient(skewLeft, 0L, skewRight, oval.height(),
+		return new LinearGradient(skewBottom, oval.height(), skewTop, 0L,
 				new int[] { dark, light }, null, TileMode.CLAMP);
 
 		//		return new RadialGradient(oval.centerX(), oval.centerY(),
@@ -162,6 +166,13 @@ public final class GuiUtil implements PropertiesConstants {
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+	}
+
+	public static void toastDbError(final Context ctx, final RemoteException e) {
+		final String message = "Unable to complete database query";
+		final Toast toast = Toast.makeText(ctx, message, Toast.LENGTH_LONG);
+		toast.show();
+		Log.d(TAG, message, e);
 	}
 
 }

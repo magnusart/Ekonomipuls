@@ -29,6 +29,7 @@ import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -58,7 +59,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		super.onResume();
 		populateData(); // TODO: Fix so that PieChart has an adapter.
 		legendAdapter.notifyDataSetInvalidated();
-		
+
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 		pieChart.invalidate();
 	}
@@ -92,10 +93,16 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 		final ListView legendList = (ListView) findViewById(R.id.legendList);
 
-		final List<Transaction> transactions = DbFacade
-				.getAllTransactions(this);
+		List<Transaction> transactions;
 
-		populateSeriesEntries(transactions, pieChart);
+		try {
+			transactions = DbFacade.getAllTransactions(this);
+
+			populateSeriesEntries(transactions, pieChart);
+		} catch (final RemoteException e) {
+			GuiUtil.toastDbError(this, e);
+		}
+
 		populateLegendList(legendList, pieChart.getSeries(),
 				pieChart.getTotalAmt());
 
@@ -110,29 +117,33 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 		assert (reportId != -1);
 
-		final List<Category> categories = DbFacade.getCategoriesByReport(this,
-				reportId);
+		List<Category> categories;
+		try {
+			categories = DbFacade.getCategoriesByReport(this, reportId);
 
-		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
-		BigDecimal total = new BigDecimal(0.0);
+			final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
+			BigDecimal total = new BigDecimal(0.0);
 
-		// Get the transactions given this category's tags
-		for (final Category cat : categories) {
+			// Get the transactions given this category's tags
+			for (final Category cat : categories) {
 
-			final List<Transaction> catTransactions = DbFacade
-					.getTransactionsByCategory(this, cat);
+				final List<Transaction> catTransactions = DbFacade
+						.getTransactionsByCategory(this, cat);
 
-			final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
+				final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
 
-			total = total.add(ser.getSum());
-			series.add(ser);
-		}
+				total = total.add(ser.getSum());
+				series.add(ser);
+			}
 
-		pieChart.setSeries(series);
-		pieChart.setSeriesTotal(total);
+			pieChart.setSeries(series);
+			pieChart.setSeriesTotal(total);
 
-		if (total.longValue() == 0) {
-			pieChart.setVisibility(View.GONE);
+			if (total.longValue() == 0) {
+				pieChart.setVisibility(View.GONE);
+			}
+		} catch (final RemoteException e) {
+			GuiUtil.toastDbError(this, e);
 		}
 	}
 

@@ -24,6 +24,7 @@ import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.filter.TransactionsFilterService;
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.RemoteException;
 import android.util.Log;
 
 /**
@@ -63,6 +64,8 @@ public class BankDroidImportService extends IntentService implements LogTag {
 			this.startService(importFilter);
 
 		} catch (final IllegalAccessException e) {
+			Log.e(TAG, "Unable to access the content provider.", e);
+		} catch (final RemoteException e) {
 			Log.e(TAG, "Unable to access the content provider.", e);
 		}
 	}
