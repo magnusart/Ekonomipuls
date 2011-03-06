@@ -21,6 +21,7 @@ import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
@@ -114,30 +115,33 @@ public class DbFacade implements LogTag, DbConstants {
 	 * @throws RemoteException
 	 */
 	public static void updateTransactionsAssignTags(final Context ctx,
-			final Transaction transaction, final long tagId)
-			throws RemoteException {
+			final List<ApplyFilterTagAction> actions) throws RemoteException {
 
-		final Uri transUri = Uri.parse(Provider.TRANSACTIONS_URI);
-		final Uri transTagsUri = Uri.parse(Provider.TRANSACTIONS_TAGS_URI);
+		final Uri uri = Uri.parse(Provider.TRANSACTIONS_TAGS_URI);
 
 		final ContentProviderClient client = ctx.getContentResolver()
-				.acquireContentProviderClient(transUri);
+				.acquireContentProviderClient(uri);
 
 		try {
-			ContentValues values = new ContentValues(3);
-			values.put(Transactions.COMMENT, transaction.getDescription());
-			values.put(Transactions.CURRENCY, transaction.getCurrency());
-			final int filtered = (transaction.isFiltered()) ? 1 : 0;
-			values.put(Transactions.FILTERED, filtered);
 
-			client.update(transUri, values, Transactions.ID + " = "
-					+ transaction.getId(), null);
+			final ContentValues[] values = new ContentValues[actions.size()];
+			int i = 0;
 
-			values = new ContentValues(2);
-			values.put(Joins.TRANS_FK, transaction.getId());
-			values.put(Joins.TAG_FK_2, tagId);
+			for (final ApplyFilterTagAction action : actions) {
+				final Transaction transaction = action.getTransaction();
+				final long tagId = action.getTagId();
 
-			client.insert(transTagsUri, values);
+				final ContentValues value = new ContentValues(3);
+				final int filtered = (transaction.isFiltered()) ? 1 : 0;
+				value.put(Transactions.FILTERED, filtered);
+				value.put(Joins.TRANS_FK, transaction.getId());
+				value.put(Joins.TAG_FK_2, tagId);
+
+				values[i] = value;
+				i++;
+			}
+
+			client.bulkInsert(uri, values);
 
 		} finally {
 			client.release();

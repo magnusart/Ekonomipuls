@@ -39,6 +39,7 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 	private static final int REPORTS_ACTION = 2;
 	private static final int CATEGORIES_REPORT_ACTION = 3;
 	private static final int CATEGORIES_ACTION = 4;
+	private static final int TRANSACTIONS_TAGS_ACTION = 5;
 
 	private static UriMatcher uriMatcher;
 	private static final Map<String, String> categoriesProj;
@@ -62,6 +63,9 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 
 		uriMatcher.addURI(Provider.AUTHORITY, Provider.CATEGORIES_REPORT,
 				CATEGORIES_REPORT_ACTION);
+
+		uriMatcher.addURI(Provider.AUTHORITY, Provider.TRANSACTIONS_TAGS,
+				TRANSACTIONS_TAGS_ACTION);
 
 		transactionsProj = createProjMap(Transactions.COLUMNS);
 		categoriesProj = createProjMap(Categories.COLUMNS);
@@ -107,6 +111,8 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 				return Provider.REPORTS_MIME;
 			case CATEGORIES_REPORT_ACTION:
 				return Provider.CATEGORIES_MIME;
+			case TRANSACTIONS_TAGS_ACTION:
+				return Provider.TRANSACTIONS_MIME;
 			default:
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
 		}
@@ -218,49 +224,6 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 
 	/** {@inheritDoc} */
 	@Override
-	public int bulkInsert(final Uri uri, final ContentValues[] values) {
-		final SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-		String table = null;
-		// Setup the query based on what action is to be performed
-		switch (uriMatcher.match(uri)) {
-			case TRANSACTIONS_ACTION:
-				table = Transactions.TABLE;
-				break;
-			case TRANSACTIONS_CATEGORY_ACTION:
-				throw new IllegalArgumentException(
-						"Unsupported Insert Action: " + uri);
-			case CATEGORIES_REPORT_ACTION:
-				throw new IllegalArgumentException(
-						"Unsupported Insert Action: " + uri);
-			case CATEGORIES_ACTION:
-				throw new IllegalArgumentException(
-						"Unsupported Insert Action: " + uri);
-			case REPORTS_ACTION:
-				throw new IllegalArgumentException(
-						"Unsupported Insert Action: " + uri);
-			default:
-				throw new IllegalArgumentException("Unsupported Insert URI: "
-						+ uri);
-		}
-
-		Log.v(TAG, "In transaction: " + db.inTransaction());
-
-		int numInsert = 0;
-
-		for (final ContentValues value : values) {
-			db.insert(table, null, value);
-			numInsert++;
-		}
-
-		db.setTransactionSuccessful();
-		db.close();
-
-		return numInsert;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public int delete(final Uri uri, final String selection,
 			final String[] selectionArgs) {
 		return 0;
@@ -299,5 +262,98 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 		db.close();
 
 		return updates;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int bulkInsert(final Uri uri, final ContentValues[] values) {
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+		int numInsert = 0;
+		// Setup the query based on what action is to be performed
+		switch (uriMatcher.match(uri)) {
+			case TRANSACTIONS_ACTION:
+				numInsert = bulkInsertOneTable(db, Transactions.TABLE, values);
+				break;
+			case TRANSACTIONS_TAGS_ACTION:
+				final String table1 = Transactions.TABLE;
+				final String table2 = Joins.TRANSACTIONS_TAGS_TABLE;
+				numInsert = bulkUpdateTransactionInsertTags(db, table1, table2,
+						values);
+				break;
+			case TRANSACTIONS_CATEGORY_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case CATEGORIES_REPORT_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case CATEGORIES_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case REPORTS_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			default:
+				throw new IllegalArgumentException("Unsupported Insert URI: "
+						+ uri);
+		}
+
+		return numInsert;
+	}
+
+	/**
+	 * @param db
+	 * @param transTable
+	 * @param tagsJoinTable
+	 * @param values
+	 * @return
+	 */
+	private int bulkUpdateTransactionInsertTags(final SQLiteDatabase db,
+			final String transTable, final String tagsJoinTable,
+			final ContentValues[] values) {
+		Log.v(TAG, "In transaction: " + db.inTransaction());
+		Log.v(TAG, "Bulk inserting/updating" + transTable + "/" + tagsJoinTable);
+		int numInsert = 0;
+
+		for (final ContentValues value : values) {
+
+			// Clear out the Tag values
+			final ContentValues transValue = new ContentValues(value);
+			transValue.remove(Joins.TRANS_FK);
+			transValue.remove(Joins.TAG_FK_2);
+
+			db.update(transTable, transValue,
+					Transactions.ID + " = " + value.getAsLong(Transactions.ID),
+					null);
+
+			final ContentValues tagsJoinValue = new ContentValues(value);
+			tagsJoinValue.remove(Transactions.FILTERED);
+
+			db.insert(tagsJoinTable, null, tagsJoinValue);
+
+			numInsert++;
+		}
+
+		db.setTransactionSuccessful();
+		db.close();
+
+		return numInsert;
+	}
+
+	private int bulkInsertOneTable(final SQLiteDatabase db, final String table,
+			final ContentValues[] values) {
+		Log.v(TAG, "In transaction: " + db.inTransaction());
+		Log.v(TAG, "Standard bulk insert into " + table);
+		int numInsert = 0;
+
+		for (final ContentValues value : values) {
+			db.insert(table, null, value);
+			numInsert++;
+		}
+
+		db.setTransactionSuccessful();
+		db.close();
+
+		return numInsert;
 	}
 }

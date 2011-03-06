@@ -38,10 +38,10 @@ public class BankDroidTransactionsReciever extends BroadcastReceiver implements
 	/** {@inheritDoc} */
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		Log.d(TAG, "Recieved intent");
+		Log.v(TAG, "Recived broadcast: " + intent.getAction());
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
-			Log.d(TAG, "Begin retrieving updated transactions");
+			Log.v(TAG, "Setting up import service");
 
 			final Bundle bundle = intent.getExtras();
 
@@ -50,9 +50,12 @@ public class BankDroidTransactionsReciever extends BroadcastReceiver implements
 
 			importService.putExtras(bundle);
 
+			Log.v(TAG, "Handing over to import service");
 			// Hand over to service queue since broadcast receivers have a very
 			// short timeout.
 			context.startService(importService);
+
+			Log.v(TAG, "Handed over to import service");
 		}
 
 	}

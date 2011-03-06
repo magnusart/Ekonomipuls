@@ -131,6 +131,14 @@ public class Transaction {
 		return bankdroidAccount;
 	}
 
+	/**
+	 * @param filtered
+	 *            the filtered to set
+	 */
+	public void setFiltered(final boolean filtered) {
+		this.filtered = filtered;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

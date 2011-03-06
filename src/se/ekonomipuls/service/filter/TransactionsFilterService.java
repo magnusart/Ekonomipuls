@@ -15,11 +15,12 @@
  */
 package se.ekonomipuls.service.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
-import se.ekonomipuls.actions.UpdateTransactionAction;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.database.Transaction;
 import android.app.IntentService;
@@ -46,20 +47,16 @@ public class TransactionsFilterService extends IntentService implements
 	/** {@inheritDoc} */
 	@Override
 	protected void onHandleIntent(final Intent intent) {
-		Log.d(TAG, "Applying filters");
+		Log.v(TAG, "Starting to apply filters to unfiltered transactions");
 
 		List<Transaction> transactions;
 		try {
+			Log.v(TAG, "Fetching all unfiltered transactions");
 			transactions = DbFacade.getUnfilteredTransactions(getBaseContext());
+			final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
 
 			for (final Transaction t : transactions) {
-
-				final UpdateTransactionAction modTrans = new UpdateTransactionAction(
-						t);
-
-				// TODO Apply filters
-
-				modTrans.setFiltered(true);
+				Log.v(TAG, "Applying filter to Transaction " + t);
 
 				// Only if no filters matched, set default tag.
 
@@ -69,8 +66,12 @@ public class TransactionsFilterService extends IntentService implements
 
 				assert (tagId != -1);
 
-				DbFacade.updateTransactionsAssignTags(this, modTrans, tagId);
+				filteredTransactions.add(new ApplyFilterTagAction(t, tagId));
+
 			}
+
+			DbFacade.updateTransactionsAssignTags(this, filteredTransactions);
+
 		} catch (final RemoteException e) {
 			// TODO Handle exception
 			e.printStackTrace();

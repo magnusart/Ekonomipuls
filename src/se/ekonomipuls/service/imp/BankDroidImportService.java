@@ -45,19 +45,22 @@ public class BankDroidImportService extends IntentService implements LogTag {
 	/** {@inheritDoc} */
 	@Override
 	protected void onHandleIntent(final Intent intent) {
-		Log.d(TAG, "Recieved intent for importing transactions");
+		Log.v(TAG, "Starting to import transactions");
 
 		final String accountId = intent.getExtras().getString(ACCOUNT_ID);
 		try {
+			Log.v(TAG, "Fetching transactions from BankDroid content provider");
 			final List<BankDroidTransaction> transactions = BankDroidProxy
 					.getBankDroidTransactions(getBaseContext(), accountId);
 
 			// TODO: Cleanse incoming transactions from duplicates.
 
+			Log.v(TAG, "Bulk inserting transactions");
 			DbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
 
 			// Hand over to filtering.
 
+			Log.v(TAG, "Handing over to filering service");
 			final Intent importFilter = new Intent(this,
 					TransactionsFilterService.class);
 
