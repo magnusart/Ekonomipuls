@@ -294,7 +294,9 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	private final String reportTo;
 
 	public DbHelper(final Context context) {
-		super(context, DB_NAME, null, DB_VERSION);
+		// LeaklessCursorFactory gives a cursor that also closes the database.
+		// This is a hack: http://stackoverflow.com/questions/4547461/closing-the-database-in-a-contentprovider
+		super(context, DB_NAME, new LeaklessCursorFactory(), DB_VERSION);
 		this.context = context;
 		defaultCategoryName = context.getString(R.string.default_category_name);
 		defaultTagName = context.getString(R.string.default_tag_name);
@@ -307,8 +309,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 	/** {@inheritDoc} */
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
+		// The transaction is closed in LeaklessCursor#close()
 		if (!db.isReadOnly()) {
 			db.execSQL(TURN_ON_FK);
+			Log.v(TAG, "Beginning transaction for " + db.toString());
 			db.beginTransaction();
 		}
 	}

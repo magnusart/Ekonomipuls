@@ -15,12 +15,16 @@
  */
 package se.ekonomipuls.database;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import se.ekonomipuls.LogTag;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.util.Log;
 
@@ -37,6 +41,10 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 	private static final int CATEGORIES_ACTION = 4;
 
 	private static UriMatcher uriMatcher;
+	private static final Map<String, String> categoriesProj;
+	private static final Map<String, String> reportsProj;
+	private static final Map<String, String> tagsProj;
+	private static final Map<String, String> transactionsProj;
 
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -54,6 +62,26 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 
 		uriMatcher.addURI(Provider.AUTHORITY, Provider.CATEGORIES_REPORT,
 				CATEGORIES_REPORT_ACTION);
+
+		transactionsProj = createProjMap(Transactions.COLUMNS);
+		categoriesProj = createProjMap(Categories.COLUMNS);
+		reportsProj = createProjMap(Reports.COLUMNS);
+		tagsProj = createProjMap(Tags.COLUMNS);
+
+	}
+
+	/**
+	 * @param columns
+	 * @return
+	 */
+	private static Map<String, String> createProjMap(final String[] columns) {
+		final Map<String, String> colMap = new HashMap<String, String>();
+
+		for (final String col : columns) {
+			colMap.put(col, col);
+		}
+
+		return colMap;
 	}
 
 	private DbHelper dbHelper;
@@ -92,45 +120,60 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 
 		final SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-		try {
-			String table = null;
-			String[] columns = null;
-			final String groupBy = null;
-			final String having = null;
+		String table = null;
+		String[] columns = null;
+		Map<String, String> projMap = null;
+		final String groupBy = null;
+		final String having = null;
+		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-			final int match = uriMatcher.match(uri);
-			// Setup the query based on what action is to be performed
-			switch (match) {
-				case TRANSACTIONS_ACTION:
-					table = Transactions.TABLE;
-					columns = Transactions.COLUMNS;
-					break;
-				case TRANSACTIONS_CATEGORY_ACTION:
-					table = Views.TRANSACTIONS_CATEGORY_VIEW;
-					columns = Transactions.COLUMNS;
-					break;
-				case CATEGORIES_REPORT_ACTION:
-					table = Views.CATEGORIES_REPORT_VIEW;
-					columns = Categories.COLUMNS;
-					break;
-				case CATEGORIES_ACTION:
-					table = Categories.TABLE;
-					columns = Categories.COLUMNS;
-					break;
-				case REPORTS_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Query Action: " + uri);
-				default:
-					throw new IllegalArgumentException(
-							"Unsupported Query URI: " + uri);
-			}
-
-			final Cursor cur = db.query(table, columns, selection,
-					selectionArgs, groupBy, having, sortOrder);
-			return cur;
-		} finally {
-			shutdownDb(db);
+		final int match = uriMatcher.match(uri);
+		// Setup the query based on what action is to be performed
+		switch (match) {
+			case TRANSACTIONS_ACTION:
+				table = Transactions.TABLE;
+				columns = Transactions.COLUMNS;
+				projMap = transactionsProj;
+				break;
+			case TRANSACTIONS_CATEGORY_ACTION:
+				table = Views.TRANSACTIONS_CATEGORY_VIEW;
+				columns = Transactions.COLUMNS;
+				projMap = transactionsProj;
+				break;
+			case CATEGORIES_REPORT_ACTION:
+				table = Views.CATEGORIES_REPORT_VIEW;
+				columns = Categories.COLUMNS;
+				projMap = categoriesProj;
+				break;
+			case CATEGORIES_ACTION:
+				table = Categories.TABLE;
+				columns = Categories.COLUMNS;
+				projMap = categoriesProj;
+				break;
+			case REPORTS_ACTION:
+				table = Reports.TABLE;
+				columns = Reports.COLUMNS;
+				projMap = reportsProj;
+			default:
+				throw new IllegalArgumentException("Unsupported Query URI: "
+						+ uri);
 		}
+
+		final String query = SQLiteQueryBuilder.buildQueryString(false, table,
+				columns, selection, groupBy, having, sortOrder, having);
+
+		Log.v(TAG, "Querystring used: " + query);
+		Log.v(TAG, "In transaction: " + db.inTransaction());
+
+		qb.setProjectionMap(projMap);
+		qb.setTables(table);
+		final Cursor cur = qb.query(db, columns, selection, selectionArgs,
+				groupBy, having, sortOrder);
+
+		// Notification URI
+		cur.setNotificationUri(getContext().getContentResolver(), uri);
+
+		return cur;
 	}
 
 	/** {@inheritDoc} */
@@ -138,40 +181,82 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 	public Uri insert(final Uri uri, final ContentValues values) {
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-		try {
-			String table = null;
-			String uriString = null;
-			// Setup the query based on what action is to be performed
-			switch (uriMatcher.match(uri)) {
-				case TRANSACTIONS_ACTION:
-					table = Transactions.TABLE;
-					uriString = Provider.TRANSACTIONS_URI;
-					break;
-				case TRANSACTIONS_CATEGORY_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Insert Action: " + uri);
-				case CATEGORIES_REPORT_ACTION:
-					table = Joins.REPORTS_CATEGORIES_TABLE;
-					uriString = Provider.CATEGORIES_REPORT_URI;
-					break;
-				case CATEGORIES_ACTION:
-					table = Categories.TABLE;
-					uriString = Provider.CATEGORIES_URI;
-					break;
-				case REPORTS_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Insert Action: " + uri);
-				default:
-					throw new IllegalArgumentException(
-							"Unsupported Insert URI: " + uri);
-			}
-
-			final long id = db.insert(table, null, values);
-
-			return Uri.parse(uriString + "/" + id);
-		} finally {
-			shutdownDb(db);
+		String table = null;
+		String uriString = null;
+		// Setup the query based on what action is to be performed
+		switch (uriMatcher.match(uri)) {
+			case TRANSACTIONS_ACTION:
+				table = Transactions.TABLE;
+				uriString = Provider.TRANSACTIONS_URI;
+				break;
+			case TRANSACTIONS_CATEGORY_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case CATEGORIES_REPORT_ACTION:
+				table = Joins.REPORTS_CATEGORIES_TABLE;
+				uriString = Provider.CATEGORIES_REPORT_URI;
+				break;
+			case CATEGORIES_ACTION:
+				table = Categories.TABLE;
+				uriString = Provider.CATEGORIES_URI;
+				break;
+			case REPORTS_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			default:
+				throw new IllegalArgumentException("Unsupported Insert URI: "
+						+ uri);
 		}
+
+		final long id = db.insert(table, null, values);
+		Log.v(TAG, "In transaction: " + db.inTransaction());
+		db.setTransactionSuccessful();
+		db.close();
+
+		return Uri.parse(uriString + "/" + id);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int bulkInsert(final Uri uri, final ContentValues[] values) {
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+		String table = null;
+		// Setup the query based on what action is to be performed
+		switch (uriMatcher.match(uri)) {
+			case TRANSACTIONS_ACTION:
+				table = Transactions.TABLE;
+				break;
+			case TRANSACTIONS_CATEGORY_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case CATEGORIES_REPORT_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case CATEGORIES_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			case REPORTS_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Insert Action: " + uri);
+			default:
+				throw new IllegalArgumentException("Unsupported Insert URI: "
+						+ uri);
+		}
+
+		Log.v(TAG, "In transaction: " + db.inTransaction());
+
+		int numInsert = 0;
+
+		for (final ContentValues value : values) {
+			db.insert(table, null, value);
+			numInsert++;
+		}
+
+		db.setTransactionSuccessful();
+		db.close();
+
+		return numInsert;
 	}
 
 	/** {@inheritDoc} */
@@ -186,45 +271,33 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 	public int update(final Uri uri, final ContentValues values,
 			final String selection, final String[] selectionArgs) {
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
-		try {
-			String table = null;
-			// Setup the query based on what action is to be performed
-			switch (uriMatcher.match(uri)) {
-				case TRANSACTIONS_ACTION:
-					table = Transactions.TABLE;
-					break;
-				case TRANSACTIONS_CATEGORY_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Update Action: " + uri);
-				case CATEGORIES_REPORT_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Update Action: " + uri);
-				case CATEGORIES_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Update Action: " + uri);
-				case REPORTS_ACTION:
-					throw new IllegalArgumentException(
-							"Unsupported Update Action: " + uri);
-				default:
-					throw new IllegalArgumentException(
-							"Unsupported Update URI: " + uri);
-			}
-
-			return db.update(table, values, selection, selectionArgs);
-		} finally {
-			shutdownDb(db);
+		String table = null;
+		// Setup the query based on what action is to be performed
+		switch (uriMatcher.match(uri)) {
+			case TRANSACTIONS_ACTION:
+				table = Transactions.TABLE;
+				break;
+			case TRANSACTIONS_CATEGORY_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Update Action: " + uri);
+			case CATEGORIES_REPORT_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Update Action: " + uri);
+			case CATEGORIES_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Update Action: " + uri);
+			case REPORTS_ACTION:
+				throw new IllegalArgumentException(
+						"Unsupported Update Action: " + uri);
+			default:
+				throw new IllegalArgumentException("Unsupported Update URI: "
+						+ uri);
 		}
-	}
 
-	/**
-	 * @param db
-	 */
-	private static void shutdownDb(final SQLiteDatabase db) {
-		if (!db.isReadOnly()) {
-			// Transaction begun in DbHelper.open();
-			db.endTransaction();
-		}
+		final int updates = db.update(table, values, selection, selectionArgs);
+		db.setTransactionSuccessful();
 		db.close();
-	}
 
+		return updates;
+	}
 }

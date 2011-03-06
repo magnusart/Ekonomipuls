@@ -28,6 +28,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.util.Log;
 
 /**
  * @author Magnus Andersson
@@ -48,18 +49,26 @@ public class DbFacade implements LogTag, DbConstants {
 		final ContentProviderClient client = ctx.getContentResolver()
 				.acquireContentProviderClient(uri);
 		try {
+
+			final ContentValues[] values = new ContentValues[transactions
+					.size()];
+			int i = 0;
 			for (final BankDroidTransaction trans : transactions) {
-				final ContentValues values = new ContentValues(6);
+				final ContentValues value = new ContentValues(6);
 
-				values.put(Transactions.GLOBAL_ID, trans.getId());
-				values.put(Transactions.DATE, trans.getDate());
-				values.put(Transactions.DESCRIPTION, trans.getDescription());
-				values.put(Transactions.AMOUNT, trans.getAmount().toString());
-				values.put(Transactions.CURRENCY, trans.getCurrency());
-				values.put(Transactions.BD_ACCOUNT, trans.getAccountId());
+				value.put(Transactions.GLOBAL_ID, trans.getId());
+				value.put(Transactions.DATE, trans.getDate());
+				value.put(Transactions.DESCRIPTION, trans.getDescription());
+				value.put(Transactions.AMOUNT, trans.getAmount().toString());
+				value.put(Transactions.CURRENCY, trans.getCurrency());
+				value.put(Transactions.BD_ACCOUNT, trans.getAccountId());
 
-				client.insert(uri, values);
+				values[i] = value;
+				i++;
 			}
+
+			client.bulkInsert(uri, values);
+
 		} finally {
 			client.release();
 		}
@@ -158,7 +167,7 @@ public class DbFacade implements LogTag, DbConstants {
 			throws RemoteException {
 
 		final Uri uri = Uri.parse(Provider.TRANSACTIONS_URI);
-		return getTransactions(ctx, uri, Transactions.FILTERED + " = 0 ", null);
+		return getTransactions(ctx, uri, Transactions.FILTERED + " = 0", null);
 	}
 
 	/**
@@ -216,6 +225,11 @@ public class DbFacade implements LogTag, DbConstants {
 				transactions.add(trans);
 			}
 			cur.close();
+		} catch (final IllegalArgumentException e) {
+			Log.e(TAG, "Could not find required database columns", e);
+		} catch (final RuntimeException e) {
+			Log.e(TAG, "Unkown runtime exception in DbFacade.", e);
+			throw e;
 		} finally {
 			client.release();
 		}
@@ -286,8 +300,9 @@ public class DbFacade implements LogTag, DbConstants {
 				final Category cat = new Category(id, color, name);
 
 				categories.add(cat);
-				cur.close();
+
 			}
+			cur.close();
 		} finally {
 			client.release();
 		}

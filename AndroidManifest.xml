@@ -27,6 +27,4 @@
 	<uses-permission
 		android:name="com.liato.bankdroid.permission.READ_ACCESS_BANK_TRANSACTIONS" />
 
-<instrumentation android:targetPackage="se.ekonomipuls" android:name="android.test.InstrumentationTestRunner"></instrumentation>
-<uses-library android:name="android.test.InstrumentationTestRunner" />
 </manifest> 

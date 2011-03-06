@@ -15,6 +15,7 @@
  */
 package se.ekonomipuls.database;
 
+
 /**
  * @author Magnus Andersson
  * @since 17 feb 2011

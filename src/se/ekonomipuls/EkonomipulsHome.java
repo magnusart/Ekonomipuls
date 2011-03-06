@@ -93,15 +93,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 		final ListView legendList = (ListView) findViewById(R.id.legendList);
 
-		List<Transaction> transactions;
-
-		try {
-			transactions = DbFacade.getAllTransactions(this);
-
-			populateSeriesEntries(transactions, pieChart);
-		} catch (final RemoteException e) {
-			GuiUtil.toastDbError(this, e);
-		}
+		populateSeriesEntries(pieChart);
 
 		populateLegendList(legendList, pieChart.getSeries(),
 				pieChart.getTotalAmt());
@@ -110,8 +102,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 	}
 
-	private void populateSeriesEntries(final List<Transaction> transactions,
-			final PieChartView pieChart) {
+	private void populateSeriesEntries(final PieChartView pieChart) {
 
 		final long reportId = GuiUtil.getEconomicOverviewId(this);
 
