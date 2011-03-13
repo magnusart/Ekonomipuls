@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
-
+package se.ekonomipuls.database.analytics;
 
 /**
  * @author Magnus Andersson
  * @since 17 feb 2011
  */
-interface DbConstants {
+public interface DbConstants {
 
 	public static final int DB_VERSION = 1;
 	public static final String DB_NAME = "ekonomipuls.db";

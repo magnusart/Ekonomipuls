@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.database.analytics;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
@@ -31,7 +31,7 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 16 feb 2011
  */
-final class DbHelper extends SQLiteOpenHelper implements DbConstants,
+final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
 		PropertiesConstants, LogTag {
 	private static final String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE
@@ -297,10 +297,10 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 
 	private final String reportTo;
 
-	public DbHelper(final Context context) {
+	public AnalyticsDbHelper(final Context context) {
 		// LeaklessCursorFactory gives a cursor that also closes the database.
 		// This is a hack: http://stackoverflow.com/questions/4547461/closing-the-database-in-a-contentprovider
-		super(context, DB_NAME, new LeaklessCursorFactory(), DB_VERSION);
+		super(context, DB_NAME, null, DB_VERSION);
 		this.context = context;
 		defaultCategoryName = context.getString(R.string.default_category_name);
 		defaultTagName = context.getString(R.string.default_tag_name);

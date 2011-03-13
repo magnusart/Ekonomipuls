@@ -21,7 +21,7 @@
 
 
 <activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
-<provider android:name=".database.DbProvider" android:authorities="@string/provider_authority" android:exported="false" android:enabled="true" android:multiprocess="true" android:syncable="false"></provider>
+<provider android:name="database.analytics.DbProvider" android:authorities="@string/provider_authority" android:exported="false" android:enabled="true" android:multiprocess="true" android:syncable="false"></provider>
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

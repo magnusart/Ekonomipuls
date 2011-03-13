@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.database.analytics;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,12 +88,12 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 		return colMap;
 	}
 
-	private DbHelper dbHelper;
+	private AnalyticsDbHelper dbHelper;
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean onCreate() {
-		dbHelper = new DbHelper(getContext());
+		dbHelper = new AnalyticsDbHelper(getContext());
 		return true;
 	}
 

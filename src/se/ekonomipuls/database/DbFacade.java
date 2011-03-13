@@ -22,6 +22,7 @@ import java.util.List;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.analytics.DbConstants;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;

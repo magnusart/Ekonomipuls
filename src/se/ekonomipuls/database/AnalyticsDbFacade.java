@@ -15,24 +15,13 @@
  */
 package se.ekonomipuls.database;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteCursorDriver;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteQuery;
+import se.ekonomipuls.LogTag;
+import se.ekonomipuls.database.analytics.DbConstants;
 
 /**
  * @author Magnus Andersson
- * @since 6 mar 2011
+ * @since 13 mar 2011
  */
-class LeaklessCursorFactory implements CursorFactory {
-
-	/** {@inheritDoc} */
-	@Override
-	public Cursor newCursor(final SQLiteDatabase db,
-			final SQLiteCursorDriver masterQuery, final String editTable,
-			final SQLiteQuery query) {
-		return new LeaklessCursor(db, masterQuery, editTable, query);
-	}
+public class AnalyticsDbFacade implements LogTag, DbConstants {
 
 }
