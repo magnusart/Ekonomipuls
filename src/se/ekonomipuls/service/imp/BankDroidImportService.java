@@ -15,23 +15,29 @@
  */
 package se.ekonomipuls.service.imp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
+import se.ekonomipuls.PropertiesConstants;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.DbFacade;
+import se.ekonomipuls.database.Transaction;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
-import se.ekonomipuls.service.filter.TransactionsFilterService;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
  * @author Magnus Andersson
  * @since 25 jan 2011
  */
-public class BankDroidImportService extends IntentService implements LogTag {
+public class BankDroidImportService extends IntentService implements
+		PropertiesConstants, LogTag {
 
 	private static final String ACCOUNT_ID = "accountId";
 
@@ -58,18 +64,58 @@ public class BankDroidImportService extends IntentService implements LogTag {
 			Log.v(TAG, "Bulk inserting transactions");
 			DbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
 
+			//			filterLocal();
+
 			// Hand over to filtering.
 
-			Log.v(TAG, "Handing over to filering service");
-			final Intent importFilter = new Intent(this,
-					TransactionsFilterService.class);
+			//			Log.v(TAG, "Handing over to filering service");
+			//			final Intent importFilter = new Intent(this,
+			//					TransactionsFilterService.class);
 
-			this.startService(importFilter);
+			//			this.startService(importFilter);
 
 		} catch (final IllegalAccessException e) {
 			Log.e(TAG, "Unable to access the content provider.", e);
 		} catch (final RemoteException e) {
 			Log.e(TAG, "Unable to access the content provider.", e);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void filterLocal() {
+		Log.v(TAG, "Starting to apply filters to unfiltered transactions");
+
+		List<Transaction> transactions;
+		try {
+			Log.v(TAG, "Fetching all unfiltered transactions");
+			transactions = DbFacade.getUnfilteredTransactions(getBaseContext());
+			Log.d(TAG, transactions.size()
+					+ " transactions for filter application.");
+			final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
+
+			for (final Transaction t : transactions) {
+				Log.v(TAG, "Applying filter to Transaction " + t);
+
+				// Only if no filters matched, set default tag.
+
+				final SharedPreferences pref = PreferenceManager
+						.getDefaultSharedPreferences(this);
+				final long tagId = pref.getLong(CONF_DEF_TAG, -1);
+
+				assert (tagId != -1);
+
+				filteredTransactions.add(new ApplyFilterTagAction(t, tagId));
+
+			}
+
+			DbFacade.updateTransactionsAssignTags(this, filteredTransactions);
+
+		} catch (final RemoteException e) {
+			// TODO Handle exception
+			e.printStackTrace();
+
 		}
 	}
 

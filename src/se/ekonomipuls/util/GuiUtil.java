@@ -130,11 +130,10 @@ public final class GuiUtil implements PropertiesConstants, LogTag {
 		Color.colorToHSV(baseColor, hsv);
 
 		float saturation = DARK_GRAD_SATURATION;
-		float brightness = DARK_GRAD_BRIGHTNESS;
+		final float brightness = DARK_GRAD_BRIGHTNESS;
 		if ((baseColor == Color.GRAY) || (baseColor == Color.WHITE)
 				|| (baseColor == Color.BLACK)) {
 			saturation = 0.0f;
-			brightness += 0.2f;
 		}
 
 		hsv[1] = saturation;

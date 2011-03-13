@@ -59,10 +59,10 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		super.onResume();
 		populateData(); // TODO: Fix so that PieChart has an adapter.
 
-		//		legendAdapter.notifyDataSetInvalidated();
+		legendAdapter.notifyDataSetInvalidated();
 
-		//		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
-		//		pieChart.invalidate();
+		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
+		pieChart.invalidate();
 	}
 
 	/** {@inheritDoc} */

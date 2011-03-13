@@ -216,8 +216,8 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 
 		final long id = db.insert(table, null, values);
 		Log.v(TAG, "In transaction: " + db.inTransaction());
-		db.setTransactionSuccessful();
-		db.close();
+
+		shutdownDb(db);
 
 		return Uri.parse(uriString + "/" + id);
 	}
@@ -258,8 +258,8 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 		}
 
 		final int updates = db.update(table, values, selection, selectionArgs);
-		db.setTransactionSuccessful();
-		db.close();
+
+		shutdownDb(db);
 
 		return updates;
 	}
@@ -267,19 +267,21 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 	/** {@inheritDoc} */
 	@Override
 	public int bulkInsert(final Uri uri, final ContentValues[] values) {
-		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		Log.v(TAG, "Entering bulk insert");
+		//		final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
 		int numInsert = 0;
 		// Setup the query based on what action is to be performed
 		switch (uriMatcher.match(uri)) {
 			case TRANSACTIONS_ACTION:
-				numInsert = bulkInsertOneTable(db, Transactions.TABLE, values);
+				numInsert = bulkInsertOneTable(dbHelper.getWritableDatabase(),
+						Transactions.TABLE, values);
 				break;
 			case TRANSACTIONS_TAGS_ACTION:
 				final String table1 = Transactions.TABLE;
 				final String table2 = Joins.TRANSACTIONS_TAGS_TABLE;
-				numInsert = bulkUpdateTransactionInsertTags(db, table1, table2,
-						values);
+				numInsert = bulkUpdateTransactionInsertTags(
+						dbHelper.getWritableDatabase(), table1, table2, values);
 				break;
 			case TRANSACTIONS_CATEGORY_ACTION:
 				throw new IllegalArgumentException(
@@ -312,7 +314,8 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 			final String transTable, final String tagsJoinTable,
 			final ContentValues[] values) {
 		Log.v(TAG, "In transaction: " + db.inTransaction());
-		Log.v(TAG, "Bulk inserting/updating" + transTable + "/" + tagsJoinTable);
+		Log.v(TAG, "Bulk inserting/updating " + transTable + "/"
+				+ tagsJoinTable);
 		int numInsert = 0;
 
 		for (final ContentValues value : values) {
@@ -334,8 +337,7 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 			numInsert++;
 		}
 
-		db.setTransactionSuccessful();
-		db.close();
+		shutdownDb(db);
 
 		return numInsert;
 	}
@@ -351,9 +353,21 @@ public class DbProvider extends ContentProvider implements DbConstants, LogTag {
 			numInsert++;
 		}
 
-		db.setTransactionSuccessful();
-		db.close();
+		shutdownDb(db);
 
 		return numInsert;
+	}
+
+	/**
+	 * @param db
+	 */
+	private static void shutdownDb(final SQLiteDatabase db) {
+		if (!db.isReadOnly() && db.isOpen()) {
+			if (db.inTransaction()) {
+				db.setTransactionSuccessful();
+				db.endTransaction();
+			}
+			db.close();
+		}
 	}
 }

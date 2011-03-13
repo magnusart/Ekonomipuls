@@ -103,16 +103,18 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ Categories.TABLE
 			+ " ("
 			+ Categories.ID
-			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ ") ON DELETE RESTRICT, "
 			+ "FOREIGN KEY("
 			+ Joins.TAG_FK_1
 			+ ") REFERENCES "
 			+ Tags.TABLE
 			+ "( "
 			+ Tags.ID
-			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ " ) ON DELETE RESTRICT, "
 			+ "UNIQUE ( "
-			+ Joins.CAT_FK_1 + ", " + Joins.TAG_FK_1 + " )" + ")";
+			+ Joins.CAT_FK_1
+			+ ", "
+			+ Joins.TAG_FK_1 + " )" + ")";
 
 	private static final String DB_CREATE_TRANSACTIONS_TAGS_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Joins.TRANSACTIONS_TAGS_TABLE
@@ -127,16 +129,18 @@ final class DbHelper extends SQLiteOpenHelper implements DbConstants,
 			+ Transactions.TABLE
 			+ " ("
 			+ Transactions.ID
-			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ ") ON DELETE RESTRICT, "
 			+ "FOREIGN KEY("
 			+ Joins.TAG_FK_2
 			+ ") REFERENCES "
 			+ Tags.TABLE
 			+ "( "
 			+ Tags.ID
-			+ " ) ON DELETE RESTRICT ON UPDATE CASCADE, "
+			+ " ) ON DELETE RESTRICT, "
 			+ "UNIQUE ( "
-			+ Joins.TRANS_FK + ", " + Joins.TAG_FK_2 + " )" + ")";
+			+ Joins.TRANS_FK
+			+ ", "
+			+ Joins.TAG_FK_2 + " )" + ")";
 
 	private static final String DB_CREATE_REPORTS_CATEGORIES_JOIN_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Joins.REPORTS_CATEGORIES_TABLE

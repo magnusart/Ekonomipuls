@@ -53,6 +53,8 @@ public class TransactionsFilterService extends IntentService implements
 		try {
 			Log.v(TAG, "Fetching all unfiltered transactions");
 			transactions = DbFacade.getUnfilteredTransactions(getBaseContext());
+			Log.d(TAG, transactions.size()
+					+ " transactions for filter application.");
 			final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
 
 			for (final Transaction t : transactions) {

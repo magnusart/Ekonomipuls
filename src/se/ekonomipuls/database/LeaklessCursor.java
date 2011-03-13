@@ -48,7 +48,7 @@ class LeaklessCursor extends SQLiteCursor implements LogTag {
 	public void close() {
 		Log.v(TAG, "Closing LeaklessCursor: " + mDatabase.getPath());
 		super.close();
-		if (mDatabase != null) {
+		if ((mDatabase != null) && mDatabase.isOpen()) {
 			if (!mDatabase.isReadOnly()) {
 				Log.v(TAG, "Closing transaction for Cursor " + toString());
 				mDatabase.endTransaction();
