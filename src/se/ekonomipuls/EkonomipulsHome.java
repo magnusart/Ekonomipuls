@@ -22,9 +22,10 @@ import java.util.List;
 import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.charts.PieChartView;
 import se.ekonomipuls.charts.SeriesEntry;
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.Category;
-import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
@@ -111,7 +112,8 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 		List<Category> categories;
 		try {
-			categories = DbFacade.getCategoriesByReport(this, reportId);
+			categories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
+					this, reportId);
 
 			final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
 			BigDecimal total = new BigDecimal(0.0);
@@ -119,7 +121,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 			// Get the transactions given this category's tags
 			for (final Category cat : categories) {
 
-				final List<Transaction> catTransactions = DbFacade
+				final List<Transaction> catTransactions = AnalyticsTransactionsDbFacade
 						.getTransactionsByCategory(this, cat);
 
 				final SeriesEntry ser = new SeriesEntry(cat, catTransactions);

@@ -18,21 +18,22 @@ package se.ekonomipuls.database.analytics;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
+import se.ekonomipuls.database.AbstractDbHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
  * @author Magnus Andersson
- * @since 16 feb 2011
+ * @since 13 mar 2011
  */
-final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
-		PropertiesConstants, LogTag {
+public class AnalyticsDbHelper extends AbstractDbHelper implements
+		AnalyticsDbConstants, PropertiesConstants, LogTag {
+
 	private static final String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE
 			+ " ( "
@@ -297,10 +298,14 @@ final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
 
 	private final String reportTo;
 
+	/**
+	 * @param context
+	 * @param name
+	 * @param factory
+	 * @param version
+	 */
 	public AnalyticsDbHelper(final Context context) {
-		// LeaklessCursorFactory gives a cursor that also closes the database.
-		// This is a hack: http://stackoverflow.com/questions/4547461/closing-the-database-in-a-contentprovider
-		super(context, DB_NAME, null, DB_VERSION);
+		super(context, ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
 		this.context = context;
 		defaultCategoryName = context.getString(R.string.default_category_name);
 		defaultTagName = context.getString(R.string.default_tag_name);
@@ -312,30 +317,14 @@ final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
 
 	/** {@inheritDoc} */
 	@Override
-	public void onOpen(final SQLiteDatabase db) {
-		// The transaction is closed in LeaklessCursor#close()
-		if (!db.isReadOnly()) {
-			db.execSQL(TURN_ON_FK);
-			Log.v(TAG, "Beginning transaction for " + db.toString());
-			db.beginTransaction();
-		}
+	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
+			final int newVersion) {
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onCreate(final SQLiteDatabase db) {
-		db.execSQL(TURN_ON_FK); // Has to be outside an transaction
-		db.beginTransaction();
-
-		setupTables(db);
-
-		populateWithDefaultCategoryAndTag(db);
-
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
-
-	private void setupTables(final SQLiteDatabase db) {
+	protected void createTables(final SQLiteDatabase db) {
 		Log.d(TAG, "Creating table with " + DB_CREATE_TRANSACTIONS_TABLE);
 		db.execSQL(DB_CREATE_TRANSACTIONS_TABLE);
 
@@ -369,8 +358,9 @@ final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
 		db.execSQL(DB_CREATE_CATEGORIES_REPORT_VIEW);
 	}
 
-	private void populateWithDefaultCategoryAndTag(final SQLiteDatabase db) {
-
+	/** {@inheritDoc} */
+	@Override
+	protected void initTables(final SQLiteDatabase db) {
 		// Add default category
 		final ContentValues catValues = new ContentValues(2);
 		catValues.put(Categories.NAME, defaultCategoryName);
@@ -412,14 +402,12 @@ final class AnalyticsDbHelper extends SQLiteOpenHelper implements DbConstants,
 		editor.commit();
 
 		Log.d(TAG, "Added default values for Category and Tag");
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-			final int newVersion) {
-		//		db.execSQL(DB_UPGRADE_Transactions.TABLE);
-		//		db.execSQL(DB_CREATE_Transactions.TABLE);
-	}
+	protected void initConfiguration() {
 
+	}
 }

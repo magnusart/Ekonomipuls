@@ -14,14 +14,13 @@
 				<action android:name="com.liato.bankdroid.action.TRANSACTIONS"></action>
 			</intent-filter>
 		</receiver>
-		<service android:name=".service.imp.BankDroidImportService" android:enabled="true"></service>
-		<service android:name=".service.filter.TransactionsFilterService" android:enabled="true"></service>
+		<service android:enabled="true" android:name=".service.importer.BankDroidImportService"></service>
+		<service android:enabled="true" android:name=".service.filter.TransactionsFilterService"></service>
 
 	<activity android:name="OverviewSettings" android:theme="@android:style/Theme.NoTitleBar"></activity>
 
 
 <activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
-<provider android:name="database.analytics.DbProvider" android:authorities="@string/provider_authority" android:exported="false" android:enabled="true" android:multiprocess="true" android:syncable="false"></provider>
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

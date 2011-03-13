@@ -17,8 +17,8 @@ package se.ekonomipuls;
 
 import java.util.List;
 
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.Category;
-import se.ekonomipuls.database.DbFacade;
 import se.ekonomipuls.util.GuiUtil;
 import android.app.Activity;
 import android.content.Intent;
@@ -60,11 +60,12 @@ public class OverviewSettings extends Activity implements LogTag {
 	 */
 	private void populateCategoriesList() {
 		try {
-			final List<Category> allCategories = DbFacade
+			final List<Category> allCategories = AnalyticsCategoriesDbFacade
 					.getAllCategories(this);
 
 			final long reportId = GuiUtil.getEconomicOverviewId(this);
-			reportCategories = DbFacade.getCategoriesByReport(this, reportId);
+			reportCategories = AnalyticsCategoriesDbFacade
+					.getCategoriesByReport(this, reportId);
 
 			final ListView categories = (ListView) findViewById(R.id.categoriesList);
 

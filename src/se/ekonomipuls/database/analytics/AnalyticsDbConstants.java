@@ -17,13 +17,12 @@ package se.ekonomipuls.database.analytics;
 
 /**
  * @author Magnus Andersson
- * @since 17 feb 2011
+ * @since 13 mar 2011
  */
-public interface DbConstants {
-
-	public static final int DB_VERSION = 1;
-	public static final String DB_NAME = "ekonomipuls.db";
-	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
+public interface AnalyticsDbConstants {
+	// Database configuration for Analytics.
+	public static final int ANALYTICS_DB_VERSION = 1;
+	public static final String ANALYTICS_DB_NAME = "ekonomipuls_analytics.db";
 
 	static interface Transactions {
 		public final static String TABLE = "transactions";
@@ -101,38 +100,5 @@ public interface DbConstants {
 		public final static String CATEGORIES_REPORT_VIEW = "categories_report_view";
 		// Special columns for this view
 		public final static String REP_CAT_REP_ID = "rep_id";
-	}
-
-	static interface Provider {
-		// Content provider URI:s
-		public static final String AUTHORITY = "se.ekonomipuls.provider";
-
-		public static final String TRANSACTIONS = Transactions.TABLE;
-		public static final String TRANSACTIONS_CATEGORY = Transactions.TABLE
-				+ "/" + Categories.TABLE;
-		public static final String CATEGORIES_REPORT = Categories.TABLE + "/"
-				+ Reports.TABLE;
-		public static final String CATEGORIES = Categories.TABLE;
-		public static final String TRANSACTIONS_TAGS = Joins.TRANSACTIONS_TAGS_TABLE;
-
-		public static final String AUTH_URI_PART = "content://" + AUTHORITY;
-
-		// URI:s
-		public static final String TRANSACTIONS_URI = AUTH_URI_PART + "/"
-				+ TRANSACTIONS;
-		public static final String TRANSACTIONS_CATEGORY_URI = AUTH_URI_PART
-				+ "/" + TRANSACTIONS_CATEGORY;
-		public static final String CATEGORIES_REPORT_URI = AUTH_URI_PART + "/"
-				+ CATEGORIES_REPORT;
-		public static final String CATEGORIES_URI = AUTH_URI_PART + "/"
-				+ CATEGORIES;
-		public static final String TRANSACTIONS_TAGS_URI = AUTH_URI_PART + "/"
-				+ TRANSACTIONS_TAGS;
-
-		public static final String REPORTS = "/" + Reports.TABLE;
-
-		public static final String TRANSACTIONS_MIME = "vnd.android.cursor.dir/vnd.ekonomipuls.transactions";
-		public static final String REPORTS_MIME = "vnd.android.cursor.dir/vnd.ekonomipuls.reports";
-		public static final String CATEGORIES_MIME = "vnd.android.cursor.dir/vnd.ekonomipuls.categories";
 	}
 }

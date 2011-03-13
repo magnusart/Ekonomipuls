@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_homescreen">Ekonomi</string>
+	<string name="app_homescreen">Ekonomipuls</string>
 	<string name="app_name">Ekonomipuls</string>
 	<string name="no_data">Ingen data</string>
 	<string name="settings_item">Inställningar Ekonomisk Översikt</string>

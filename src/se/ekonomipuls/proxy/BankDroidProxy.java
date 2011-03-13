@@ -97,8 +97,8 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 			final int tCur = cur.getColumnIndexOrThrow(TRANS_CUR);
 			final int tAcc = cur.getColumnIndexOrThrow(TRANS_ACCNT);
 
-			Log.d(TAG, "Transactions cursor with " + cur.getCount()
-					+ " number of rows");
+			Log.d(TAG, "Aquired transactions cursor with " + cur.getCount()
+					+ " of rows");
 
 			while (cur.moveToNext()) {
 				final String id = cur.getString(tId);
@@ -118,8 +118,6 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 				cur.close(); // Clean up.
 			}
 		}
-
-		Log.d(TAG, "Got " + transactions.size() + " number of transactions");
 
 		return transactions;
 	}
@@ -160,6 +158,8 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 	}
 
 	private static String getApiKey(final Context ctx) {
+		// FIXME: Implement API-key functionality
+
 		// final SharedPreferences prefs =
 		// PreferenceManager.getDefaultSharedPreferences(ctx);
 

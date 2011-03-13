@@ -16,7 +16,7 @@
 package se.ekonomipuls.reciever;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.service.imp.BankDroidImportService;
+import se.ekonomipuls.service.importer.BankDroidImportService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
