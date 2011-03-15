@@ -21,7 +21,7 @@ import java.util.List;
 import se.ekonomipuls.R;
 import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.database.Category;
-import se.ekonomipuls.util.GuiUtil;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -91,14 +91,14 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 		final SeriesEntry entry = getItem(position);
 
-		holder.color.setColor(GuiUtil.getDarkColor(entry.getBaseColor(),
+		holder.color.setColor(EkonomipulsUtil.getDarkColor(entry.getBaseColor(),
 				entry.isSelected()));
 
 		final Category cat = entry.getCategory();
 
 		holder.categoryName.setText(cat.getName());
 
-		final int percentage = GuiUtil.getPercentage(entry.getSum()
+		final int percentage = EkonomipulsUtil.getPercentage(entry.getSum()
 				.floatValue(), total.floatValue());
 
 		holder.line2Text.setText(percentage + "%, "

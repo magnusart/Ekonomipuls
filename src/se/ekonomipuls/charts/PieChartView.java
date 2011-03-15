@@ -17,7 +17,7 @@ package se.ekonomipuls.charts;
 
 import java.util.ArrayList;
 
-import se.ekonomipuls.util.GuiUtil;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -160,7 +160,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					paint.setColor(entry.getBaseColor());
 
 					if (ENABLE_GRADIENT) {
-						final Shader grad = GuiUtil
+						final Shader grad = EkonomipulsUtil
 								.createGradientFromBaseColor(oval, entry);
 
 						paint.setShader(grad);
@@ -198,7 +198,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 		for (final Arc arc : arcs) {
 
-			final int percentage = GuiUtil.getPercentage(arc.getCategorySum(),
+			final int percentage = EkonomipulsUtil.getPercentage(arc.getCategorySum(),
 					seriesTotal.floatValue());
 			if (percentage >= PERCENTAGE_LOWER_LIMIT) {
 				final double angle = arc.getDegrees() + arc.getSweep() / 2;

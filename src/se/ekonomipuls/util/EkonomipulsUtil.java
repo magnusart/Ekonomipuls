@@ -17,6 +17,7 @@ package se.ekonomipuls.util;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
+import se.ekonomipuls.R;
 import se.ekonomipuls.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,10 +34,12 @@ import android.view.Window;
 import android.widget.Toast;
 
 /**
+ * Global utility methods for Ekonomipuls.
+ * 
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public final class GuiUtil implements PropertiesConstants, LogTag {
+public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -48,7 +51,7 @@ public final class GuiUtil implements PropertiesConstants, LogTag {
 	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
 
-	private GuiUtil() {
+	private EkonomipulsUtil() {
 		// Private constructor
 	}
 
@@ -172,6 +175,41 @@ public final class GuiUtil implements PropertiesConstants, LogTag {
 		final Toast toast = Toast.makeText(ctx, message, Toast.LENGTH_LONG);
 		toast.show();
 		Log.d(TAG, message, e);
+	}
+
+	/**
+	 * Set the status of new transactions in the staging database.
+	 * 
+	 * @param context
+	 *            the Context.
+	 * @param status
+	 *            new status.
+	 */
+	public static void setNewTransactionStatus(final Context context,
+			final boolean status) {
+		final SharedPreferences.Editor editor = PreferenceManager
+				.getDefaultSharedPreferences(context).edit();
+
+		final String containsUpdates = context
+				.getString(R.string.setting_staging_contains_updates);
+		editor.putBoolean(containsUpdates, status); // No updates when initiated.
+		editor.commit();
+	}
+
+	/**
+	 * Returns the status of new transactions in the staging database.
+	 * 
+	 * @param context
+	 *            the Context.
+	 * @return True if new transactions exists.
+	 */
+	public static boolean getNewTransactionsStatus(final Context context) {
+		final SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+
+		return prefs.getBoolean(
+				context.getString(R.string.setting_staging_contains_updates),
+				false);
 	}
 
 }

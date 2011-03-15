@@ -23,10 +23,11 @@ import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.charts.PieChartView;
 import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.Category;
 import se.ekonomipuls.database.Transaction;
-import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.util.GuiUtil;
+import se.ekonomipuls.tasks.ImportStagingTransactionsTask;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,25 +46,56 @@ import android.widget.TextView;
 public class EkonomipulsHome extends Activity implements LogTag {
 
 	private LegendAdapter legendAdapter;
+	private TextView newTransactions;
+	private PieChartView pieChart;
+	private ListView legendList;
+	private TextView noData;
+
+	/**
+	 * The onClick even for you have new transactions notification.
+	 * 
+	 * @param v
+	 */
+	public void importStagingTransactions(final View v) {
+		new ImportStagingTransactionsTask(this).execute();
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
-		GuiUtil.removeGradientBanding(getWindow());
+		newTransactions = (TextView) findViewById(R.id.newTransactions);
+		pieChart = (PieChartView) findViewById(R.id.pieChart);
+		legendList = (ListView) findViewById(R.id.legendList);
+		noData = (TextView) findViewById(R.id.noCategories);
+
+		EkonomipulsUtil.removeGradientBanding(getWindow());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		showNewTransactionsNotification();
+
 		populateData(); // TODO: Fix so that PieChart has an adapter.
 
 		legendAdapter.notifyDataSetInvalidated();
 
-		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
 		pieChart.invalidate();
+	}
+
+	/**
+	 * 
+	 */
+	private void showNewTransactionsNotification() {
+		if (EkonomipulsUtil.getNewTransactionsStatus(this)) {
+			newTransactions.setVisibility(View.VISIBLE);
+		} else {
+			newTransactions.setVisibility(View.GONE);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -92,8 +124,6 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	}
 
 	private void populateData() {
-		final PieChartView pieChart = (PieChartView) findViewById(R.id.pieChart);
-		final ListView legendList = (ListView) findViewById(R.id.legendList);
 
 		populateSeriesEntries(pieChart);
 
@@ -106,7 +136,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 	private void populateSeriesEntries(final PieChartView pieChart) {
 
-		final long reportId = GuiUtil.getEconomicOverviewId(this);
+		final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
 
 		assert (reportId != -1);
 
@@ -133,11 +163,8 @@ public class EkonomipulsHome extends Activity implements LogTag {
 			pieChart.setSeries(series);
 			pieChart.setSeriesTotal(total);
 
-			if (total.longValue() == 0) {
-				pieChart.setVisibility(View.GONE);
-			}
 		} catch (final RemoteException e) {
-			GuiUtil.toastDbError(this, e);
+			EkonomipulsUtil.toastDbError(this, e);
 		}
 	}
 
@@ -146,9 +173,10 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 		if (total.longValue() == 0) {
 			legendList.setVisibility(View.GONE);
+			noData.setVisibility(View.VISIBLE);
 		} else {
-			((TextView) findViewById(R.id.noCategories))
-					.setVisibility(View.GONE);
+			legendList.setVisibility(View.VISIBLE);
+			noData.setVisibility(View.GONE);
 		}
 
 		legendAdapter = new LegendAdapter(this, R.layout.legend_row, series,

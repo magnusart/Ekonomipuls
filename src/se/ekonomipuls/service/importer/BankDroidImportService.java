@@ -22,6 +22,7 @@ import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -59,6 +60,9 @@ public class BankDroidImportService extends IntentService implements
 				Log.v(TAG, "Bulk inserting transactions");
 				StagingDbFacade.bulkInsertBdTransactions(getBaseContext(),
 						transactions);
+
+				// Make sure we see that there are new transactions in the GUI.
+				EkonomipulsUtil.setNewTransactionStatus(getBaseContext(), true);
 			} else {
 				Log.d(TAG, "No transactions for the account " + accountId
 						+ ", skipping");

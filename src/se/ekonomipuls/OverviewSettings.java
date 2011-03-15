@@ -19,7 +19,7 @@ import java.util.List;
 
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.Category;
-import se.ekonomipuls.util.GuiUtil;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +43,7 @@ public class OverviewSettings extends Activity implements LogTag {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.overview_settings);
-		GuiUtil.removeGradientBanding(getWindow());
+		EkonomipulsUtil.removeGradientBanding(getWindow());
 		populateCategoriesList();
 	}
 
@@ -63,7 +63,7 @@ public class OverviewSettings extends Activity implements LogTag {
 			final List<Category> allCategories = AnalyticsCategoriesDbFacade
 					.getAllCategories(this);
 
-			final long reportId = GuiUtil.getEconomicOverviewId(this);
+			final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
 			reportCategories = AnalyticsCategoriesDbFacade
 					.getCategoriesByReport(this, reportId);
 
@@ -75,7 +75,7 @@ public class OverviewSettings extends Activity implements LogTag {
 
 			categories.setAdapter(tmpAdapter);
 		} catch (final RemoteException e) {
-			GuiUtil.toastDbError(this, e);
+			EkonomipulsUtil.toastDbError(this, e);
 		}
 	}
 

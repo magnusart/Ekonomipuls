@@ -4,13 +4,15 @@
   android:layout_height="fill_parent"
   android:background="@drawable/gradient_background"
   android:orientation="vertical">
+
 <se.ekonomipuls.charts.PieChartView
 	android:id="@+id/pieChart"
  	android:layout_width="fill_parent" 
     android:layout_height="0dp"
     android:layout_weight="1"
  	android:layout_margin="10dp"
-/>         
+/>
+       
 <TextView android:text="@string/economic_overview_name" 
 	android:id="@+id/legendHeader" 
 	android:layout_width="fill_parent"
@@ -37,7 +39,22 @@
 	android:layout_height="wrap_content"
 	android:id="@+id/noCategories" 
 	android:textColor="#FFFFFF"
-	android:layout_gravity="center_horizontal"
+	android:layout_gravity="bottom"
 	android:layout_weight="1"
-	android:textSize="15sp" />
+	android:textSize="15sp" 
+	android:visibility="gone"/>
+<TextView 
+	android:layout_width="fill_parent" 
+	android:id="@+id/newTransactions" 
+	android:paddingBottom="10dp"
+	android:text="@string/new_transactions" 
+	android:textSize="15sp" 
+	android:textColor="#000000" 
+	android:layout_height="wrap_content" 
+	android:background="@drawable/bottom_notification_background" 
+	android:paddingLeft="14dp" 
+	android:paddingTop="10dp" 
+	android:visibility="gone"
+	android:clickable="true"
+	android:onClick="importStagingTransactions"/> 
 </LinearLayout>

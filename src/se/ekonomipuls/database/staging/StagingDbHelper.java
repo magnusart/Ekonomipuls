@@ -16,12 +16,10 @@
 package se.ekonomipuls.database.staging;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.R;
 import se.ekonomipuls.database.AbstractDbHelper;
+import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -87,13 +85,7 @@ public class StagingDbHelper extends AbstractDbHelper implements LogTag,
 	/** {@inheritDoc} */
 	@Override
 	protected void initConfiguration() {
-		final SharedPreferences.Editor editor = PreferenceManager
-				.getDefaultSharedPreferences(context).edit();
-
-		final String containsUpdates = context
-				.getString(R.string.setting_staging_contains_updates);
-		editor.putBoolean(containsUpdates, false); // No updates when initiated.
-		editor.commit();
+		EkonomipulsUtil.setNewTransactionStatus(context, false);
 	}
 
 }
