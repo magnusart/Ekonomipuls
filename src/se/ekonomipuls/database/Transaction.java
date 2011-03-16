@@ -52,11 +52,10 @@ public class Transaction {
 	 * @param bankdroidAccount
 	 *            the bankdroid account.
 	 */
-	protected Transaction(final long id, final String globalId,
-							final String date, final String description,
-							final String comment, final BigDecimal amount,
-							final String currency, final boolean filtered,
-							final String bankdroidAccount) {
+	Transaction(final long id, final String globalId, final String date,
+				final String description, final String comment,
+				final BigDecimal amount, final String currency,
+				final boolean filtered, final String bankdroidAccount) {
 		this.id = id;
 		this.globalId = globalId;
 		this.date = date;

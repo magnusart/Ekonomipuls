@@ -23,10 +23,10 @@ import se.ekonomipuls.adapter.LegendAdapter;
 import se.ekonomipuls.charts.PieChartView;
 import se.ekonomipuls.charts.SeriesEntry;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.AnalyticsDbFacade;
 import se.ekonomipuls.database.Category;
 import se.ekonomipuls.database.Transaction;
-import se.ekonomipuls.tasks.ImportStagingTransactionsTask;
+import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.content.Intent;
@@ -51,13 +51,23 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	private ListView legendList;
 	private TextView noData;
 
+	public void refreshView() {
+		showNewTransactionsNotification();
+
+		populateData(); // TODO: Fix so that PieChart has an adapter.
+
+		legendAdapter.notifyDataSetInvalidated();
+
+		pieChart.invalidate();
+	}
+
 	/**
 	 * The onClick even for you have new transactions notification.
 	 * 
 	 * @param v
 	 */
 	public void importStagingTransactions(final View v) {
-		new ImportStagingTransactionsTask(this).execute();
+		new ExtractTransformLoadTransactionsTask(this).execute();
 	}
 
 	@Override
@@ -77,25 +87,17 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		refreshView();
 
-		showNewTransactionsNotification();
-
-		populateData(); // TODO: Fix so that PieChart has an adapter.
-
-		legendAdapter.notifyDataSetInvalidated();
-
-		pieChart.invalidate();
 	}
 
-	/**
-	 * 
-	 */
 	private void showNewTransactionsNotification() {
 		if (EkonomipulsUtil.getNewTransactionsStatus(this)) {
 			newTransactions.setVisibility(View.VISIBLE);
 		} else {
 			newTransactions.setVisibility(View.GONE);
 		}
+		newTransactions.invalidate();
 	}
 
 	/** {@inheritDoc} */
@@ -151,7 +153,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 			// Get the transactions given this category's tags
 			for (final Category cat : categories) {
 
-				final List<Transaction> catTransactions = AnalyticsTransactionsDbFacade
+				final List<Transaction> catTransactions = AnalyticsDbFacade
 						.getTransactionsByCategory(this, cat);
 
 				final SeriesEntry ser = new SeriesEntry(cat, catTransactions);

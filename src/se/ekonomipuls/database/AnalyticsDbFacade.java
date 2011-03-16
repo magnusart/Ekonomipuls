@@ -29,8 +29,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
-		LogTag, AnalyticsDbConstants {
+public class AnalyticsDbFacade extends AbstractDbFacade implements LogTag,
+		AnalyticsDbConstants {
 	/**
 	 * 
 	 * @param ctx
@@ -108,7 +108,7 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 	 * @throws RemoteException
 	 */
 	public static void updateTransactionsAssignTags(final Context ctx,
-			final List<ApplyFilterTagAction> actions) throws RemoteException {
+			final List<ApplyFilterTagAction> actions) {
 
 		final AnalyticsDbHelper helper = new AnalyticsDbHelper(ctx);
 		final SQLiteDatabase db = helper.getReadableDatabase();
@@ -132,11 +132,48 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 
 				insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
 
-				db.setTransactionSuccessful();
 			}
+
+			db.setTransactionSuccessful();
 
 		} finally {
 			shutdownDb(db, helper);
 		}
+	}
+
+	/**
+	 * @param parent
+	 * @param filteredTransactions
+	 */
+	public static void insertTransactionsAssignTags(final Context ctx,
+			final List<ApplyFilterTagAction> actions) {
+		final AnalyticsDbHelper helper = new AnalyticsDbHelper(ctx);
+		final SQLiteDatabase db = helper.getReadableDatabase();
+
+		final String table = Transactions.TABLE;
+
+		try {
+			for (final ApplyFilterTagAction action : actions) {
+
+				final Transaction transaction = action.getTransaction();
+				final long tagId = action.getTagId();
+
+				ContentValues values = ModelSqlMapper
+						.mapTransactionSql(transaction);
+
+				final long transId = insert(db, table, values);
+
+				values = ModelSqlMapper
+						.mapTransactionTagJoinSql(transId, tagId);
+
+				insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
+			}
+
+			db.setTransactionSuccessful();
+
+		} finally {
+			shutdownDb(db, helper);
+		}
+
 	}
 }

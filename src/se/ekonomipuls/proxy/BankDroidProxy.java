@@ -98,7 +98,7 @@ public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
 			final int tAcc = cur.getColumnIndexOrThrow(TRANS_ACCNT);
 
 			Log.d(TAG, "Aquired transactions cursor with " + cur.getCount()
-					+ " of rows");
+					+ " rows");
 
 			while (cur.moveToNext()) {
 				final String id = cur.getString(tId);

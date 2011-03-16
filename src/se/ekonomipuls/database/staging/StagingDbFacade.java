@@ -15,14 +15,17 @@
  */
 package se.ekonomipuls.database.staging;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.database.AbstractDbFacade;
 import se.ekonomipuls.database.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.BdModelSqlMapper;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -65,8 +68,44 @@ public class StagingDbFacade extends AbstractDbFacade implements
 	 */
 	public static List<BankDroidTransaction> getStagedTransactions(
 			final Context ctx) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final String table = Staging.TABLE;
+		final String selection = null;
+		final String[] selectionArgs = null;
+		final String having = null;
+		final String groupBy = null;
+		final String sortOrder = Staging.DATE + " DESC";
+		final String[] columns = Staging.COLUMNS;
+
+		final StagingDbHelper helper = new StagingDbHelper(ctx);
+		final SQLiteDatabase db = helper.getReadableDatabase();
+
+		final List<BankDroidTransaction> stagedTransactions = new ArrayList<BankDroidTransaction>();
+
+		try {
+			final Cursor cur = query(db, table, columns, selection,
+					selectionArgs, groupBy, having, sortOrder);
+
+			final int[] indices = BdModelSqlMapper
+					.getStagedTransactionCursorIndices(cur);
+
+			while (cur.moveToNext()) {
+
+				final BankDroidTransaction transaction = BdModelSqlMapper
+						.mapStagedTransactionModel(cur, indices);
+
+				Log.d(TAG, "Fetching staged transaction " + transaction);
+				stagedTransactions.add(transaction);
+			}
+			cur.close();
+		} catch (final IllegalArgumentException e) {
+			Log.e(TAG, "Could not find required database columns", e);
+			throw e;
+		} finally {
+			shutdownDb(db, helper);
+		}
+
+		return stagedTransactions;
 	}
 
 }

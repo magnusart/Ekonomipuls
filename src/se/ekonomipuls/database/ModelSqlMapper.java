@@ -144,6 +144,26 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 
 	/**
 	 * 
+	 * @param trans
+	 * @return
+	 */
+	public static ContentValues mapTransactionSql(final Transaction trans) {
+		final ContentValues values = new ContentValues(8);
+
+		values.put(Transactions.GLOBAL_ID, trans.getGlobalId());
+		values.put(Transactions.DATE, trans.getDate());
+		values.put(Transactions.DESCRIPTION, trans.getDescription());
+		values.put(Transactions.COMMENT, trans.getComment());
+		values.put(Transactions.AMOUNT, trans.getAmount().toString());
+		values.put(Transactions.CURRENCY, trans.getCurrency());
+		values.put(Transactions.FILTERED, trans.isFiltered());
+		values.put(Transactions.BD_ACCOUNT, trans.getBankdroidAccount());
+
+		return values;
+	}
+
+	/**
+	 * 
 	 * @param cur
 	 * @param indices
 	 * @return
