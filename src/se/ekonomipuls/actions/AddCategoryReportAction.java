@@ -16,7 +16,7 @@
 package se.ekonomipuls.actions;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.database.Category;
+import se.ekonomipuls.model.Category;
 
 /**
  * 

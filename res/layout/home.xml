@@ -5,7 +5,7 @@
   android:background="@drawable/gradient_background"
   android:orientation="vertical">
 
-<se.ekonomipuls.charts.PieChartView
+<se.ekonomipuls.views.charts.PieChartView
 	android:id="@+id/pieChart"
  	android:layout_width="fill_parent" 
     android:layout_height="0dp"

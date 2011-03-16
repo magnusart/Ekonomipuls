@@ -21,8 +21,8 @@ import java.util.List;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.AnalyticsDbFacade;
-import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.model.Transaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,7 +52,7 @@ public class TransactionsFilterService extends IntentService implements
 		List<Transaction> transactions;
 		try {
 			Log.v(TAG, "Fetching all unfiltered transactions");
-			transactions = AnalyticsDbFacade
+			transactions = AnalyticsTransactionsDbFacade
 					.getUnfilteredTransactions(getBaseContext());
 			Log.d(TAG, transactions.size()
 					+ " transactions for filter application.");
@@ -73,7 +73,7 @@ public class TransactionsFilterService extends IntentService implements
 
 			}
 
-			AnalyticsDbFacade.updateTransactionsAssignTags(this,
+			AnalyticsTransactionsDbFacade.updateTransactionsAssignTags(this,
 					filteredTransactions);
 
 		} catch (final RemoteException e) {

@@ -17,8 +17,8 @@ package se.ekonomipuls;
 
 import java.util.List;
 
-import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.Category;
+import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.model.Category;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.content.Intent;

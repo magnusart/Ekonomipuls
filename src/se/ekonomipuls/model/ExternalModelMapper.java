@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,7 +22,8 @@ import java.util.List;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 
 /**
- * Map external model objects into internal models.
+ * This utility class is responsible for mapping between external model objects
+ * (BankDroid) and internal model objects.
  * 
  * @author Magnus Andersson
  * @since 16 mar 2011

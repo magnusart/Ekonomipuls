@@ -18,7 +18,7 @@ package se.ekonomipuls.util;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
-import se.ekonomipuls.charts.SeriesEntry;
+import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;

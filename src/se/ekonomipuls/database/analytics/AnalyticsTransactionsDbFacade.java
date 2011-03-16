@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.database.analytics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsDbConstants;
-import se.ekonomipuls.database.analytics.AnalyticsDbHelper;
+import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.model.Transaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +31,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class AnalyticsDbFacade extends AbstractDbFacade implements LogTag,
+public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements LogTag,
 		AnalyticsDbConstants {
 	/**
 	 * 

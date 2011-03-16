@@ -20,7 +20,7 @@ import java.util.List;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.database.AbstractDbFacade;
-import se.ekonomipuls.database.ModelSqlMapper;
+import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
 import android.content.ContentValues;

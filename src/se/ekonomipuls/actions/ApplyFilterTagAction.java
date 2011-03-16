@@ -15,7 +15,7 @@
  */
 package se.ekonomipuls.actions;
 
-import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.model.Transaction;
 
 /**
  * This class encapsulates a command that applies an filter to a transaction. It

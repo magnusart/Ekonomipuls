@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.charts;
+package se.ekonomipuls.views.charts;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import se.ekonomipuls.database.Category;
-import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.Transaction;
 
 /**
  * @author Magnus Andersson

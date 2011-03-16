@@ -23,10 +23,10 @@ import se.ekonomipuls.LogTag;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.AnalyticsDbFacade;
-import se.ekonomipuls.database.ExternalModelMapper;
-import se.ekonomipuls.database.Transaction;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.staging.StagingDbFacade;
+import se.ekonomipuls.model.ExternalModelMapper;
+import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.ProgressDialog;
@@ -90,7 +90,7 @@ public class ExtractTransformLoadTransactionsTask extends
 
 		// Do filtering
 
-		AnalyticsDbFacade.insertTransactionsAssignTags(parent,
+		AnalyticsTransactionsDbFacade.insertTransactionsAssignTags(parent,
 				filteredTransactions);
 
 		EkonomipulsUtil.setNewTransactionStatus(parent, false);

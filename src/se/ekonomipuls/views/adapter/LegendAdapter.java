@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.adapter;
+package se.ekonomipuls.views.adapter;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import se.ekonomipuls.R;
-import se.ekonomipuls.charts.SeriesEntry;
-import se.ekonomipuls.database.Category;
+import se.ekonomipuls.model.Category;
 import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;

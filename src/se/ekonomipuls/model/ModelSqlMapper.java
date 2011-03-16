@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.model;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,8 +27,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 /**
- * This utility class is responsible for mapping model objects to SQL and vice
- * versa.
+ * This utility class is responsible for mapping between model objects and SQL.
  * 
  * @author Magnus Andersson
  * @since 13 mar 2011
