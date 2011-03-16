@@ -14,9 +14,9 @@
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Categories</string>
-<string name="category_name_new">Category name...</string><string name="category_name">Category name</string>
-<string name="setting_staging_contains_updates">staging_contains_updates</string>
-<string name="new_transactions">You have new transactions available</string>
-<string name="dialog_stage_import_message">Processing new transactions...</string>
+	<string name="category_name_new">Category name...</string><string name="category_name">Category name</string>
+	<string name="setting_staging_contains_updates">staging_contains_updates</string>
+	<string name="new_transactions">You have new transactions available</string>
+	<string name="dialog_stage_import_message">Processing new transactions...</string>
 
 </resources>

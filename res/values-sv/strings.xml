@@ -14,6 +14,8 @@
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Kategorier</string>
-<string name="category_name">Kategorinamn</string>
+	<string name="category_name">Kategorinamn...</string>
+	<string name="new_transactions">Det finns nya transaktioner tillgängliga</string>
+	<string name="dialog_stage_import_message">Arbetar med nya transaktioner...</string>
 
 </resources>

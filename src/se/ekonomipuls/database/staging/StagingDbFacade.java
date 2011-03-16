@@ -22,7 +22,7 @@ import se.ekonomipuls.LogTag;
 import se.ekonomipuls.database.AbstractDbFacade;
 import se.ekonomipuls.database.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
-import se.ekonomipuls.proxy.BdModelSqlMapper;
+import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -86,12 +86,12 @@ public class StagingDbFacade extends AbstractDbFacade implements
 			final Cursor cur = query(db, table, columns, selection,
 					selectionArgs, groupBy, having, sortOrder);
 
-			final int[] indices = BdModelSqlMapper
+			final int[] indices = BankDroidModelSqlMapper
 					.getStagedTransactionCursorIndices(cur);
 
 			while (cur.moveToNext()) {
 
-				final BankDroidTransaction transaction = BdModelSqlMapper
+				final BankDroidTransaction transaction = BankDroidModelSqlMapper
 						.mapStagedTransactionModel(cur, indices);
 
 				Log.d(TAG, "Fetching staged transaction " + transaction);
