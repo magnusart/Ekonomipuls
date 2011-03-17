@@ -114,4 +114,21 @@ public abstract class AbstractDbFacade implements LogTag {
 		return qb.query(db, columns, selection, selectionArgs, groupBy, having,
 				sortOrder);
 	}
+
+	/**
+	 * @param db
+	 * @param table
+	 * @param whereClause
+	 * @param whereArgs
+	 * @return
+	 */
+	protected static int delete(final SQLiteDatabase db, final String table,
+			final String whereClause, final String[] whereArgs) {
+
+		Log.d(TAG, "Deleting from " + table + " where " + whereClause + " = "
+				+ whereArgs);
+
+		return db.delete(table, whereClause, whereArgs);
+
+	}
 }

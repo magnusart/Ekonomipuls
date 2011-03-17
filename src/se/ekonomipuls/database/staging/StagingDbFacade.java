@@ -21,8 +21,8 @@ import java.util.List;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.database.AbstractDbFacade;
 import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
+import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -106,6 +106,31 @@ public class StagingDbFacade extends AbstractDbFacade implements
 		}
 
 		return stagedTransactions;
+	}
+
+	/**
+	 * Delete all the transactions in the staging table.
+	 * 
+	 * @param ctx
+	 * @return
+	 */
+	public static int purgeStagingTable(final Context ctx) {
+		final StagingDbHelper helper = new StagingDbHelper(ctx);
+		final SQLiteDatabase db = helper.getReadableDatabase();
+
+		final String table = Staging.TABLE;
+		final String whereClause = null;
+		final String[] whereArgs = null;
+
+		int numDeleted = -1;
+
+		try {
+			numDeleted = delete(db, table, whereClause, whereArgs);
+		} finally {
+			shutdownDb(db, helper);
+		}
+
+		return numDeleted;
 	}
 
 }

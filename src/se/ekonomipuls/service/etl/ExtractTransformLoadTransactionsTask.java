@@ -71,28 +71,29 @@ public class ExtractTransformLoadTransactionsTask extends
 	@Override
 	protected Void doInBackground(final Void... params) {
 
-		try {
-			Thread.sleep(3000);
-		} catch (final InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// Get staged transacions with external model
 		final List<BankDroidTransaction> stagedTransactions = StagingDbFacade
 				.getStagedTransactions(parent);
 
 		Log.d(TAG, "Loaded staged transactions: " + stagedTransactions);
 
+		// Transform to internal model
 		final List<Transaction> transactions = ExternalModelMapper
 				.fromBdTransactionsToTransactions(stagedTransactions);
 
+		// Transform and apply filters (separate this step later)
 		final List<ApplyFilterTagAction> filteredTransactions = applyDefaultFilter(transactions);
 
 		// Do filtering
 
+		// Load the transactions into the Analytics table
 		AnalyticsTransactionsDbFacade.insertTransactionsAssignTags(parent,
 				filteredTransactions);
 
+		// Now purge the staging table
+		StagingDbFacade.purgeStagingTable(parent);
+
+		// Reset the new transactions toggle
 		EkonomipulsUtil.setNewTransactionStatus(parent, false);
 
 		return null;
