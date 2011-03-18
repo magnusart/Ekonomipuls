@@ -25,15 +25,19 @@ import java.math.BigDecimal;
  */
 public class Transaction {
 
-	protected long id;
-	protected String date;
-	protected String description;
-	protected BigDecimal amount;
-	protected String currency;
-	protected String comment;
-	protected boolean filtered;
-	protected final String bankdroidAccount;
-	protected final String globalId;
+	// Data fields
+	private final long id;
+	private final String date;
+	private final String description;
+	private final BigDecimal amount;
+	private final String currency;
+	private final String comment;
+	private final String bankdroidAccount;
+	private final String globalId;
+
+	// Status fields can be extracted into it's own object.
+	private boolean filtered;
+	private boolean verified;
 
 	/**
 	 * 
@@ -55,7 +59,8 @@ public class Transaction {
 	Transaction(final long id, final String globalId, final String date,
 				final String description, final String comment,
 				final BigDecimal amount, final String currency,
-				final boolean filtered, final String bankdroidAccount) {
+				final boolean filtered, final boolean verified,
+				final String bankdroidAccount) {
 		this.id = id;
 		this.globalId = globalId;
 		this.date = date;
@@ -64,6 +69,7 @@ public class Transaction {
 		this.amount = amount;
 		this.currency = currency;
 		this.filtered = filtered;
+		this.verified = verified;
 		this.bankdroidAccount = bankdroidAccount;
 	}
 
@@ -138,13 +144,29 @@ public class Transaction {
 		this.filtered = filtered;
 	}
 
+	/**
+	 * @return the verified
+	 */
+	public boolean isVerified() {
+		return verified;
+	}
+
+	/**
+	 * @param verified
+	 *            the verified to set
+	 */
+	public void setVerified(final boolean verified) {
+		this.verified = verified;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "Transaction [id=" + id + ", date=" + date + ", description="
 				+ description + ", amount=" + amount + ", currency=" + currency
-				+ ", comment=" + comment + ", filtered=" + filtered
-				+ ", bankdroidAccount=" + bankdroidAccount + ", globalId="
-				+ globalId + "]";
+				+ ", comment=" + comment + ", bankdroidAccount="
+				+ bankdroidAccount + ", globalId=" + globalId + ", filtered="
+				+ filtered + ", verified=" + verified + "]";
 	}
+
 }

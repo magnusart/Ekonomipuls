@@ -23,7 +23,6 @@ import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -59,24 +58,22 @@ public class OverviewSettings extends Activity implements LogTag {
 	 * 
 	 */
 	private void populateCategoriesList() {
-		try {
-			final List<Category> allCategories = AnalyticsCategoriesDbFacade
-					.getAllCategories(this);
 
-			final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
-			reportCategories = AnalyticsCategoriesDbFacade
-					.getCategoriesByReport(this, reportId);
+		final List<Category> allCategories = AnalyticsCategoriesDbFacade
+				.getAllCategories(this);
 
-			final ListView categories = (ListView) findViewById(R.id.categoriesList);
+		final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
+		reportCategories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
+				this, reportId);
 
-			tmpAdapter = new ArrayAdapter<Category>(this,
-					R.layout.checkbox_category_row, R.id.categoryNameText,
-					allCategories);
+		final ListView categories = (ListView) findViewById(R.id.categoriesList);
 
-			categories.setAdapter(tmpAdapter);
-		} catch (final RemoteException e) {
-			EkonomipulsUtil.toastDbError(this, e);
-		}
+		tmpAdapter = new ArrayAdapter<Category>(this,
+				R.layout.checkbox_category_row, R.id.categoryNameText,
+				allCategories);
+
+		categories.setAdapter(tmpAdapter);
+
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade implements
 	 * @throws RemoteException
 	 */
 	public static List<Category> getCategoriesByReport(final Context ctx,
-			final long reportId) throws RemoteException {
+			final long reportId) {
 		return getCategories(ctx, Views.CATEGORIES_REPORT_VIEW,
 				Views.REP_CAT_REP_ID + " = " + reportId);
 	}
@@ -50,8 +50,7 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade implements
 	 * @return
 	 * @throws RemoteException
 	 */
-	public static List<Category> getAllCategories(final Context ctx)
-			throws RemoteException {
+	public static List<Category> getAllCategories(final Context ctx) {
 		return getCategories(ctx, Categories.TABLE, null);
 	}
 
@@ -90,7 +89,7 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade implements
 	 * @throws RemoteException
 	 */
 	public static void insertAssignCategoryReport(final Context ctx,
-			final AddCategoryReportAction action) throws RemoteException {
+			final AddCategoryReportAction action) {
 
 		final AnalyticsDbHelper helper = new AnalyticsDbHelper(ctx);
 		final SQLiteDatabase db = helper.getWritableDatabase();

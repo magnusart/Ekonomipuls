@@ -156,6 +156,7 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 		values.put(Transactions.AMOUNT, trans.getAmount().toString());
 		values.put(Transactions.CURRENCY, trans.getCurrency());
 		values.put(Transactions.FILTERED, trans.isFiltered());
+		values.put(Transactions.VERIFIED, trans.isVerified());
 		values.put(Transactions.BD_ACCOUNT, trans.getBankdroidAccount());
 
 		return values;
@@ -177,10 +178,11 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 		final BigDecimal amt = new BigDecimal(cur.getString(indices[6]));
 		final String curr = cur.getString(indices[7]);
 		final boolean filt = (cur.getInt(indices[8]) != 0) ? true : false;
-		final String bdAcc = cur.getString(indices[9]);
+		final boolean verif = (cur.getInt(indices[9]) != 0) ? true : false;
+		final String bdAcc = cur.getString(indices[10]);
 
 		return new Transaction(id, glob, date, desc, cmnt, amt, curr, filt,
-				bdAcc);
+				verif, bdAcc);
 	}
 
 	/**
@@ -188,7 +190,7 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 	 * @return
 	 */
 	public static int[] getTransactionCursorIndices(final Cursor cur) {
-		final int[] indices = new int[10];
+		final int[] indices = new int[11];
 
 		indices[0] = cur.getColumnIndexOrThrow(Transactions.ID);
 		indices[1] = cur.getColumnIndexOrThrow(Transactions.GLOBAL_ID);
@@ -198,7 +200,8 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 		indices[6] = cur.getColumnIndexOrThrow(Transactions.AMOUNT);
 		indices[7] = cur.getColumnIndexOrThrow(Transactions.CURRENCY);
 		indices[8] = cur.getColumnIndexOrThrow(Transactions.FILTERED);
-		indices[9] = cur.getColumnIndexOrThrow(Transactions.BD_ACCOUNT);
+		indices[9] = cur.getColumnIndexOrThrow(Transactions.VERIFIED);
+		indices[10] = cur.getColumnIndexOrThrow(Transactions.BD_ACCOUNT);
 
 		return indices;
 	}

@@ -53,6 +53,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			+ " TEXT NOT NULL, "
 			+ Transactions.FILTERED
 			+ " INTEGER NOT NULL DEFAULT 0, "
+			+ Transactions.VERIFIED
+			+ " INTEGER NOT NULL DEFAULT 0, "
 			+ Transactions.BD_ACCOUNT
 			+ " TEXT NOT NULL, "
 			+ "UNIQUE( "

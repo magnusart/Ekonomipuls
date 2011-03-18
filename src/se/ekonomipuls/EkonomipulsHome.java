@@ -31,7 +31,6 @@ import se.ekonomipuls.views.charts.SeriesEntry;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -143,31 +142,28 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		assert (reportId != -1);
 
 		List<Category> categories;
-		try {
-			categories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
-					this, reportId);
 
-			final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
-			BigDecimal total = new BigDecimal(0.0);
+		categories = AnalyticsCategoriesDbFacade.getCategoriesByReport(this,
+				reportId);
 
-			// Get the transactions given this category's tags
-			for (final Category cat : categories) {
+		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
+		BigDecimal total = new BigDecimal(0.0);
 
-				final List<Transaction> catTransactions = AnalyticsTransactionsDbFacade
-						.getTransactionsByCategory(this, cat);
+		// Get the transactions given this category's tags
+		for (final Category cat : categories) {
 
-				final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
+			final List<Transaction> catTransactions = AnalyticsTransactionsDbFacade
+					.getTransactionsByCategory(this, cat);
 
-				total = total.add(ser.getSum());
-				series.add(ser);
-			}
+			final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
 
-			pieChart.setSeries(series);
-			pieChart.setSeriesTotal(total);
-
-		} catch (final RemoteException e) {
-			EkonomipulsUtil.toastDbError(this, e);
+			total = total.add(ser.getSum());
+			series.add(ser);
 		}
+
+		pieChart.setSeries(series);
+		pieChart.setSeriesTotal(total);
+
 	}
 
 	private void populateLegendList(final ListView legendList,

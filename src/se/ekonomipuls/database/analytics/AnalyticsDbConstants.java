@@ -36,6 +36,7 @@ public interface AnalyticsDbConstants {
 		public final static String CURRENCY = "currency";
 		public final static String BD_ACCOUNT = "bd_account_id";
 		public final static String FILTERED = "filtered";
+		public final static String VERIFIED = "verified";
 
 		public static final String[] COLUMNS = new String[] { ID, GLOBAL_ID,
 				DATE, DESCRIPTION, COMMENT, AMOUNT, CURRENCY, FILTERED,

@@ -21,7 +21,6 @@ import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.view.View;
 import android.widget.EditText;
 
@@ -57,13 +56,10 @@ public class AddEditCategory extends Activity implements LogTag {
 		final AddCategoryReportAction categoryReport = new AddCategoryReportAction(
 				Color.CYAN, name, EkonomipulsUtil.getEconomicOverviewId(this));
 
-		try {
-			AnalyticsCategoriesDbFacade.insertAssignCategoryReport(this,
-					categoryReport);
-		} catch (final RemoteException e) {
-			EkonomipulsUtil.toastDbError(this, e);
-		}
+		AnalyticsCategoriesDbFacade.insertAssignCategoryReport(this,
+				categoryReport);
 
+		// Return from method.
 		finish();
 	}
 
