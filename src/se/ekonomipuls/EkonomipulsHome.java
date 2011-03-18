@@ -44,6 +44,8 @@ import android.widget.TextView;
  */
 public class EkonomipulsHome extends Activity implements LogTag {
 
+	private static final int VERIFY_TRANSACTIONS = 0;
+
 	private LegendAdapter legendAdapter;
 	private TextView newTransactions;
 	private PieChartView pieChart;
@@ -67,6 +69,8 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	 */
 	public void importStagingTransactions(final View v) {
 		new ExtractTransformLoadTransactionsTask(this).execute();
+		final Intent intent = new Intent(this, VerifyTransactions.class);
+		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
 	}
 
 	@Override

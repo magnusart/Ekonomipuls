@@ -18,5 +18,7 @@
 	<string name="setting_staging_contains_updates">staging_contains_updates</string>
 	<string name="new_transactions">You have new transactions available</string>
 	<string name="dialog_stage_import_message">Processing new transactions...</string>
+	<string name="verify_transactions_name">Verify new transactions</string>
+	<string name="verification_finish_text">Finish verification</string>
 
 </resources>

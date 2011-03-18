@@ -40,7 +40,7 @@ public interface AnalyticsDbConstants {
 
 		public static final String[] COLUMNS = new String[] { ID, GLOBAL_ID,
 				DATE, DESCRIPTION, COMMENT, AMOUNT, CURRENCY, FILTERED,
-				BD_ACCOUNT };
+				VERIFIED, BD_ACCOUNT };
 	};
 
 	static interface Categories {

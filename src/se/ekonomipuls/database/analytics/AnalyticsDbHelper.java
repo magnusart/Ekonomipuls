@@ -209,6 +209,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			+ "."
 			+ Transactions.FILTERED
 			+ ", "
+			+ Transactions.VERIFIED
+			+ ", "
 			+ Categories.TABLE
 			+ "."
 			+ Categories.ID

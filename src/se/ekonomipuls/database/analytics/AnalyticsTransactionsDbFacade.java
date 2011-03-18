@@ -31,17 +31,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import android.util.Log;
 
-public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements LogTag,
-		AnalyticsDbConstants {
+public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
+		LogTag, AnalyticsDbConstants {
 	/**
 	 * 
 	 * @param ctx
 	 * @return
-	 * @throws RemoteException
 	 */
 	public static List<Transaction> getUnfilteredTransactions(final Context ctx)
 			throws RemoteException {
 		return getTransactions(ctx, Transactions.TABLE, Transactions.FILTERED
+				+ " = 0");
+	}
+
+	/**
+	 * @param verifyTransactions
+	 * @return
+	 */
+	public static List<Transaction> getUnverifiedTransactions(final Context ctx) {
+		return getTransactions(ctx, Transactions.TABLE, Transactions.VERIFIED
 				+ " = 0");
 	}
 
@@ -62,7 +70,6 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements L
 	 * @param ctx
 	 * @param bdAccountId
 	 * @return
-	 * @throws RemoteException
 	 */
 	public static List<Transaction> getAllTransactions(final Context ctx)
 			throws RemoteException {
@@ -107,7 +114,6 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements L
 	/**
 	 * @param modTrans
 	 * @param defaultTagId
-	 * @throws RemoteException
 	 */
 	public static void updateTransactionsAssignTags(final Context ctx,
 			final List<ApplyFilterTagAction> actions) {
@@ -178,4 +184,5 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements L
 		}
 
 	}
+
 }

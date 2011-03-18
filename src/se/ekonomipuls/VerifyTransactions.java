@@ -17,11 +17,9 @@ package se.ekonomipuls;
 
 import java.util.List;
 
-import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.model.Transaction;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,57 +27,50 @@ import android.widget.ListView;
 
 /**
  * @author Magnus Andersson
- * @since 13 feb 2011
+ * @since 18 mar 2011
  */
-public class OverviewSettings extends Activity implements LogTag {
+public class VerifyTransactions extends Activity implements LogTag {
 
-	private static final int ADD_CATEGORY = 0;
-	private List<Category> reportCategories;
-	private ArrayAdapter<Category> tmpAdapter;
+	private List<Transaction> unverifiedTransactions;
+	private ArrayAdapter<Transaction> tmpAdapter;
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.overview_settings);
-		populateCategoriesList();
+		setContentView(R.layout.verify_transactions_layout);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onResume() {
 		super.onResume();
-		populateCategoriesList();
+		populateVerificationList();
 		tmpAdapter.notifyDataSetInvalidated();
 	}
 
 	/**
 	 * 
 	 */
-	private void populateCategoriesList() {
+	private void populateVerificationList() {
+		unverifiedTransactions = AnalyticsTransactionsDbFacade
+				.getUnverifiedTransactions(this);
 
-		final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
+		final ListView verifications = (ListView) findViewById(R.id.verification_list);
 
-		reportCategories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
-				this, reportId);
+		tmpAdapter = new ArrayAdapter<Transaction>(this,
+				R.layout.checkbox_verify_row, R.id.verificationNameText,
+				unverifiedTransactions);
 
-		final ListView categories = (ListView) findViewById(R.id.categoriesList);
-
-		tmpAdapter = new ArrayAdapter<Category>(this,
-				R.layout.checkbox_category_row, R.id.categoryNameText,
-				reportCategories);
-
-		categories.setAdapter(tmpAdapter);
-
+		verifications.setAdapter(tmpAdapter);
 	}
 
 	/**
 	 * 
 	 * @param v
 	 */
-	public void addCategory(final View v) {
-		final Intent i = new Intent(this, AddEditCategory.class);
-		startActivityForResult(i, ADD_CATEGORY);
+	public void finishVerification(final View v) {
+		finish();
 	}
 
 }
