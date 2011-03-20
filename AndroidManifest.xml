@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="se.ekonomipuls" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.1.Pre-Alpha-2" android:versionCode="2">
-	<application android:label="@string/app_homescreen" android:icon="@drawable/ic_launcher_ekonomipuls" android:debuggable="false">
+	<application android:label="@string/app_homescreen" android:icon="@drawable/ic_launcher_ekonomipuls" android:debuggable="true">
 		<activity android:name="EkonomipulsHome" android:theme="@android:style/Theme.NoTitleBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
