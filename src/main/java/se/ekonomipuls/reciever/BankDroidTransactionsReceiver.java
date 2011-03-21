@@ -30,7 +30,7 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 30 dec 2010
  */
-public class BankDroidTransactionsReciever extends BroadcastReceiver implements
+public class BankDroidTransactionsReceiver extends BroadcastReceiver implements
 		LogTag {
 
 	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
