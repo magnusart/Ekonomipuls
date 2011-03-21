@@ -15,24 +15,24 @@
  */
 package se.ekonomipuls.proxy;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
 
 /**
  * @author Magnus Andersson
  * @since 15 jan 2011
  */
-public class BankDroidProxy implements IBankTransactionsProvider, LogTag {
+public class BankDroidProxy implements IBankTransactionsProvider {
 
 	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
 

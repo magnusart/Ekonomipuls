@@ -15,20 +15,18 @@
  */
 package se.ekonomipuls.model;
 
-import se.ekonomipuls.LogTag;
-
 /**
  * @author Magnus Andersson
  * @since 16 feb 2011
  */
-public class Tag implements LogTag {
+public class Tag {
 
 	private final String name;
 	private final int id;
 
 	/**
-	 * @param i
-	 * @param defaultTagName
+	 * @param id
+	 * @param name
 	 */
 	Tag(final int id, final String name) {
 		this.id = id;

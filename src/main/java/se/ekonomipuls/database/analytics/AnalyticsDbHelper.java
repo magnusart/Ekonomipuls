@@ -15,10 +15,6 @@
  */
 package se.ekonomipuls.database.analytics;
 
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.PropertiesConstants;
-import se.ekonomipuls.R;
-import se.ekonomipuls.database.AbstractDbHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,13 +22,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import se.ekonomipuls.R;
+import se.ekonomipuls.database.AbstractDbHelper;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.*;
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public class AnalyticsDbHelper extends AbstractDbHelper implements
-		AnalyticsDbConstants, PropertiesConstants, LogTag {
+public class AnalyticsDbHelper extends AbstractDbHelper {
 
 	private static final String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE
@@ -304,9 +305,6 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 	/**
 	 * @param context
-	 * @param name
-	 * @param factory
-	 * @param version
 	 */
 	public AnalyticsDbHelper(final Context context) {
 		super(context, ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);

@@ -15,12 +15,13 @@
  */
 package se.ekonomipuls.service.etl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import se.ekonomipuls.EkonomipulsHome;
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
@@ -29,26 +30,25 @@ import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.util.EkonomipulsUtil;
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 
 /**
  * @author Magnus Andersson
  * @since 15 mar 2011
  */
-public class ExtractTransformLoadTransactionsTask extends
-		AsyncTask<Void, Void, Void> implements LogTag, PropertiesConstants {
+public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, Void> {
 
 	private final ProgressDialog dialog;
 	private final Resources res;
 	private final EkonomipulsHome parent;
 
 	/**
-	 * @param view
+	 * @param parent
 	 * 
 	 */
 	public ExtractTransformLoadTransactionsTask(final EkonomipulsHome parent) {

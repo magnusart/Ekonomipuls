@@ -15,19 +15,19 @@
  */
 package se.ekonomipuls.database;
 
-import se.ekonomipuls.LogTag;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import static se.ekonomipuls.LogTag.TAG;
+
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public abstract class AbstractDbHelper extends SQLiteOpenHelper implements
-		LogTag {
+public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 
 	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
 	protected Context context;

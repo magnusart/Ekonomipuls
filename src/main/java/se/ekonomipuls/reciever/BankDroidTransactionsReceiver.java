@@ -15,13 +15,14 @@
  */
 package se.ekonomipuls.reciever;
 
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.service.importer.BankDroidImportService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import se.ekonomipuls.service.importer.BankDroidImportService;
+
+import static se.ekonomipuls.LogTag.TAG;
 
 /**
  * This class recieves changes to transactions and makes sure they are stored
@@ -30,8 +31,7 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 30 dec 2010
  */
-public class BankDroidTransactionsReceiver extends BroadcastReceiver implements
-		LogTag {
+public class BankDroidTransactionsReceiver extends BroadcastReceiver {
 
 	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
 

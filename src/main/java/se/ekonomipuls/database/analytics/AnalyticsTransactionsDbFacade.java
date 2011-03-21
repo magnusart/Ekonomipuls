@@ -15,24 +15,25 @@
  */
 package se.ekonomipuls.database.analytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.AbstractDbFacade;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.model.Transaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import android.util.Log;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.model.Transaction;
 
-public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
-		LogTag, AnalyticsDbConstants {
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
+
+public class AnalyticsTransactionsDbFacade extends AbstractDbFacade {
 	/**
 	 * 
 	 * @param ctx
@@ -45,7 +46,7 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 	}
 
 	/**
-	 * @param verifyTransactions
+	 * @param ctx
 	 * @return
 	 */
 	public static List<Transaction> getUnverifiedTransactions(final Context ctx) {
@@ -68,7 +69,6 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 	/**
 	 * 
 	 * @param ctx
-	 * @param bdAccountId
 	 * @return
 	 */
 	public static List<Transaction> getAllTransactions(final Context ctx)
@@ -112,8 +112,8 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 	}
 
 	/**
-	 * @param modTrans
-	 * @param defaultTagId
+	 * @param ctx
+	 * @param actions
 	 */
 	public static void updateTransactionsAssignTags(final Context ctx,
 			final List<ApplyFilterTagAction> actions) {
@@ -150,8 +150,8 @@ public class AnalyticsTransactionsDbFacade extends AbstractDbFacade implements
 	}
 
 	/**
-	 * @param parent
-	 * @param filteredTransactions
+	 * @param ctx
+	 * @param actions
 	 */
 	public static void insertTransactionsAssignTags(final Context ctx,
 			final List<ApplyFilterTagAction> actions) {

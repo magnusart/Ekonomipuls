@@ -15,20 +15,19 @@
  */
 package se.ekonomipuls.views.charts;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Magnus Andersson
  * @since 6 feb 2011
  */
-public abstract class AbstractChartView extends View implements LogTag {
+public abstract class AbstractChartView extends View {
 
 	protected final Context context;
 	protected List<SeriesEntry> series;

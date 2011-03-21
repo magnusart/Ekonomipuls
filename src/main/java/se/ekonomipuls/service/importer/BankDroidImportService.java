@@ -15,17 +15,17 @@
  */
 package se.ekonomipuls.service.importer;
 
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.PropertiesConstants;
+import android.app.IntentService;
+import android.content.Intent;
+import android.util.Log;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.util.EkonomipulsUtil;
-import android.app.IntentService;
-import android.content.Intent;
-import android.util.Log;
+
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
 
 /**
  * This service is responsible for inserting BankDroid Transactions into the
@@ -34,8 +34,7 @@ import android.util.Log;
  * @author Magnus Andersson
  * @since 25 jan 2011
  */
-public class BankDroidImportService extends IntentService implements
-		PropertiesConstants, LogTag {
+public class BankDroidImportService extends IntentService {
 
 	private static final String ACCOUNT_ID = "accountId";
 
@@ -58,8 +57,7 @@ public class BankDroidImportService extends IntentService implements
 
 			if (transactions.size() > 0) {
 				Log.v(TAG, "Bulk inserting transactions");
-				StagingDbFacade.bulkInsertBdTransactions(getBaseContext(),
-						transactions);
+				StagingDbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
 
 				// Make sure we see that there are new transactions in the GUI.
 				EkonomipulsUtil.setNewTransactionStatus(getBaseContext(), true);

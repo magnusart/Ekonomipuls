@@ -15,26 +15,26 @@
  */
 package se.ekonomipuls.database.staging;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.database.AbstractDbFacade;
-import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
-import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
+import se.ekonomipuls.proxy.BankDroidTransaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public class StagingDbFacade extends AbstractDbFacade implements
-		StagingDbConstants, LogTag {
+public class StagingDbFacade extends AbstractDbFacade {
 	/**
 	 * Bulk insert transactions.
 	 * 
@@ -63,7 +63,7 @@ public class StagingDbFacade extends AbstractDbFacade implements
 	}
 
 	/**
-	 * @param transactionsFilterService
+	 * @param ctx
 	 * @return
 	 */
 	public static List<BankDroidTransaction> getStagedTransactions(

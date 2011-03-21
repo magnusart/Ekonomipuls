@@ -15,7 +15,6 @@
  */
 package se.ekonomipuls.actions;
 
-import se.ekonomipuls.LogTag;
 import se.ekonomipuls.model.Category;
 
 /**
@@ -23,12 +22,11 @@ import se.ekonomipuls.model.Category;
  * @author Magnus Andersson
  * @since 21 feb 2011
  */
-public class AddCategoryReportAction implements LogTag {
+public class AddCategoryReportAction {
 
 	public static class AddCategoryAction extends Category {
 
 		/**
-		 * @param id
 		 * @param color
 		 * @param name
 		 */
@@ -41,10 +39,8 @@ public class AddCategoryReportAction implements LogTag {
 	private final long reportId;
 
 	/**
-	 * @param id
 	 * @param color
 	 * @param name
-	 * @param l
 	 */
 	public AddCategoryReportAction(final int color, final String name,
 									final long reportId) {

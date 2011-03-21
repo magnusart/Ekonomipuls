@@ -15,27 +15,27 @@
  */
 package se.ekonomipuls.service.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.PropertiesConstants;
-import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.model.Transaction;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.model.Transaction;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 
 /**
  * @author Magnus Andersson
  * @since 29 jan 2011
  */
-public class TransactionsFilterService extends IntentService implements
-		PropertiesConstants, LogTag {
+public class TransactionsFilterService extends IntentService {
 
 	/**
 	 * 

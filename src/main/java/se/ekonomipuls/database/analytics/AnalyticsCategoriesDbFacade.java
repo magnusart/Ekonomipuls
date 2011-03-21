@@ -15,27 +15,27 @@
  */
 package se.ekonomipuls.database.analytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.actions.AddCategoryReportAction;
-import se.ekonomipuls.database.AbstractDbFacade;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.model.ModelSqlMapper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
+import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.ModelSqlMapper;
 
-public class AnalyticsCategoriesDbFacade extends AbstractDbFacade implements
-		LogTag, AnalyticsDbConstants {
+import java.util.ArrayList;
+import java.util.List;
+
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
+
+public class AnalyticsCategoriesDbFacade extends AbstractDbFacade {
 
 	/**
 	 * 
 	 * @param ctx
-	 * @param report
+	 * @param reportId
 	 * @return
 	 * @throws RemoteException
 	 */

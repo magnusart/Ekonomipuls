@@ -15,16 +15,16 @@
  */
 package se.ekonomipuls.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.proxy.BankDroidTransaction;
+
 import java.math.BigDecimal;
 import java.util.List;
 
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.actions.AddCategoryReportAction;
-import se.ekonomipuls.database.analytics.AnalyticsDbConstants;
-import se.ekonomipuls.database.staging.StagingDbConstants;
-import se.ekonomipuls.proxy.BankDroidTransaction;
-import android.content.ContentValues;
-import android.database.Cursor;
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
+import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
 
 /**
  * This utility class is responsible for mapping between model objects and SQL.
@@ -32,8 +32,7 @@ import android.database.Cursor;
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
-		StagingDbConstants {
+public class ModelSqlMapper {
 
 	public static ContentValues[] mapBankDroidTransactionSql(
 			final List<BankDroidTransaction> transactions) {
@@ -98,7 +97,7 @@ public class ModelSqlMapper implements LogTag, AnalyticsDbConstants,
 	}
 
 	/**
-	 * @param action
+	 * @param repId
 	 * @param catId
 	 * @return
 	 */

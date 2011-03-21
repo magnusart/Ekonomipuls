@@ -15,7 +15,6 @@
  */
 package se.ekonomipuls.database;
 
-import se.ekonomipuls.LogTag;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,11 +22,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
+import static se.ekonomipuls.LogTag.TAG;
+
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public abstract class AbstractDbFacade implements LogTag {
+public abstract class AbstractDbFacade {
 	/**
 	 * @param db
 	 * @param helper
