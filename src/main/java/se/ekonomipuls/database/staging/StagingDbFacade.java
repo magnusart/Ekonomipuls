@@ -41,7 +41,7 @@ public class StagingDbFacade extends AbstractDbFacade {
 	 * @param ctx
 	 * @param transactions
 	 */
-	public static void bulkInsertBdTransactions(final Context ctx,
+	public void bulkInsertBdTransactions(final Context ctx,
 			final List<BankDroidTransaction> transactions) {
 
 		final ContentValues[] values = ModelSqlMapper
@@ -66,7 +66,7 @@ public class StagingDbFacade extends AbstractDbFacade {
 	 * @param ctx
 	 * @return
 	 */
-	public static List<BankDroidTransaction> getStagedTransactions(
+	public List<BankDroidTransaction> getStagedTransactions(
 			final Context ctx) {
 
 		final String table = Staging.TABLE;
@@ -114,7 +114,7 @@ public class StagingDbFacade extends AbstractDbFacade {
 	 * @param ctx
 	 * @return
 	 */
-	public static int purgeStagingTable(final Context ctx) {
+	public int purgeStagingTable(final Context ctx) {
 		final StagingDbHelper helper = new StagingDbHelper(ctx);
 		final SQLiteDatabase db = helper.getReadableDatabase();
 

@@ -36,10 +36,6 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 
 	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
 
-	private BankDroidProxy() {
-		// Private Constructor
-	}
-
 	/**
 	 * 
 	 * @param a
@@ -47,7 +43,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	 * @return a managed cursor to the Bank Accounts Provider.
 	 * @throws IllegalAccessException
 	 */
-	public static Cursor getManagedBankAccountsCursor(final Activity a)
+	public Cursor getManagedBankAccountsCursor(final Activity a)
 			throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Bank Accounts from Provider");
 
@@ -58,7 +54,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return cur;
 	}
 
-	public static Cursor getManagedTransactionsCursor(final Activity a,
+	public Cursor getManagedTransactionsCursor(final Activity a,
 			final String accountId) throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Transactions from Provider");
 
@@ -80,7 +76,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	 * @return List of Transactions
 	 * @throws IllegalAccessException
 	 */
-	public static List<BankDroidTransaction> getBankDroidTransactions(
+	public List<BankDroidTransaction> getBankDroidTransactions(
 			final Context ctx, final String accountId)
 			throws IllegalAccessException {
 
@@ -122,7 +118,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return transactions;
 	}
 
-	private static Cursor getUnmanagedBankAccountsCursor(final Context ctx)
+	private Cursor getUnmanagedBankAccountsCursor(final Context ctx)
 			throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
 				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + getApiKey(ctx));
@@ -138,7 +134,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return cur;
 	}
 
-	private static Cursor getUnmanagedTransactionsCursor(final Context ctx,
+	private Cursor getUnmanagedTransactionsCursor(final Context ctx,
 			final String accountId) throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
 				+ TRANSACTIONS_CAT + "/" + API_KEY + getApiKey(ctx));
@@ -157,7 +153,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return cur;
 	}
 
-	private static String getApiKey(final Context ctx) {
+	private String getApiKey(final Context ctx) {
 		// FIXME: Implement API-key functionality
 
 		// final SharedPreferences prefs =

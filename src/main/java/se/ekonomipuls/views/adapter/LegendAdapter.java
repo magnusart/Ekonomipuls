@@ -18,6 +18,8 @@ package se.ekonomipuls.views.adapter;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.google.inject.Inject;
+import roboguice.adapter.IterableAdapter;
 import se.ekonomipuls.R;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.util.EkonomipulsUtil;
@@ -34,7 +36,10 @@ import android.widget.TextView;
  * @author Magnus Andersson
  * @since 6 feb 2011
  */
-public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
+public class LegendAdapter extends IterableAdapter<SeriesEntry> {
+
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
 
 	/**
 	 * @author Magnus Andersson
@@ -52,7 +57,7 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 	/**
 	 * @param context
-	 * @param textViewResourceId
+	 * @param layoutViewResourceId
 	 * @param series
 	 * @param total
 	 */
@@ -91,14 +96,14 @@ public class LegendAdapter extends ArrayAdapter<SeriesEntry> {
 
 		final SeriesEntry entry = getItem(position);
 
-		holder.color.setColor(EkonomipulsUtil.getDarkColor(entry.getBaseColor(),
+		holder.color.setColor(ekonomipulsUtil.getDarkColor(entry.getBaseColor(),
 				entry.isSelected()));
 
 		final Category cat = entry.getCategory();
 
 		holder.categoryName.setText(cat.getName());
 
-		final int percentage = EkonomipulsUtil.getPercentage(entry.getSum()
+		final int percentage = ekonomipulsUtil.getPercentage(entry.getSum()
 				.floatValue(), total.floatValue());
 
 		holder.line2Text.setText(percentage + "%, "

@@ -17,6 +17,8 @@ package se.ekonomipuls;
 
 import java.util.List;
 
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
 import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.util.EkonomipulsUtil;
@@ -31,7 +33,10 @@ import android.widget.ListView;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public class OverviewSettings extends Activity implements LogTag {
+public class OverviewSettings extends RoboActivity implements LogTag {
+
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
 
 	private static final int ADD_CATEGORY = 0;
 	private List<Category> reportCategories;
@@ -58,7 +63,7 @@ public class OverviewSettings extends Activity implements LogTag {
 	 */
 	private void populateCategoriesList() {
 
-		final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
+		final long reportId = ekonomipulsUtil.getEconomicOverviewId(this);
 
 		reportCategories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
 				this, reportId);

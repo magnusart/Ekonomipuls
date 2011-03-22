@@ -9,18 +9,23 @@
     <packaging>apk</packaging>
     <name>Ekonomipuls</name>
 
+    <properties>
+        <android.version>2.2.1</android.version>
+        <mockito.version>1.8.5</mockito.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>2.1.2</version>
+            <version>${android.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android-test</artifactId>
-            <version>2.1.2</version>
+            <version>${android.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -37,6 +42,26 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>org.roboguice</groupId>
+            <artifactId>roboguice</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+         <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>2.0-no_aop</version>
+        </dependency>
+        
     </dependencies>
 
      <pluginRepositories>
@@ -66,7 +91,7 @@
                 <configuration>
                     <sdk>
                         <!-- platform or api level (api level 8 = platform 2.2)-->
-                        <platform>7</platform>
+                        <platform>8</platform>
                     </sdk>
                 </configuration>
                 <extensions>true</extensions>

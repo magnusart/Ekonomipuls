@@ -34,6 +34,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import static se.ekonomipuls.LogTag.TAG;
+
 /**
  * Pie chart diagram. Use as a normal view.
  * 
@@ -229,11 +231,11 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 			final int padding = (getWidth() - width) / 2;
 
 			final int calculatedLeft = canvasRect.left + padding;
-			final int calulatedWidth = width - STROKE_WIDTH - SHADOW_OFFSET
+			final int calculatedWidth = width - STROKE_WIDTH - SHADOW_OFFSET
 					+ padding;
 
 			// Translate PieChart to center
-			canvasRect.set(calculatedLeft, canvasRect.top, calulatedWidth,
+			canvasRect.set(calculatedLeft, canvasRect.top, calculatedWidth,
 					canvasRect.height());
 
 		} else {

@@ -15,6 +15,8 @@
  */
 package se.ekonomipuls;
 
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.util.EkonomipulsUtil;
@@ -28,7 +30,10 @@ import android.widget.EditText;
  * @author Magnus Andersson
  * @since 21 feb 2011
  */
-public class AddEditCategory extends Activity implements LogTag {
+public class AddEditCategory extends RoboActivity implements LogTag {
+
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
 
 	/** {@inheritDoc} */
 	@Override
@@ -54,7 +59,7 @@ public class AddEditCategory extends Activity implements LogTag {
 		final String name = categoryName.getEditableText().toString();
 
 		final AddCategoryReportAction categoryReport = new AddCategoryReportAction(
-				Color.CYAN, name, EkonomipulsUtil.getEconomicOverviewId(this));
+				Color.CYAN, name, ekonomipulsUtil.getEconomicOverviewId(this));
 
 		AnalyticsCategoriesDbFacade.insertAssignCategoryReport(this,
 				categoryReport);

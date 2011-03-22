@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
 import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.model.Category;
@@ -42,7 +44,11 @@ import android.widget.TextView;
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class EkonomipulsHome extends Activity implements LogTag {
+public class EkonomipulsHome extends RoboActivity implements LogTag {
+
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
+
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 
@@ -57,7 +63,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 		populateData(); // TODO: Fix so that PieChart has an adapter.
 
-		legendAdapter.notifyDataSetInvalidated();
+        legendAdapter.notifyDataSetInvalidated();
 
 		pieChart.invalidate();
 	}
@@ -83,7 +89,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 		legendList = (ListView) findViewById(R.id.legendList);
 		noData = (TextView) findViewById(R.id.noCategories);
 
-		EkonomipulsUtil.removeGradientBanding(getWindow());
+		ekonomipulsUtil.removeGradientBanding(getWindow());
 	}
 
 	/** {@inheritDoc} */
@@ -95,7 +101,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 	}
 
 	private void showNewTransactionsNotification() {
-		if (EkonomipulsUtil.getNewTransactionsStatus(this)) {
+		if (ekonomipulsUtil.getNewTransactionsStatus(this)) {
 			newTransactions.setVisibility(View.VISIBLE);
 		} else {
 			newTransactions.setVisibility(View.GONE);
@@ -141,7 +147,7 @@ public class EkonomipulsHome extends Activity implements LogTag {
 
 	private void populateSeriesEntries(final PieChartView pieChart) {
 
-		final long reportId = EkonomipulsUtil.getEconomicOverviewId(this);
+		final long reportId = ekonomipulsUtil.getEconomicOverviewId(this);
 
 		assert (reportId != -1);
 

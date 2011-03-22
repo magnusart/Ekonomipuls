@@ -17,10 +17,10 @@ package se.ekonomipuls.service.etl;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import com.google.inject.Inject;
+import roboguice.util.RoboAsyncTask;
 import se.ekonomipuls.EkonomipulsHome;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
@@ -39,29 +39,36 @@ import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 
 /**
  * @author Magnus Andersson
+ * @author Michael Svensson
  * @since 15 mar 2011
  */
-public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, Void> {
 
-	private final ProgressDialog dialog;
-	private final Resources res;
-	private final EkonomipulsHome parent;
+//TODO: Plenty of testing needed
+public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
+
+    @Inject
+	private ProgressDialog dialog;
+	//private final Resources res;
+	private EkonomipulsHome parent;
+    @Inject
+    private StagingDbFacade stagingDbFacade; 
+    @Inject
+    private ExternalModelMapper externalModelMapper;
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
 
 	/**
 	 * @param parent
 	 * 
 	 */
-	public ExtractTransformLoadTransactionsTask(final EkonomipulsHome parent) {
+	public ExtractTransformLoadTransactionsTask(EkonomipulsHome parent) {
 		this.parent = parent;
-		dialog = new ProgressDialog(parent);
-		res = parent.getResources();
-
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onPreExecute() {
-		dialog.setMessage(res.getText(R.string.dialog_stage_import_message));
+		dialog.setMessage(parent.getResources().getText(R.string.dialog_stage_import_message));
 		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		dialog.setCancelable(false);
 		dialog.show();
@@ -69,17 +76,17 @@ public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, 
 
 	/** {@inheritDoc} */
 	@Override
-	protected Void doInBackground(final Void... params) {
+	public Void call() {
 
 		// Get staged transacions with external model
-		final List<BankDroidTransaction> stagedTransactions = StagingDbFacade
-				.getStagedTransactions(parent);
+		final List<BankDroidTransaction> stagedTransactions =
+                stagingDbFacade.getStagedTransactions(context);
 
 		Log.d(TAG, "Loaded staged transactions: " + stagedTransactions);
 
 		// Transform to internal model
-		final List<Transaction> transactions = ExternalModelMapper
-				.fromBdTransactionsToTransactions(stagedTransactions);
+		final List<Transaction> transactions =
+                externalModelMapper.fromBdTransactionsToTransactions(stagedTransactions);
 
 		// Transform and apply filters (separate this step later)
 		final List<ApplyFilterTagAction> filteredTransactions = applyDefaultFilter(transactions);
@@ -87,14 +94,14 @@ public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, 
 		// Do filtering
 
 		// Load the transactions into the Analytics table
-		AnalyticsTransactionsDbFacade.insertTransactionsAssignTags(parent,
+		AnalyticsTransactionsDbFacade.insertTransactionsAssignTags(context,
 				filteredTransactions);
 
 		// Now purge the staging table
-		StagingDbFacade.purgeStagingTable(parent);
+		stagingDbFacade.purgeStagingTable(context);
 
 		// Reset the new transactions toggle
-		EkonomipulsUtil.setNewTransactionStatus(parent, false);
+		ekonomipulsUtil.setNewTransactionStatus(context, false);
 
 		return null;
 	}
@@ -112,8 +119,9 @@ public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, 
 
 			// Only if no filters matched, set default tag.
 
-			final SharedPreferences pref = PreferenceManager
-					.getDefaultSharedPreferences(parent);
+			final SharedPreferences pref =
+                    PreferenceManager.getDefaultSharedPreferences(context);
+
 			final long tagId = pref.getLong(CONF_DEF_TAG, -1);
 
 			assert (tagId != -1);
@@ -127,9 +135,14 @@ public class ExtractTransformLoadTransactionsTask extends AsyncTask<Void, Void, 
 		return filteredTransactions;
 	}
 
+    @Override
+    protected void onSuccess(Void result) {
+        // do this in the UI thread if call() succeeds
+    }
+
 	/** {@inheritDoc} */
 	@Override
-	protected void onPostExecute(final Void result) {
+	protected void onFinally() {
 		parent.refreshView();
 
 		if (this.dialog.isShowing()) {

@@ -18,6 +18,8 @@ package se.ekonomipuls.service.importer;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import com.google.inject.Inject;
+import roboguice.service.RoboIntentService;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
@@ -32,9 +34,17 @@ import static se.ekonomipuls.LogTag.TAG;
  * Staging area.
  * 
  * @author Magnus Andersson
+ * @author Michael Svensson
  * @since 25 jan 2011
  */
-public class BankDroidImportService extends IntentService {
+public class BankDroidImportService extends RoboIntentService {
+
+    @Inject
+    private StagingDbFacade stagingDbFacade;
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
+    @Inject
+    private BankDroidProxy bankDroidProxy;
 
 	private static final String ACCOUNT_ID = "accountId";
 
@@ -50,17 +60,17 @@ public class BankDroidImportService extends IntentService {
 		final String accountId = intent.getExtras().getString(ACCOUNT_ID);
 		try {
 			Log.v(TAG, "Fetching transactions from BankDroid content provider");
-			final List<BankDroidTransaction> transactions = BankDroidProxy
-					.getBankDroidTransactions(getBaseContext(), accountId);
+			final List<BankDroidTransaction> transactions =
+                    bankDroidProxy.getBankDroidTransactions(this, accountId);
 
 			// TODO: Cleanse incoming transactions from duplicates.
 
 			if (transactions.size() > 0) {
 				Log.v(TAG, "Bulk inserting transactions");
-				StagingDbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
+				stagingDbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
 
 				// Make sure we see that there are new transactions in the GUI.
-				EkonomipulsUtil.setNewTransactionStatus(getBaseContext(), true);
+				ekonomipulsUtil.setNewTransactionStatus(getBaseContext(), true);
 			} else {
 				Log.d(TAG, "No transactions for the account " + accountId
 						+ ", skipping");

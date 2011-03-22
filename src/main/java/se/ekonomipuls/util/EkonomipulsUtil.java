@@ -15,23 +15,20 @@
  */
 package se.ekonomipuls.util;
 
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.PropertiesConstants;
-import se.ekonomipuls.R;
-import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.PixelFormat;
-import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.*;
 import android.graphics.Shader.TileMode;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
+import se.ekonomipuls.R;
+import se.ekonomipuls.views.charts.SeriesEntry;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
 
 /**
  * Global utility methods for Ekonomipuls.
@@ -39,7 +36,7 @@ import android.widget.Toast;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
+public class EkonomipulsUtil {
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -50,10 +47,6 @@ public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
-
-	private EkonomipulsUtil() {
-		// Private constructor
-	}
 
 	/**
 	 * 
@@ -157,20 +150,20 @@ public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
 	 * 
 	 * @param window
 	 */
-	public static void removeGradientBanding(final Window window) {
+	public void removeGradientBanding(final Window window) {
 		window.setFormat(PixelFormat.RGBA_8888);
 	}
 
 	/**
 	 * @return The Report Id for Economic Overview
 	 */
-	public static long getEconomicOverviewId(final Context ctx) {
+	public long getEconomicOverviewId(final Context ctx) {
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
-	public static void toastDbError(final Context ctx, final RemoteException e) {
+	public void toastDbError(final Context ctx, final RemoteException e) {
 		final String message = "Unable to complete database query";
 		final Toast toast = Toast.makeText(ctx, message, Toast.LENGTH_LONG);
 		toast.show();
@@ -185,8 +178,7 @@ public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
 	 * @param status
 	 *            new status.
 	 */
-	public static void setNewTransactionStatus(final Context context,
-			final boolean status) {
+	public static void setNewTransactionStatus(final Context context, final boolean status) {
 		final SharedPreferences.Editor editor = PreferenceManager
 				.getDefaultSharedPreferences(context).edit();
 
@@ -203,7 +195,7 @@ public final class EkonomipulsUtil implements PropertiesConstants, LogTag {
 	 *            the Context.
 	 * @return True if new transactions exists.
 	 */
-	public static boolean getNewTransactionsStatus(final Context context) {
+	public boolean getNewTransactionsStatus(final Context context) {
 		final SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
 

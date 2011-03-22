@@ -25,7 +25,7 @@ import se.ekonomipuls.service.importer.BankDroidImportService;
 import static se.ekonomipuls.LogTag.TAG;
 
 /**
- * This class recieves changes to transactions and makes sure they are stored
+ * This class receives changes to transactions and makes sure they are stored
  * for later processing.
  * 
  * @author Magnus Andersson

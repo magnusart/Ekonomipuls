@@ -15,19 +15,20 @@
  */
 package se.ekonomipuls.database.staging;
 
-import se.ekonomipuls.LogTag;
-import se.ekonomipuls.database.AbstractDbHelper;
-import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import se.ekonomipuls.database.AbstractDbHelper;
+import se.ekonomipuls.util.EkonomipulsUtil;
+
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
 
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public class StagingDbHelper extends AbstractDbHelper implements LogTag,
-		StagingDbConstants {
+public class StagingDbHelper extends AbstractDbHelper {
 
 	private static final int DB_VERSION = 1;
 	private static String DB_NAME = "ekonomipuls_staging.db";
@@ -54,9 +55,6 @@ public class StagingDbHelper extends AbstractDbHelper implements LogTag,
 
 	/**
 	 * @param context
-	 * @param name
-	 * @param factory
-	 * @param version
 	 */
 	public StagingDbHelper(final Context context) {
 		super(context, DB_NAME, null, DB_VERSION);

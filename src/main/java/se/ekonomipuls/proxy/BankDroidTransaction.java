@@ -33,12 +33,12 @@ public class BankDroidTransaction {
 	/**
 	 * @param id
 	 * @param date
-	 * @param desc
-	 * @param amt
-	 * @param acc
-	 * @param acc
+	 * @param description
+	 * @param amount
+	 * @param currency
+	 * @param accountId
 	 */
-	BankDroidTransaction(final String id, final String date,
+	public BankDroidTransaction(final String id, final String date,
 			final String description, final BigDecimal amount,
 			final String currency, final String accountId) {
 		this.id = id;
