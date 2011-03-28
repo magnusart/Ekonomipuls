@@ -20,28 +20,30 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import static se.ekonomipuls.LogTag.TAG;
 
 /**
  * @author Magnus Andersson
+ * @author Michael Svensson
  * @since 13 mar 2011
  */
 public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 
 	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
-	protected Context context;
+
+    @Inject
+    protected static Provider<Context> contextProvider;
 
 	/**
-	 * @param context
 	 * @param name
 	 * @param factory
 	 * @param version
 	 */
-	public AbstractDbHelper(final Context context, final String name,
-							final CursorFactory factory, final int version) {
-		super(context, name, factory, version);
-		this.context = context;
+	public AbstractDbHelper(final String name, final CursorFactory factory, final int version) {
+		super(contextProvider.get(), name, factory, version);
 	}
 
 	/** {@inheritDoc} */

@@ -15,7 +15,6 @@
  */
 package se.ekonomipuls.service.importer;
 
-import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 import com.google.inject.Inject;
@@ -67,10 +66,10 @@ public class BankDroidImportService extends RoboIntentService {
 
 			if (transactions.size() > 0) {
 				Log.v(TAG, "Bulk inserting transactions");
-				stagingDbFacade.bulkInsertBdTransactions(getBaseContext(), transactions);
+				stagingDbFacade.bulkInsertBdTransactions(transactions);
 
 				// Make sure we see that there are new transactions in the GUI.
-				ekonomipulsUtil.setNewTransactionStatus(getBaseContext(), true);
+				ekonomipulsUtil.setNewTransactionStatus(true);
 			} else {
 				Log.d(TAG, "No transactions for the account " + accountId
 						+ ", skipping");

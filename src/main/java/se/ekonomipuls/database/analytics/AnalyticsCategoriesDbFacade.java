@@ -34,35 +34,30 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade {
 
 	/**
 	 * 
-	 * @param ctx
 	 * @param reportId
 	 * @return
 	 * @throws RemoteException
 	 */
-	public static List<Category> getCategoriesByReport(final Context ctx,
-			final long reportId) {
-		return getCategories(ctx, Views.CATEGORIES_REPORT_VIEW,
-				Views.REP_CAT_REP_ID + " = " + reportId);
+	public List<Category> getCategoriesByReport(final long reportId) {
+		return getCategories(Views.CATEGORIES_REPORT_VIEW, Views.REP_CAT_REP_ID + " = " + reportId);
 	}
 
 	/**
-	 * @param ctx
 	 * @return
 	 * @throws RemoteException
 	 */
-	public static List<Category> getAllCategories(final Context ctx) {
-		return getCategories(ctx, Categories.TABLE, null);
+	public List<Category> getAllCategories() {
+		return getCategories(Categories.TABLE, null);
 	}
 
-	private static List<Category> getCategories(final Context ctx,
-			final String table, final String selection) {
+	private List<Category> getCategories(final String table, final String selection) {
 
 		final String[] selectionArgs = null;
 		final String having = null;
 		final String sortOrder = null;
 		final String[] columns = Categories.COLUMNS;
 
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper(ctx);
+		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final List<Category> categories = new ArrayList<Category>();
@@ -88,10 +83,9 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade {
 	 * @param action
 	 * @throws RemoteException
 	 */
-	public static void insertAssignCategoryReport(final Context ctx,
-			final AddCategoryReportAction action) {
+	public void insertAssignCategoryReport(final AddCategoryReportAction action) {
 
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper(ctx);
+		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		try {

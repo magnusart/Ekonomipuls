@@ -37,6 +37,8 @@ public class OverviewSettings extends RoboActivity implements LogTag {
 
     @Inject
     private EkonomipulsUtil ekonomipulsUtil;
+    @Inject
+    private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
 
 	private static final int ADD_CATEGORY = 0;
 	private List<Category> reportCategories;
@@ -63,9 +65,9 @@ public class OverviewSettings extends RoboActivity implements LogTag {
 	 */
 	private void populateCategoriesList() {
 
-		final long reportId = ekonomipulsUtil.getEconomicOverviewId(this);
+		final long reportId = ekonomipulsUtil.getEconomicOverviewId();
 
-		reportCategories = AnalyticsCategoriesDbFacade.getCategoriesByReport(
+		reportCategories = analyticsCategoriesDbFacade.getCategoriesByReport(
 				this, reportId);
 
 		final ListView categories = (ListView) findViewById(R.id.categoriesList);

@@ -57,8 +57,8 @@ public class BankDroidImportServiceTest {
         bankDroidImportService.onHandleIntent(intent);
 
         //verify entries are put in staging
-        verify(stagingDbFacade).bulkInsertBdTransactions(isA(Context.class), eq(mockedTransactions));
-        verify(ekonomipulsUtil).setNewTransactionStatus(isA(Context.class), eq(true));
+        verify(stagingDbFacade).bulkInsertBdTransactions(eq(mockedTransactions));
+        verify(ekonomipulsUtil).setNewTransactionStatus(eq(true));
     }
 
     private List<BankDroidTransaction> setupMockedList() {

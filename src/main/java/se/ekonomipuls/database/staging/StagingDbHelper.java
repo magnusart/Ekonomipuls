@@ -18,6 +18,7 @@ package se.ekonomipuls.database.staging;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.google.inject.Inject;
 import se.ekonomipuls.database.AbstractDbHelper;
 import se.ekonomipuls.util.EkonomipulsUtil;
 
@@ -29,6 +30,9 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  * @since 13 mar 2011
  */
 public class StagingDbHelper extends AbstractDbHelper {
+
+    @Inject
+    private EkonomipulsUtil ekonomipulsUtil;
 
 	private static final int DB_VERSION = 1;
 	private static String DB_NAME = "ekonomipuls_staging.db";
@@ -53,17 +57,13 @@ public class StagingDbHelper extends AbstractDbHelper {
 			+ "UNIQUE( "
 			+ Staging.GLOBAL_ID + " ) " + ")";
 
-	/**
-	 * @param context
-	 */
-	public StagingDbHelper(final Context context) {
-		super(context, DB_NAME, null, DB_VERSION);
+	public StagingDbHelper() {
+		super(DB_NAME, null, DB_VERSION);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-			final int newVersion) {
+	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 		throw new IllegalAccessError("Upgrade is not yet implemented.");
 	}
 
@@ -83,7 +83,7 @@ public class StagingDbHelper extends AbstractDbHelper {
 	/** {@inheritDoc} */
 	@Override
 	protected void initConfiguration() {
-		EkonomipulsUtil.setNewTransactionStatus(context, false);
+		ekonomipulsUtil.setNewTransactionStatus(false);
 	}
 
 }

@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
+import com.google.inject.Inject;
 import se.ekonomipuls.R;
 import se.ekonomipuls.views.charts.SeriesEntry;
 
@@ -37,6 +38,9 @@ import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
  * @since 13 feb 2011
  */
 public class EkonomipulsUtil {
+
+    @Inject
+    private Context context;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -157,47 +161,41 @@ public class EkonomipulsUtil {
 	/**
 	 * @return The Report Id for Economic Overview
 	 */
-	public long getEconomicOverviewId(final Context ctx) {
-		final SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
+	public long getEconomicOverviewId() {
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
-	public void toastDbError(final Context ctx, final RemoteException e) {
+	public void toastDbError(final RemoteException e) {
 		final String message = "Unable to complete database query";
-		final Toast toast = Toast.makeText(ctx, message, Toast.LENGTH_LONG);
+		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 		toast.show();
 		Log.d(TAG, message, e);
 	}
 
 	/**
 	 * Set the status of new transactions in the staging database.
-	 * 
-	 * @param context
-	 *            the Context.
+	 *
 	 * @param status
 	 *            new status.
 	 */
-	public static void setNewTransactionStatus(final Context context, final boolean status) {
-		final SharedPreferences.Editor editor = PreferenceManager
-				.getDefaultSharedPreferences(context).edit();
+	public void setNewTransactionStatus(final boolean status) {
+		final SharedPreferences.Editor editor =
+                PreferenceManager.getDefaultSharedPreferences(context).edit();
 
-		final String containsUpdates = context
-				.getString(R.string.setting_staging_contains_updates);
+		final String containsUpdates = context.getString(R.string.setting_staging_contains_updates);
 		editor.putBoolean(containsUpdates, status); // No updates when initiated.
 		editor.commit();
 	}
 
 	/**
 	 * Returns the status of new transactions in the staging database.
-	 * 
-	 * @param context
-	 *            the Context.
+	 *
 	 * @return True if new transactions exists.
 	 */
-	public boolean getNewTransactionsStatus(final Context context) {
-		final SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
+	public boolean getNewTransactionsStatus() {
+		final SharedPreferences prefs =
+                PreferenceManager.getDefaultSharedPreferences(context);
 
 		return prefs.getBoolean(
 				context.getString(R.string.setting_staging_contains_updates),

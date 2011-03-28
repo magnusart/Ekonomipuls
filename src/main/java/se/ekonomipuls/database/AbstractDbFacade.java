@@ -16,11 +16,14 @@
 package se.ekonomipuls.database;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import static se.ekonomipuls.LogTag.TAG;
 
@@ -29,19 +32,19 @@ import static se.ekonomipuls.LogTag.TAG;
  * @since 13 mar 2011
  */
 public abstract class AbstractDbFacade {
+
 	/**
 	 * @param db
 	 * @param helper
 	 */
-	protected static void shutdownDb(final SQLiteDatabase db,
-			final SQLiteOpenHelper helper) {
+	protected void shutdownDb(final SQLiteDatabase db, final SQLiteOpenHelper helper) {
 		if (!db.isReadOnly() && db.isOpen()) {
 			if (db.inTransaction()) {
 				Log.d(TAG, "In transaction, ending current transaction for "
 						+ db.toString());
 				db.endTransaction();
 			}
-			db.close();
+			db.close(); //TODO: Not sure this is necessary
 			helper.close();
 		}
 	}
@@ -52,8 +55,7 @@ public abstract class AbstractDbFacade {
 	 * @param table
 	 * @param values
 	 */
-	protected static void insert(final SQLiteDatabase db, final String table,
-			final ContentValues[] values) {
+	protected void insert(final SQLiteDatabase db, final String table, final ContentValues[] values) {
 		for (final ContentValues value : values) {
 			insert(db, table, value);
 		}
@@ -65,8 +67,7 @@ public abstract class AbstractDbFacade {
 	 * @param table
 	 * @param values
 	 */
-	protected static long insert(final SQLiteDatabase db, final String table,
-			final ContentValues values) {
+	protected long insert(final SQLiteDatabase db, final String table, final ContentValues values) {
 		Log.d(TAG, "Inserting " + values + " into " + table);
 		return db.insert(table, null, values);
 	}
@@ -79,8 +80,7 @@ public abstract class AbstractDbFacade {
 	 * @param selection
 	 * @return
 	 */
-	protected static int update(final SQLiteDatabase db, final String table,
-			final ContentValues values, final String selection) {
+	protected int update(final SQLiteDatabase db, final String table, final ContentValues values, final String selection) {
 		Log.d(TAG, "Updating " + values + " in " + table + " where "
 				+ selection);
 		return db.update(table, values, selection, null);
@@ -99,7 +99,7 @@ public abstract class AbstractDbFacade {
 	 * @param sortOrder
 	 * @return
 	 */
-	protected static Cursor query(final SQLiteDatabase db, final String table,
+	protected Cursor query(final SQLiteDatabase db, final String table,
 			final String[] columns, final String selection,
 			final String[] selectionArgs, final String groupBy,
 			final String having, final String sortOrder) {
@@ -123,8 +123,7 @@ public abstract class AbstractDbFacade {
 	 * @param whereArgs
 	 * @return
 	 */
-	protected static int delete(final SQLiteDatabase db, final String table,
-			final String whereClause, final String[] whereArgs) {
+	protected int delete(final SQLiteDatabase db, final String table, final String whereClause, final String[] whereArgs) {
 
 		Log.d(TAG, "Deleting from " + table + " where " + whereClause + " = "
 				+ whereArgs);

@@ -34,6 +34,8 @@ public class AddEditCategory extends RoboActivity implements LogTag {
 
     @Inject
     private EkonomipulsUtil ekonomipulsUtil;
+    @Inject
+    private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
 
 	/** {@inheritDoc} */
 	@Override
@@ -59,10 +61,9 @@ public class AddEditCategory extends RoboActivity implements LogTag {
 		final String name = categoryName.getEditableText().toString();
 
 		final AddCategoryReportAction categoryReport = new AddCategoryReportAction(
-				Color.CYAN, name, ekonomipulsUtil.getEconomicOverviewId(this));
+				Color.CYAN, name, ekonomipulsUtil.getEconomicOverviewId());
 
-		AnalyticsCategoriesDbFacade.insertAssignCategoryReport(this,
-				categoryReport);
+		analyticsCategoriesDbFacade.insertAssignCategoryReport(this, categoryReport);
 
 		// Return from method.
 		finish();

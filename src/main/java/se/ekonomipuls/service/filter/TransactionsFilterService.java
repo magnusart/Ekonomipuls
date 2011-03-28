@@ -21,8 +21,9 @@ import android.content.SharedPreferences;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import com.google.inject.Inject;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
 import se.ekonomipuls.model.Transaction;
 
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
  */
 public class TransactionsFilterService extends IntentService {
 
-	/**
-	 * 
-	 */
+    @Inject
+    private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
+
 	public TransactionsFilterService() {
 		super(TransactionsFilterService.class.getClass().getName());
 	}
@@ -52,8 +53,7 @@ public class TransactionsFilterService extends IntentService {
 		List<Transaction> transactions;
 		try {
 			Log.v(TAG, "Fetching all unfiltered transactions");
-			transactions = AnalyticsTransactionsDbFacade
-					.getUnfilteredTransactions(getBaseContext());
+			transactions = analyticsTransactionsDbFacade.getUnfilteredTransactions();
 			Log.d(TAG, transactions.size()
 					+ " transactions for filter application.");
 			final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
@@ -73,8 +73,7 @@ public class TransactionsFilterService extends IntentService {
 
 			}
 
-			AnalyticsTransactionsDbFacade.updateTransactionsAssignTags(this,
-					filteredTransactions);
+			analyticsTransactionsDbFacade.updateTransactionsAssignTags(filteredTransactions);
 
 		} catch (final RemoteException e) {
 			// TODO Handle exception

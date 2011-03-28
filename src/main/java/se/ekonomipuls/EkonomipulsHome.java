@@ -15,22 +15,6 @@
  */
 package se.ekonomipuls;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.inject.Inject;
-import roboguice.activity.RoboActivity;
-import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
-import se.ekonomipuls.util.EkonomipulsUtil;
-import se.ekonomipuls.views.adapter.LegendAdapter;
-import se.ekonomipuls.views.charts.PieChartView;
-import se.ekonomipuls.views.charts.SeriesEntry;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,23 +23,47 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
+import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.Transaction;
+import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
+import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.views.adapter.LegendAdapter;
+import se.ekonomipuls.views.charts.PieChartView;
+import se.ekonomipuls.views.charts.SeriesEntry;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class EkonomipulsHome extends RoboActivity implements LogTag {
+public class EkonomipulsHome extends RoboActivity {
 
     @Inject
     private EkonomipulsUtil ekonomipulsUtil;
-
+    @Inject
+    private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
+    @Inject
+    private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 
 	private LegendAdapter legendAdapter;
+
+    @InjectView(R.id.newTransactions)
 	private TextView newTransactions;
+    @InjectView(R.id.pieChart)
 	private PieChartView pieChart;
+    @InjectView(R.id.legendList)
 	private ListView legendList;
+    @InjectView(R.id.noCategories)
 	private TextView noData;
 
 	public void refreshView() {
@@ -71,10 +79,10 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	/**
 	 * The onClick even for you have new transactions notification.
 	 * 
-	 * @param v
+	 * @param view
 	 */
-	public void importStagingTransactions(final View v) {
-		new ExtractTransformLoadTransactionsTask(this).execute();
+	public void importStagingTransactions(final View view) {
+		new ExtractTransformLoadTransactionsTask(null, ekonomipulsUtil, this).execute();
 		final Intent intent = new Intent(this, VerifyTransactions.class);
 		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
 	}
@@ -82,13 +90,7 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home);
-
-		newTransactions = (TextView) findViewById(R.id.newTransactions);
-		pieChart = (PieChartView) findViewById(R.id.pieChart);
-		legendList = (ListView) findViewById(R.id.legendList);
-		noData = (TextView) findViewById(R.id.noCategories);
-
+		setContentView(R.layout.home);  // Injection doesn't happen until you call setContentView()
 		ekonomipulsUtil.removeGradientBanding(getWindow());
 	}
 
@@ -101,7 +103,7 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	}
 
 	private void showNewTransactionsNotification() {
-		if (ekonomipulsUtil.getNewTransactionsStatus(this)) {
+		if (ekonomipulsUtil.getNewTransactionsStatus()) {
 			newTransactions.setVisibility(View.VISIBLE);
 		} else {
 			newTransactions.setVisibility(View.GONE);
@@ -147,13 +149,13 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 	private void populateSeriesEntries(final PieChartView pieChart) {
 
-		final long reportId = ekonomipulsUtil.getEconomicOverviewId(this);
+		final long reportId = ekonomipulsUtil.getEconomicOverviewId();
 
 		assert (reportId != -1);
 
 		List<Category> categories;
 
-		categories = AnalyticsCategoriesDbFacade.getCategoriesByReport(this,
+		categories = analyticsCategoriesDbFacade.getCategoriesByReport(this,
 				reportId);
 
 		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
@@ -162,8 +164,7 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 		// Get the transactions given this category's tags
 		for (final Category cat : categories) {
 
-			final List<Transaction> catTransactions = AnalyticsTransactionsDbFacade
-					.getTransactionsByCategory(this, cat);
+			final List<Transaction> catTransactions = analyticsTransactionsDbFacade.getTransactionsByCategory(cat);
 
 			final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
 

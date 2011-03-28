@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest package="se.ekonomipuls" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.1.Pre-Alpha-2" android:versionCode="2">
 	<application 
             android:name="se.ekonomipuls.EkonomipulsApplication"
@@ -24,7 +25,12 @@
 
 
 <activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
-<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar"></activity>
+<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar">
+    <!--Remove this after debugging-->
+    <intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+    </intent-filter>
+</activity>
 </application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

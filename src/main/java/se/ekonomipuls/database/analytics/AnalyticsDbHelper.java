@@ -293,8 +293,6 @@ public class AnalyticsDbHelper extends AbstractDbHelper {
 	private final String defaultCategoryName;
 	private final String defaultTagName;
 
-	private final Context context;
-
 	private final String reportName;
 
 	private final String reportDesc;
@@ -303,18 +301,14 @@ public class AnalyticsDbHelper extends AbstractDbHelper {
 
 	private final String reportTo;
 
-	/**
-	 * @param context
-	 */
-	public AnalyticsDbHelper(final Context context) {
-		super(context, ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
-		this.context = context;
-		defaultCategoryName = context.getString(R.string.default_category_name);
-		defaultTagName = context.getString(R.string.default_tag_name);
-		reportName = context.getString(R.string.economic_overview_name);
-		reportDesc = context.getString(R.string.economic_overview_desc);
-		reportFrom = context.getString(R.string.economic_overview_date_from);
-		reportTo = context.getString(R.string.economic_overview_date_to);
+	public AnalyticsDbHelper() {
+		super(ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
+		defaultCategoryName = contextProvider.get().getString(R.string.default_category_name);
+		defaultTagName = contextProvider.get().getString(R.string.default_tag_name);
+		reportName = contextProvider.get().getString(R.string.economic_overview_name);
+		reportDesc = contextProvider.get().getString(R.string.economic_overview_desc);
+		reportFrom = contextProvider.get().getString(R.string.economic_overview_date_from);
+		reportTo = contextProvider.get().getString(R.string.economic_overview_date_to);
 	}
 
 	/** {@inheritDoc} */
@@ -394,8 +388,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper {
 		repCatJoinValues.put(Joins.CAT_FK_2, catId);
 		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, repCatJoinValues);
 
-		final SharedPreferences.Editor editor = PreferenceManager
-				.getDefaultSharedPreferences(context).edit();
+		final SharedPreferences.Editor editor =
+                PreferenceManager.getDefaultSharedPreferences(contextProvider.get()).edit();
 
 		// Commit to preferences
 		editor.putLong(CONF_DEF_CAT, catId);

@@ -15,23 +15,30 @@
  */
 package se.ekonomipuls;
 
-import java.util.List;
-
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.model.Transaction;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectView;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.model.Transaction;
+
+import java.util.List;
 
 /**
  * @author Magnus Andersson
  * @since 18 mar 2011
  */
-public class VerifyTransactions extends Activity implements LogTag {
+public class VerifyTransactions extends RoboActivity {
 
-	private List<Transaction> unverifiedTransactions;
+    @Inject
+    private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
+
+    @InjectView(R.id.verification_list)
+    private ListView verifications;
+
 	private ArrayAdapter<Transaction> tmpAdapter;
 
 	/** {@inheritDoc} */
@@ -53,14 +60,9 @@ public class VerifyTransactions extends Activity implements LogTag {
 	 * 
 	 */
 	private void populateVerificationList() {
-		unverifiedTransactions = AnalyticsTransactionsDbFacade
-				.getUnverifiedTransactions(this);
+        List<Transaction> unverifiedTransactions = analyticsTransactionsDbFacade.getUnverifiedTransactions();
 
-		final ListView verifications = (ListView) findViewById(R.id.verification_list);
-
-		tmpAdapter = new ArrayAdapter<Transaction>(this,
-				R.layout.checkbox_verify_row, R.id.verificationNameText,
-				unverifiedTransactions);
+        tmpAdapter = new ArrayAdapter<Transaction>(this, R.layout.checkbox_verify_row, R.id.verificationNameText, unverifiedTransactions);
 
 		verifications.setAdapter(tmpAdapter);
 	}
