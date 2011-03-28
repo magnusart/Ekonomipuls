@@ -20,6 +20,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
 
 import java.math.BigDecimal;
@@ -34,7 +36,9 @@ import static se.ekonomipuls.LogTag.TAG;
  */
 public class BankDroidProxy implements IBankTransactionsProvider {
 
-	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
+	@Inject
+    protected static Provider<Context> contextProvider;
+    private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
 
 	/**
 	 * 
@@ -58,8 +62,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 			final String accountId) throws IllegalAccessException {
 		Log.d(TAG, "Preparing To Read Transactions from Provider");
 
-		final Cursor cur = getUnmanagedTransactionsCursor(a.getBaseContext(),
-				accountId);
+		final Cursor cur = getUnmanagedTransactionsCursor(accountId);
 
 		a.startManagingCursor(cur);
 
@@ -68,23 +71,20 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 
 	/**
 	 * Get a list of BankDroidTransactions.
-	 * 
-	 * @param ctx
-	 *            The Context.
+	 *
 	 * @param accountId
 	 *            The Account Id.
 	 * @return List of Transactions
 	 * @throws IllegalAccessException
 	 */
-	public List<BankDroidTransaction> getBankDroidTransactions(
-			final Context ctx, final String accountId)
+	public List<BankDroidTransaction> getBankDroidTransactions(final String accountId)
 			throws IllegalAccessException {
 
 		final List<BankDroidTransaction> transactions = new ArrayList<BankDroidTransaction>();
 		Cursor cur = null;
 
 		try {
-			cur = getUnmanagedTransactionsCursor(ctx, accountId);
+			cur = getUnmanagedTransactionsCursor(accountId);
 
 			final int tId = cur.getColumnIndexOrThrow(TRANS_ID);
 			final int tDate = cur.getColumnIndexOrThrow(TRANS_DATE);
@@ -121,7 +121,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	private Cursor getUnmanagedBankAccountsCursor(final Context ctx)
 			throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + getApiKey(ctx));
+				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + getApiKey());
 
 		final Cursor cur = ctx.getContentResolver().query(uri,
 				BANK_ACCOUNT_PROJECTION, NO_HIDDEN_ACCOUNTS_FILTER, null, null);
@@ -134,14 +134,13 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return cur;
 	}
 
-	private Cursor getUnmanagedTransactionsCursor(final Context ctx,
-			final String accountId) throws IllegalAccessException {
+	private Cursor getUnmanagedTransactionsCursor(final String accountId) throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ TRANSACTIONS_CAT + "/" + API_KEY + getApiKey(ctx));
+				+ TRANSACTIONS_CAT + "/" + API_KEY + getApiKey());
 
 		Log.d(TAG, "Picked Account with id " + accountId);
 
-		final Cursor cur = ctx.getContentResolver().query(uri,
+		final Cursor cur = contextProvider.get().getContentResolver().query(uri,
 				TRANSACTIONS_PROJECTION, ACCOUNT_SELECTION_FILTER,
 				new String[] { accountId }, null);
 
@@ -153,7 +152,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return cur;
 	}
 
-	private String getApiKey(final Context ctx) {
+	private String getApiKey() {
 		// FIXME: Implement API-key functionality
 
 		// final SharedPreferences prefs =
