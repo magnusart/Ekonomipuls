@@ -57,7 +57,7 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
     private StagingDbFacade stagingDbFacade = new FakeStagingDbFacadeImpl();
     private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade = new FakeAnalyticsTransactionsDbFacade();
 
-    public ExtractTransformLoadTransactionsTask(View spinner, EkonomipulsUtil ekonomipulsUtil, EkonomipulsHome home) {
+    public ExtractTransformLoadTransactionsTask(View spinner, EkonomipulsHome home) {
 		//this.spinner = spinner;
         this.dialog = new ProgressDialog(home);
         this.ekonomipulsUtil = ekonomipulsUtil;
