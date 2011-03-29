@@ -8,6 +8,7 @@ import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.database.staging.StagingDbFacadeImpl;
 import se.ekonomipuls.proxy.BankDroidProxy;
+import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
 
 /**
  * Serves the purpose of telling Guice how to satisfy dependencies
@@ -19,6 +20,7 @@ public class EkonomipulsModule extends AbstractAndroidModule {
     @Override
     protected void configure() {
         // custom bindings
+        requestStaticInjection(ExtractTransformLoadTransactionsTask.class);
         requestStaticInjection(AbstractDbHelper.class);
         requestStaticInjection(BankDroidProxy.class);
         bind(AnalyticsTransactionsDbFacade.class).to(AnalyticsTransactionsDbFacadeImpl.class);

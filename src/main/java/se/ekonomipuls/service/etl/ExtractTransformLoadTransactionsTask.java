@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import com.google.inject.Inject;
 import roboguice.util.RoboAsyncTask;
 import se.ekonomipuls.EkonomipulsHome;
 import se.ekonomipuls.R;
@@ -49,6 +50,7 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
     private View spinner;
     private final ProgressDialog dialog;
     private final EkonomipulsHome home;
+    @Inject
     private EkonomipulsUtil ekonomipulsUtil;
     
     //TODO: Replace fakes when finished with this

@@ -15,19 +15,18 @@
  */
 package se.ekonomipuls;
 
-import java.util.List;
-
-import com.google.inject.Inject;
-import roboguice.activity.RoboActivity;
-import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.util.EkonomipulsUtil;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import com.google.inject.Inject;
+import roboguice.activity.RoboActivity;
+import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.util.EkonomipulsUtil;
+
+import java.util.List;
 
 /**
  * @author Magnus Andersson
