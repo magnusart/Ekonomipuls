@@ -52,7 +52,7 @@ public class BankDroidImportServiceTest {
         intent.putExtra("accountId", "1_1");
 
         List<BankDroidTransaction> mockedTransactions = setupMockedList();
-        when(bankDroidProxy.getBankDroidTransactions(isA(Context.class), isA(String.class))).thenReturn(mockedTransactions);
+        when(bankDroidProxy.getBankDroidTransactions(isA(String.class))).thenReturn(mockedTransactions);
 
         bankDroidImportService.onHandleIntent(intent);
 

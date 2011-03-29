@@ -155,8 +155,7 @@ public class EkonomipulsHome extends RoboActivity {
 
 		List<Category> categories;
 
-		categories = analyticsCategoriesDbFacade.getCategoriesByReport(this,
-				reportId);
+		categories = analyticsCategoriesDbFacade.getCategoriesByReport(reportId);
 
 		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
 		BigDecimal total = new BigDecimal(0.0);

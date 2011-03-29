@@ -67,8 +67,7 @@ public class OverviewSettings extends RoboActivity implements LogTag {
 
 		final long reportId = ekonomipulsUtil.getEconomicOverviewId();
 
-		reportCategories = analyticsCategoriesDbFacade.getCategoriesByReport(
-				this, reportId);
+		reportCategories = analyticsCategoriesDbFacade.getCategoriesByReport(reportId);
 
 		final ListView categories = (ListView) findViewById(R.id.categoriesList);
 

@@ -60,7 +60,7 @@ public class BankDroidImportService extends RoboIntentService {
 		try {
 			Log.v(TAG, "Fetching transactions from BankDroid content provider");
 			final List<BankDroidTransaction> transactions =
-                    bankDroidProxy.getBankDroidTransactions(this, accountId);
+                    bankDroidProxy.getBankDroidTransactions(accountId);
 
 			// TODO: Cleanse incoming transactions from duplicates.
 

@@ -63,7 +63,7 @@ public class AddEditCategory extends RoboActivity implements LogTag {
 		final AddCategoryReportAction categoryReport = new AddCategoryReportAction(
 				Color.CYAN, name, ekonomipulsUtil.getEconomicOverviewId());
 
-		analyticsCategoriesDbFacade.insertAssignCategoryReport(this, categoryReport);
+		analyticsCategoriesDbFacade.insertAssignCategoryReport(categoryReport);
 
 		// Return from method.
 		finish();
