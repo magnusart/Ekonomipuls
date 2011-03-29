@@ -15,3 +15,5 @@ gen
 local.properties
 *.jar
 dev/
+.classpath
+.project
