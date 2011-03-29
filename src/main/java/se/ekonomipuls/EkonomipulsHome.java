@@ -82,7 +82,7 @@ public class EkonomipulsHome extends RoboActivity {
 	 * @param view
 	 */
 	public void importStagingTransactions(final View view) {
-		new ExtractTransformLoadTransactionsTask(null, ekonomipulsUtil, this).execute();
+		new ExtractTransformLoadTransactionsTask(null, this).execute();
 		final Intent intent = new Intent(this, VerifyTransactions.class);
 		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
 	}
