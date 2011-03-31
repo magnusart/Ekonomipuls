@@ -47,24 +47,19 @@ import com.google.inject.Inject;
 @ContextScoped
 public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 
-	private ProgressDialog dialog;
-
-	@Inject
-	private EkonomipulsUtil ekonomipulsUtil;
-
 	@InjectResource(R.string.dialog_stage_import_message)
 	protected String importMessage;
 
-	final private StagingDbFacade stagingDbFacade;
-	final private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
+	private ProgressDialog dialog;
 
 	@Inject
-	public ExtractTransformLoadTransactionsTask(
-			final StagingDbFacade stagingDbFacade,
-			final AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade) {
-		this.stagingDbFacade = stagingDbFacade;
-		this.analyticsTransactionsDbFacade = analyticsTransactionsDbFacade;
-	}
+	private EkonomipulsUtil util;
+
+	@Inject
+	private StagingDbFacade stagingDbFacade;
+
+	@Inject
+	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
 	/** {@inheritDoc} */
 	@Override
@@ -104,7 +99,7 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 		stagingDbFacade.purgeStagingTable();
 
 		// Reset the new transactions toggle
-		ekonomipulsUtil.setNewTransactionStatus(false);
+		util.setNewTransactionStatus(false);
 
 		return null;
 	}
@@ -141,7 +136,8 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 	/**
 	 * @param dialog
 	 *            the dialog to set
-	 * @return reference to self.
+	 * 
+	 * @return instance of self.
 	 */
 	public ExtractTransformLoadTransactionsTask setDialog(
 			final ProgressDialog dialog) {

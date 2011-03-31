@@ -15,18 +15,19 @@
  */
 package se.ekonomipuls.service.importer;
 
-import android.content.Intent;
-import android.util.Log;
-import com.google.inject.Inject;
+import static se.ekonomipuls.LogTag.TAG;
+
+import java.util.List;
+
 import roboguice.service.RoboIntentService;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.util.EkonomipulsUtil;
+import android.content.Intent;
+import android.util.Log;
 
-import java.util.List;
-
-import static se.ekonomipuls.LogTag.TAG;
+import com.google.inject.Inject;
 
 /**
  * This service is responsible for inserting BankDroid Transactions into the
@@ -38,12 +39,12 @@ import static se.ekonomipuls.LogTag.TAG;
  */
 public class BankDroidImportService extends RoboIntentService {
 
-    @Inject
-    private StagingDbFacade stagingDbFacade;
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
-    @Inject
-    private BankDroidProxy bankDroidProxy;
+	@Inject
+	private StagingDbFacade stagingDbFacade;
+	@Inject
+	private EkonomipulsUtil ekonomipulsUtil;
+	@Inject
+	private BankDroidProxy bankDroidProxy;
 
 	private static final String ACCOUNT_ID = "accountId";
 
@@ -53,14 +54,14 @@ public class BankDroidImportService extends RoboIntentService {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void onHandleIntent(final Intent intent) {
+	public void onHandleIntent(final Intent intent) {
 		Log.v(TAG, "Starting to import transactions");
 
 		final String accountId = intent.getExtras().getString(ACCOUNT_ID);
 		try {
 			Log.v(TAG, "Fetching transactions from BankDroid content provider");
-			final List<BankDroidTransaction> transactions =
-                    bankDroidProxy.getBankDroidTransactions(accountId);
+			final List<BankDroidTransaction> transactions = bankDroidProxy
+					.getBankDroidTransactions(accountId);
 
 			// TODO: Cleanse incoming transactions from duplicates.
 

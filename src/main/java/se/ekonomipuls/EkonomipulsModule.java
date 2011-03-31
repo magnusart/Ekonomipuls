@@ -7,7 +7,6 @@ import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
 import se.ekonomipuls.database.staging.StagingDbFacade;
 import se.ekonomipuls.database.staging.StagingDbFacadeImpl;
 import se.ekonomipuls.proxy.BankDroidProxy;
-import android.app.ProgressDialog;
 
 /**
  * Serves the purpose of telling Guice how to satisfy dependencies
@@ -16,20 +15,14 @@ import android.app.ProgressDialog;
  */
 public class EkonomipulsModule extends AbstractAndroidModule {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void configure() {
 		// custom bindings
 		requestStaticInjection(AbstractDbHelper.class);
 		requestStaticInjection(BankDroidProxy.class);
 
-		// Make sure the Etl-task the the correct parent
-		// bind((Class) ExtractTransformLoadTransactionsTask.class)
-		// .to(EkonomipulsHome.class).in(ContextScoped.class);
-
 		bind(AnalyticsTransactionsDbFacade.class)
 				.to(AnalyticsTransactionsDbFacadeImpl.class);
 		bind(StagingDbFacade.class).to(StagingDbFacadeImpl.class);
-		bind(ProgressDialog.class).toProvider(ProgressDialogProvider.class);
 	}
 }
