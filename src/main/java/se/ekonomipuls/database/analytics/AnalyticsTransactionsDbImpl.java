@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Transaction;
@@ -35,7 +36,7 @@ import java.util.List;
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
-public class AnalyticsTransactionsDbFacadeImpl extends AbstractDbFacade implements AnalyticsTransactionsDbFacade {
+public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements AnalyticsTransactionsDbFacade {
 
 	/**
 	 *

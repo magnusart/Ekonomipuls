@@ -1,4 +1,4 @@
-package se.ekonomipuls.database.analytics;
+package se.ekonomipuls.database;
 
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.model.Transaction;

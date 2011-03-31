@@ -1,4 +1,4 @@
-package se.ekonomipuls.database.staging;
+package se.ekonomipuls.database;
 
 import se.ekonomipuls.proxy.BankDroidTransaction;
 

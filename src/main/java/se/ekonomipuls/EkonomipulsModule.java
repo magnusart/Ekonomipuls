@@ -2,10 +2,10 @@ package se.ekonomipuls;
 
 import roboguice.config.AbstractAndroidModule;
 import se.ekonomipuls.database.AbstractDbHelper;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
-import se.ekonomipuls.database.staging.StagingDbFacade;
-import se.ekonomipuls.database.staging.StagingDbFacadeImpl;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
+import se.ekonomipuls.database.staging.StagingDbImpl;
 import se.ekonomipuls.proxy.BankDroidProxy;
 
 /**
@@ -22,7 +22,7 @@ public class EkonomipulsModule extends AbstractAndroidModule {
 		requestStaticInjection(BankDroidProxy.class);
 
 		bind(AnalyticsTransactionsDbFacade.class)
-				.to(AnalyticsTransactionsDbFacadeImpl.class);
-		bind(StagingDbFacade.class).to(StagingDbFacadeImpl.class);
+				.to(AnalyticsTransactionsDbImpl.class);
+		bind(StagingDbFacade.class).to(StagingDbImpl.class);
 	}
 }

@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
 
@@ -30,22 +31,16 @@ import java.util.List;
 
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
-public class AnalyticsCategoriesDbFacade extends AbstractDbFacade {
+public class AnalyticsCategoriesDbImpl extends AbstractDbFacade implements AnalyticsCategoriesDbFacade {
 
-	/**
-	 * 
-	 * @param reportId
-	 * @return
-	 * @throws RemoteException
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public List<Category> getCategoriesByReport(final long reportId) {
 		return getCategories(Views.CATEGORIES_REPORT_VIEW, Views.REP_CAT_REP_ID + " = " + reportId);
 	}
 
-	/**
-	 * @return
-	 * @throws RemoteException
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public List<Category> getAllCategories() {
 		return getCategories(Categories.TABLE, null);
 	}
@@ -79,10 +74,8 @@ public class AnalyticsCategoriesDbFacade extends AbstractDbFacade {
 		return categories;
 	}
 
-	/**
-	 * @param action
-	 * @throws RemoteException
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public void insertAssignCategoryReport(final AddCategoryReportAction action) {
 
 		final AnalyticsDbHelper helper = new AnalyticsDbHelper();

@@ -1,7 +1,7 @@
 package se.ekonomipuls.mocks;
 
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.model.Transaction;
 
 import java.util.List;

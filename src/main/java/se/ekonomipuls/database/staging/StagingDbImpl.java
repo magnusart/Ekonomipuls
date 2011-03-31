@@ -22,6 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.inject.Inject;
 import se.ekonomipuls.database.AbstractDbFacade;
+import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
@@ -35,7 +36,7 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public class StagingDbFacadeImpl extends AbstractDbFacade implements StagingDbFacade {
+public class StagingDbImpl extends AbstractDbFacade implements StagingDbFacade {
 
     @Inject
     private StagingDbHelper stagingDbHelper;

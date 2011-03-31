@@ -1,6 +1,6 @@
 package se.ekonomipuls.mocks;
 
-import se.ekonomipuls.database.staging.StagingDbFacade;
+import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 
 import java.util.ArrayList;

@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import com.google.inject.Inject;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
 import se.ekonomipuls.model.Transaction;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 public class TransactionsFilterService extends IntentService {
 
     @Inject
-    private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
+    private AnalyticsTransactionsDbImpl analyticsTransactionsDbFacade;
 
 	public TransactionsFilterService() {
 		super(TransactionsFilterService.class.getClass().getName());

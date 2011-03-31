@@ -22,7 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
-import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.util.EkonomipulsUtil;
 

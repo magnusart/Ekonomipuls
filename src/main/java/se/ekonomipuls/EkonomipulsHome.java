@@ -21,8 +21,8 @@ import java.util.List;
 
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
-import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacadeImpl;
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
@@ -56,7 +56,7 @@ public class EkonomipulsHome extends RoboActivity {
 	private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
 
 	@Inject
-	private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
+	private AnalyticsTransactionsDbImpl analyticsTransactionsDbFacade;
 
 	@Inject
 	private Provider<ExtractTransformLoadTransactionsTask> etlTaskProvider;
