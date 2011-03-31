@@ -15,15 +15,10 @@
  */
 package se.ekonomipuls;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
-import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.analytics.AnalyticsCategoriesDbFacade;
@@ -35,10 +30,18 @@ import se.ekonomipuls.util.EkonomipulsUtil;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
 import se.ekonomipuls.views.charts.SeriesEntry;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author Magnus Andersson
@@ -46,24 +49,29 @@ import java.util.List;
  */
 public class EkonomipulsHome extends RoboActivity {
 
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
-    @Inject
-    private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
-    @Inject
-    private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
+	@Inject
+	private EkonomipulsUtil util;
+
+	@Inject
+	private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
+
+	@Inject
+	private AnalyticsTransactionsDbFacadeImpl analyticsTransactionsDbFacade;
+
+	@Inject
+	private Provider<ExtractTransformLoadTransactionsTask> etlTaskProvider;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 
 	private LegendAdapter legendAdapter;
 
-    @InjectView(R.id.newTransactions)
+	@InjectView(R.id.newTransactions)
 	private TextView newTransactions;
-    @InjectView(R.id.pieChart)
+	@InjectView(R.id.pieChart)
 	private PieChartView pieChart;
-    @InjectView(R.id.legendList)
+	@InjectView(R.id.legendList)
 	private ListView legendList;
-    @InjectView(R.id.noCategories)
+	@InjectView(R.id.noCategories)
 	private TextView noData;
 
 	public void refreshView() {
@@ -71,7 +79,7 @@ public class EkonomipulsHome extends RoboActivity {
 
 		populateData(); // TODO: Fix so that PieChart has an adapter.
 
-        legendAdapter.notifyDataSetInvalidated();
+		legendAdapter.notifyDataSetInvalidated();
 
 		pieChart.invalidate();
 	}
@@ -82,7 +90,7 @@ public class EkonomipulsHome extends RoboActivity {
 	 * @param view
 	 */
 	public void importStagingTransactions(final View view) {
-		new ExtractTransformLoadTransactionsTask(null, this).execute();
+		etlTaskProvider.get().setDialog(new ProgressDialog(this)).execute();
 		final Intent intent = new Intent(this, VerifyTransactions.class);
 		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
 	}
@@ -90,8 +98,9 @@ public class EkonomipulsHome extends RoboActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home);  // Injection doesn't happen until you call setContentView()
-		ekonomipulsUtil.removeGradientBanding(getWindow());
+		setContentView(R.layout.home); // Injection doesn't happen until you
+										// call setContentView()
+		util.removeGradientBanding(getWindow());
 	}
 
 	/** {@inheritDoc} */
@@ -103,7 +112,7 @@ public class EkonomipulsHome extends RoboActivity {
 	}
 
 	private void showNewTransactionsNotification() {
-		if (ekonomipulsUtil.getNewTransactionsStatus()) {
+		if (util.getNewTransactionsStatus()) {
 			newTransactions.setVisibility(View.VISIBLE);
 		} else {
 			newTransactions.setVisibility(View.GONE);
@@ -125,11 +134,11 @@ public class EkonomipulsHome extends RoboActivity {
 		Intent intent = null;
 
 		switch (item.getItemId()) {
-			case (R.id.settings_item):
-				intent = new Intent(this, OverviewSettings.class);
-				break;
-			default:
-				return super.onOptionsItemSelected(item);
+		case (R.id.settings_item):
+			intent = new Intent(this, OverviewSettings.class);
+			break;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 
 		this.startActivity(intent);
@@ -140,22 +149,22 @@ public class EkonomipulsHome extends RoboActivity {
 
 		populateSeriesEntries(pieChart);
 
-		populateLegendList(legendList, pieChart.getSeries(),
-				pieChart.getTotalAmt());
+		populateLegendList(legendList, pieChart.getSeries(), pieChart.getTotalAmt());
 
-		//		pieChart.requestLayout();
+		// pieChart.requestLayout();
 
 	}
 
 	private void populateSeriesEntries(final PieChartView pieChart) {
 
-		final long reportId = ekonomipulsUtil.getEconomicOverviewId();
+		final long reportId = util.getEconomicOverviewId();
 
 		assert (reportId != -1);
 
 		List<Category> categories;
 
-		categories = analyticsCategoriesDbFacade.getCategoriesByReport(reportId);
+		categories = analyticsCategoriesDbFacade
+				.getCategoriesByReport(reportId);
 
 		final ArrayList<SeriesEntry> series = new ArrayList<SeriesEntry>();
 		BigDecimal total = new BigDecimal(0.0);
@@ -163,7 +172,8 @@ public class EkonomipulsHome extends RoboActivity {
 		// Get the transactions given this category's tags
 		for (final Category cat : categories) {
 
-			final List<Transaction> catTransactions = analyticsTransactionsDbFacade.getTransactionsByCategory(cat);
+			final List<Transaction> catTransactions = analyticsTransactionsDbFacade
+					.getTransactionsByCategory(cat);
 
 			final SeriesEntry ser = new SeriesEntry(cat, catTransactions);
 
@@ -188,7 +198,7 @@ public class EkonomipulsHome extends RoboActivity {
 		}
 
 		legendAdapter = new LegendAdapter(this, R.layout.legend_row, series,
-				total);
+				total, util);
 
 		legendList.setAdapter(legendAdapter);
 

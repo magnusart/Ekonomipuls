@@ -15,64 +15,66 @@
  */
 package se.ekonomipuls.service.etl;
 
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-import com.google.inject.Inject;
-import roboguice.util.RoboAsyncTask;
-import se.ekonomipuls.EkonomipulsHome;
-import se.ekonomipuls.R;
-import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.database.staging.StagingDbFacade;
-import se.ekonomipuls.mocks.FakeAnalyticsTransactionsDbFacade;
-import se.ekonomipuls.mocks.FakeStagingDbFacadeImpl;
-import se.ekonomipuls.model.ExternalModelMapper;
-import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.proxy.BankDroidTransaction;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
+import roboguice.inject.ContextScoped;
+import roboguice.inject.InjectResource;
+import roboguice.util.RoboAsyncTask;
+import se.ekonomipuls.R;
+import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.staging.StagingDbFacade;
+import se.ekonomipuls.model.ExternalModelMapper;
+import se.ekonomipuls.model.Transaction;
+import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.util.EkonomipulsUtil;
+import android.app.ProgressDialog;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
  * @author Michael Svensson
  * @since 15 mar 2011
  */
+@ContextScoped
 public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 
-    private final ProgressDialog dialog;
-    private final EkonomipulsHome home;
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
-    
-    //TODO: Replace fakes when finished with this
-    private StagingDbFacade stagingDbFacade = new FakeStagingDbFacadeImpl();
-    private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade = new FakeAnalyticsTransactionsDbFacade();
+	private ProgressDialog dialog;
 
-    public ExtractTransformLoadTransactionsTask(View spinner, EkonomipulsHome home) {
-		//this.spinner = spinner;
-        this.dialog = new ProgressDialog(home);
-        this.home = home;
+	@Inject
+	private EkonomipulsUtil ekonomipulsUtil;
+
+	@InjectResource(R.string.dialog_stage_import_message)
+	protected String importMessage;
+
+	final private StagingDbFacade stagingDbFacade;
+	final private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
+
+	@Inject
+	public ExtractTransformLoadTransactionsTask(
+			final StagingDbFacade stagingDbFacade,
+			final AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade) {
+		this.stagingDbFacade = stagingDbFacade;
+		this.analyticsTransactionsDbFacade = analyticsTransactionsDbFacade;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onPreExecute() {
-        /*if (spinner != null) {
-            spinner.setVisibility(View.VISIBLE);
-        }*/
-
-        dialog.setMessage(home.getResources().getText(R.string.dialog_stage_import_message));
-		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		dialog.setCancelable(false);
-		dialog.show();
+		if (dialog instanceof ProgressDialog) {
+			dialog.setMessage(importMessage);
+			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			dialog.setCancelable(false);
+			dialog.show();
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -80,13 +82,14 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 	public Void call() {
 
 		// Get staged transactions with external model
-		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade.getStagedTransactions();
+		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade
+				.getStagedTransactions();
 
 		Log.d(TAG, "Loaded staged transactions: " + stagedTransactions);
 
 		// Transform to internal model
-		final List<Transaction> transactions =
-                new ExternalModelMapper().fromBdTransactionsToTransactions(stagedTransactions);
+		final List<Transaction> transactions = new ExternalModelMapper()
+				.fromBdTransactionsToTransactions(stagedTransactions);
 
 		// Transform and apply filters (separate this step later)
 		final List<ApplyFilterTagAction> filteredTransactions = applyDefaultFilter(transactions);
@@ -94,7 +97,8 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 		// Do filtering
 
 		// Load the transactions into the Analytics table
-		analyticsTransactionsDbFacade.insertTransactionsAssignTags(filteredTransactions);
+		analyticsTransactionsDbFacade
+				.insertTransactionsAssignTags(filteredTransactions);
 
 		// Now purge the staging table
 		stagingDbFacade.purgeStagingTable();
@@ -109,7 +113,8 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 	 * @param transactions
 	 * @return
 	 */
-	private List<ApplyFilterTagAction> applyDefaultFilter(final List<Transaction> transactions) {
+	private List<ApplyFilterTagAction> applyDefaultFilter(
+			final List<Transaction> transactions) {
 		final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
 
 		for (final Transaction t : transactions) {
@@ -117,8 +122,8 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 
 			// Only if no filters matched, set default tag.
 
-			final SharedPreferences pref =
-                    PreferenceManager.getDefaultSharedPreferences(context);
+			final SharedPreferences pref = PreferenceManager
+					.getDefaultSharedPreferences(context);
 
 			final long tagId = pref.getLong(CONF_DEF_TAG, -1);
 
@@ -133,16 +138,22 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 		return filteredTransactions;
 	}
 
+	/**
+	 * @param dialog
+	 *            the dialog to set
+	 * @return reference to self.
+	 */
+	public ExtractTransformLoadTransactionsTask setDialog(
+			final ProgressDialog dialog) {
+		this.dialog = dialog;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void onFinally() {
-		/*if( spinner != null )
-            spinner.setVisibility(View.GONE);*/
-
-        home.refreshView();
-
-		if (this.dialog.isShowing()) {
-			this.dialog.dismiss();
+		if ((dialog instanceof ProgressDialog) && dialog.isShowing()) {
+			dialog.dismiss();
 		}
 	}
 }

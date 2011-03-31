@@ -15,8 +15,11 @@
  */
 package se.ekonomipuls.views.charts;
 
+import static se.ekonomipuls.LogTag.TAG;
+
 import java.util.ArrayList;
 
+import roboguice.activity.RoboActivity;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -34,7 +37,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import static se.ekonomipuls.LogTag.TAG;
+import com.google.inject.Inject;
 
 /**
  * Pie chart diagram. Use as a normal view.
@@ -43,7 +46,8 @@ import static se.ekonomipuls.LogTag.TAG;
  * @since 6 feb 2011
  */
 public class PieChartView extends AbstractChartView implements OnTouchListener {
-	protected static final int STROKE_WIDTH = 4; // TODO: Make this into DIP-units.
+	protected static final int STROKE_WIDTH = 4; // TODO: Make this into
+													// DIP-units.
 
 	private static final boolean ENABLE_GRADIENT = true;
 	private static final boolean SKEW_CHART = false;
@@ -60,12 +64,15 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 	private static final int PERCENTAGE_LOWER_LIMIT = 6;
 
+	@Inject
+	private EkonomipulsUtil util;
+
 	private ArrayList<Arc> arcs;
 
 	{
 		arcs = new ArrayList<Arc>();
 		// TODO Fix the on touch listener.
-		//this.setOnTouchListener(this);
+		// this.setOnTouchListener(this);
 	}
 
 	/**
@@ -81,8 +88,9 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	 * @param defStyle
 	 */
 	public PieChartView(final Context context, final AttributeSet attrs,
-						final int defStyle) {
+			final int defStyle) {
 		super(context, attrs, defStyle);
+		inject();
 	}
 
 	/**
@@ -91,6 +99,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	 */
 	public PieChartView(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
+		inject();
 	}
 
 	/** {@inheritDoc} */
@@ -131,8 +140,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		paint.setColor(Color.argb(0, 0, 0, 0));
 
 		final int shadowColor = Color.argb(CHART_SHADOW_ALPHA, 0, 0, 0);
-		paint.setShadowLayer(BLUR_RADIUS, SHADOW_OFFSET, SHADOW_OFFSET,
-				shadowColor);
+		paint.setShadowLayer(BLUR_RADIUS, SHADOW_OFFSET, SHADOW_OFFSET, shadowColor);
 
 		final RectF offsetOval = new RectF(oval);
 
@@ -152,7 +160,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 			paint.setAntiAlias(true);
 			paint.setStyle(style);
 
-			// FIXME These should be sorted in the order of smallest to largest to avoid drawing bug
+			// FIXME These should be sorted in the order of smallest to largest
+			// to avoid drawing bug
 			for (final SeriesEntry entry : series) {
 				if (style == Style.STROKE) {
 					paint.setColor(Color.WHITE);
@@ -162,7 +171,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					paint.setColor(entry.getBaseColor());
 
 					if (ENABLE_GRADIENT) {
-						final Shader grad = EkonomipulsUtil
+						final Shader grad = util
 								.createGradientFromBaseColor(oval, entry);
 
 						paint.setShader(grad);
@@ -172,8 +181,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 				final Arc arc = new Arc(entry, arcPosDegrees, getTotalAmt());
 				arcs.add(arc);
 
-				canvas.drawArc(oval, arc.getDegrees(), arc.getSweep(), true,
-						paint);
+				canvas.drawArc(oval, arc.getDegrees(), arc.getSweep(), true, paint);
 
 				// Increment for next arc sweep.
 				arcPosDegrees += arc.getSweep();
@@ -193,15 +201,15 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		paint.setTextAlign(Align.CENTER);
 
 		final int shadowColor = Color.argb(TEXT_SHADOW_ALPHA, 0, 0, 0);
-		paint.setShadowLayer(TEXT_BLUR_RADIUS, TEXT_SHADOW_OFFSET,
-				TEXT_SHADOW_OFFSET, shadowColor);
+		paint.setShadowLayer(TEXT_BLUR_RADIUS, TEXT_SHADOW_OFFSET, TEXT_SHADOW_OFFSET, shadowColor);
 
 		final double radius = oval.width() / 3;
 
 		for (final Arc arc : arcs) {
 
-			final int percentage = EkonomipulsUtil.getPercentage(arc.getCategorySum(),
-					seriesTotal.floatValue());
+			final int percentage = util
+					.getPercentage(arc.getCategorySum(), seriesTotal
+							.floatValue());
 			if (percentage >= PERCENTAGE_LOWER_LIMIT) {
 				final double angle = arc.getDegrees() + arc.getSweep() / 2;
 
@@ -216,8 +224,7 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 				final float alignY = (float) y + oval.centerY()
 						+ textBounds.height() / 2;
 
-				canvas.drawText(outText, (float) x + oval.centerX(), alignY,
-						paint);
+				canvas.drawText(outText, (float) x + oval.centerX(), alignY, paint);
 			}
 		}
 	}
@@ -235,8 +242,9 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					+ padding;
 
 			// Translate PieChart to center
-			canvasRect.set(calculatedLeft, canvasRect.top, calculatedWidth,
-					canvasRect.height());
+			canvasRect
+					.set(calculatedLeft, canvasRect.top, calculatedWidth, canvasRect
+							.height());
 
 		} else {
 			height = width; // Height is greater
@@ -247,8 +255,8 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 					+ padding;
 
 			// Translate PieChart to center
-			canvasRect.set(canvasRect.left, calculatedTop, canvasRect.width(),
-					calulatedHeight);
+			canvasRect
+					.set(canvasRect.left, calculatedTop, canvasRect.width(), calulatedHeight);
 
 		}
 	}
@@ -274,9 +282,9 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 
 			// TODO Check if within circle.
 
-			//			def in_circle(center_x, center_y, radius, x, y):
-			//			    square_dist = (center_x - x) ** 2 + (center_y - y) ** 2
-			//			    return square_dist <= radius ** 2
+			// def in_circle(center_x, center_y, radius, x, y):
+			// square_dist = (center_x - x) ** 2 + (center_y - y) ** 2
+			// return square_dist <= radius ** 2
 
 			// Ex: 20 < 25 < 30 means that the point is within the arc.
 			if ((arc.getDegrees() < (float) angle)
@@ -295,6 +303,10 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 		this.forceLayout();
 
 		return success;
+	}
+
+	private void inject() {
+		((RoboActivity) context).getInjector().injectMembers(this);
 	}
 
 }

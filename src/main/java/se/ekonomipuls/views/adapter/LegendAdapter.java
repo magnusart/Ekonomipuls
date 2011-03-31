@@ -18,7 +18,6 @@ package se.ekonomipuls.views.adapter;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.google.inject.Inject;
 import roboguice.adapter.IterableAdapter;
 import se.ekonomipuls.R;
 import se.ekonomipuls.model.Category;
@@ -29,8 +28,9 @@ import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
@@ -38,8 +38,8 @@ import android.widget.TextView;
  */
 public class LegendAdapter extends IterableAdapter<SeriesEntry> {
 
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
+	@Inject
+	private final EkonomipulsUtil util;
 
 	/**
 	 * @author Magnus Andersson
@@ -62,11 +62,12 @@ public class LegendAdapter extends IterableAdapter<SeriesEntry> {
 	 * @param total
 	 */
 	public LegendAdapter(final Context context, final int layoutViewResourceId,
-							final List<SeriesEntry> series,
-							final BigDecimal total) {
+			final List<SeriesEntry> series, final BigDecimal total,
+			final EkonomipulsUtil util) {
 		super(context, layoutViewResourceId, series);
 		this.layoutViewResourceId = layoutViewResourceId;
 		this.total = total;
+		this.util = util;
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -81,8 +82,8 @@ public class LegendAdapter extends IterableAdapter<SeriesEntry> {
 			convertView = inflater.inflate(layoutViewResourceId, parent, false);
 			holder = new ViewHolder();
 
-			holder.color = (GradientDrawable) convertView.findViewById(
-					R.id.colorShape).getBackground();
+			holder.color = (GradientDrawable) convertView
+					.findViewById(R.id.colorShape).getBackground();
 
 			holder.categoryName = (TextView) convertView
 					.findViewById(R.id.categoryNameText);
@@ -96,15 +97,15 @@ public class LegendAdapter extends IterableAdapter<SeriesEntry> {
 
 		final SeriesEntry entry = getItem(position);
 
-		holder.color.setColor(ekonomipulsUtil.getDarkColor(entry.getBaseColor(),
-				entry.isSelected()));
+		holder.color.setColor(util.getDarkColor(entry.getBaseColor(), entry
+				.isSelected()));
 
 		final Category cat = entry.getCategory();
 
 		holder.categoryName.setText(cat.getName());
 
-		final int percentage = ekonomipulsUtil.getPercentage(entry.getSum()
-				.floatValue(), total.floatValue());
+		final int percentage = util
+				.getPercentage(entry.getSum().floatValue(), total.floatValue());
 
 		holder.line2Text.setText(percentage + "%, "
 				+ Math.round(entry.getSum().floatValue()) + " SEK, "

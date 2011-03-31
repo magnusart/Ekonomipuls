@@ -15,21 +15,26 @@
  */
 package se.ekonomipuls.util;
 
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
+import se.ekonomipuls.R;
+import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.*;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.PixelFormat;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
-import com.google.inject.Inject;
-import se.ekonomipuls.R;
-import se.ekonomipuls.views.charts.SeriesEntry;
 
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Global utility methods for Ekonomipuls.
@@ -37,10 +42,11 @@ import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
+@Singleton
 public class EkonomipulsUtil {
 
-    @Inject
-    private Context context;
+	@Inject
+	private Context context;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -58,7 +64,7 @@ public class EkonomipulsUtil {
 	 * @param total
 	 * @return
 	 */
-	public static int getPercentage(final float part, final float total) {
+	public int getPercentage(final float part, final float total) {
 		return Math.round((part / total) * 100);
 	}
 
@@ -68,7 +74,7 @@ public class EkonomipulsUtil {
 	 * @param entry
 	 * @return
 	 */
-	public static Shader createGradientFromBaseColor(final RectF oval,
+	public Shader createGradientFromBaseColor(final RectF oval,
 			final SeriesEntry entry) {
 		final int baseColor = entry.getBaseColor();
 		int dark = 0;
@@ -83,8 +89,8 @@ public class EkonomipulsUtil {
 		return new LinearGradient(skewBottom, oval.height(), skewTop, 0L,
 				new int[] { dark, light }, null, TileMode.CLAMP);
 
-		//		return new RadialGradient(oval.centerX(), oval.centerY(),
-		//				oval.width() / 2, dark, light, TileMode.CLAMP);
+		// return new RadialGradient(oval.centerX(), oval.centerY(),
+		// oval.width() / 2, dark, light, TileMode.CLAMP);
 	}
 
 	/**
@@ -92,8 +98,7 @@ public class EkonomipulsUtil {
 	 * @param entrySelected
 	 * @return
 	 */
-	public static int getLightColor(final int baseColor,
-			final boolean entrySelected) {
+	public int getLightColor(final int baseColor, final boolean entrySelected) {
 		final float[] hsv = new float[3];
 
 		Color.colorToHSV(baseColor, hsv);
@@ -123,8 +128,7 @@ public class EkonomipulsUtil {
 	 * @param entrySelected
 	 * @return
 	 */
-	public static int getDarkColor(final int baseColor,
-			final boolean entrySelected) {
+	public int getDarkColor(final int baseColor, final boolean entrySelected) {
 		final float[] hsv = new float[3];
 
 		Color.colorToHSV(baseColor, hsv);
@@ -148,8 +152,7 @@ public class EkonomipulsUtil {
 	}
 
 	/**
-	 * Some Voodoo that prevents color banding on the background
-	 * gradient.
+	 * Some Voodoo that prevents color banding on the background gradient.
 	 * http://stuffthathappens.com/blog/2010/06/04/android-color-banding/
 	 * 
 	 * @param window
@@ -162,7 +165,8 @@ public class EkonomipulsUtil {
 	 * @return The Report Id for Economic Overview
 	 */
 	public long getEconomicOverviewId() {
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		final SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(context);
 		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
@@ -175,31 +179,32 @@ public class EkonomipulsUtil {
 
 	/**
 	 * Set the status of new transactions in the staging database.
-	 *
+	 * 
 	 * @param status
 	 *            new status.
 	 */
 	public void setNewTransactionStatus(final boolean status) {
-		final SharedPreferences.Editor editor =
-                PreferenceManager.getDefaultSharedPreferences(context).edit();
+		final SharedPreferences.Editor editor = PreferenceManager
+				.getDefaultSharedPreferences(context).edit();
 
-		final String containsUpdates = context.getString(R.string.setting_staging_contains_updates);
-		editor.putBoolean(containsUpdates, status); // No updates when initiated.
+		final String containsUpdates = context
+				.getString(R.string.setting_staging_contains_updates);
+		editor.putBoolean(containsUpdates, status); // No updates when
+													// initiated.
 		editor.commit();
 	}
 
 	/**
 	 * Returns the status of new transactions in the staging database.
-	 *
+	 * 
 	 * @return True if new transactions exists.
 	 */
 	public boolean getNewTransactionsStatus() {
-		final SharedPreferences prefs =
-                PreferenceManager.getDefaultSharedPreferences(context);
+		final SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
 
-		return prefs.getBoolean(
-				context.getString(R.string.setting_staging_contains_updates),
-				false);
+		return prefs.getBoolean(context
+				.getString(R.string.setting_staging_contains_updates), false);
 	}
 
 }
