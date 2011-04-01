@@ -1,7 +1,6 @@
 package se.ekonomipuls;
 
 import roboguice.config.AbstractAndroidModule;
-import roboguice.inject.SharedPreferencesName;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
@@ -32,7 +31,5 @@ public class EkonomipulsModule extends AbstractAndroidModule {
 		bind(AnalyticsCategoriesDbFacade.class)
 				.to(AnalyticsCategoriesDbImpl.class);
 
-		bindConstant().annotatedWith(SharedPreferencesName.class)
-				.to("se.ekonomipuls.ekonomipuls_preferences");
 	}
 }
