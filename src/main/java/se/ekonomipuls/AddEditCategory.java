@@ -20,7 +20,6 @@ import roboguice.activity.RoboActivity;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.util.EkonomipulsUtil;
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -32,10 +31,10 @@ import android.widget.EditText;
  */
 public class AddEditCategory extends RoboActivity implements LogTag {
 
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
-    @Inject
-    private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
+	@Inject
+	private EkonomipulsUtil ekonomipulsUtil;
+	@Inject
+	private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
 
 	/** {@inheritDoc} */
 	@Override

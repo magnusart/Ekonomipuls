@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import se.ekonomipuls.service.importer.BankDroidImportService;
+import se.ekonomipuls.service.BankDroidImportService;
 
 import static se.ekonomipuls.LogTag.TAG;
 

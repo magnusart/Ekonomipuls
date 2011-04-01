@@ -16,14 +16,13 @@
 package se.ekonomipuls.database.analytics;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import se.ekonomipuls.R;
-import se.ekonomipuls.database.AbstractDbHelper;
+import se.ekonomipuls.database.abstr.AbstractDbHelper;
 
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.PropertiesConstants.*;
@@ -303,12 +302,18 @@ public class AnalyticsDbHelper extends AbstractDbHelper {
 
 	public AnalyticsDbHelper() {
 		super(ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
-		defaultCategoryName = contextProvider.get().getString(R.string.default_category_name);
-		defaultTagName = contextProvider.get().getString(R.string.default_tag_name);
-		reportName = contextProvider.get().getString(R.string.economic_overview_name);
-		reportDesc = contextProvider.get().getString(R.string.economic_overview_desc);
-		reportFrom = contextProvider.get().getString(R.string.economic_overview_date_from);
-		reportTo = contextProvider.get().getString(R.string.economic_overview_date_to);
+		defaultCategoryName = contextProvider.get()
+				.getString(R.string.default_category_name);
+		defaultTagName = contextProvider.get()
+				.getString(R.string.default_tag_name);
+		reportName = contextProvider.get()
+				.getString(R.string.economic_overview_name);
+		reportDesc = contextProvider.get()
+				.getString(R.string.economic_overview_desc);
+		reportFrom = contextProvider.get()
+				.getString(R.string.economic_overview_date_from);
+		reportTo = contextProvider.get()
+				.getString(R.string.economic_overview_date_to);
 	}
 
 	/** {@inheritDoc} */
@@ -388,8 +393,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper {
 		repCatJoinValues.put(Joins.CAT_FK_2, catId);
 		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, repCatJoinValues);
 
-		final SharedPreferences.Editor editor =
-                PreferenceManager.getDefaultSharedPreferences(contextProvider.get()).edit();
+		final SharedPreferences.Editor editor = PreferenceManager
+				.getDefaultSharedPreferences(contextProvider.get()).edit();
 
 		// Commit to preferences
 		editor.putLong(CONF_DEF_CAT, catId);

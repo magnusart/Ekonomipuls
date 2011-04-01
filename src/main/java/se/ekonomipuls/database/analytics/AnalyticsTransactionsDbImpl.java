@@ -16,16 +16,17 @@
 package se.ekonomipuls.database.analytics;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.RemoteException;
 import android.util.Log;
+
 import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.Singleton;
+
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.AbstractDbFacade;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Transaction;
@@ -36,38 +37,42 @@ import java.util.List;
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
+/**
+ * 
+ * @author Magnus Andersson
+ * @author Michael Svensson
+ * @since 1 apr 2011
+ */
+@Singleton
 public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
 		AnalyticsTransactionsDbFacade {
 
-	/**
-	 * 
-	 * @return
-	 */
-	public List<Transaction> getUnfilteredTransactions() throws RemoteException {
+	@Inject
+	private final AnalyticsDbHelper helper = new AnalyticsDbHelper();
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Transaction> getUnfilteredTransactions() {
 		return getTransactions(Transactions.TABLE, Transactions.FILTERED
 				+ " = 0");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Transaction> getUnverifiedTransactions() {
 		return getTransactions(Transactions.TABLE, Transactions.VERIFIED
 				+ " = 0");
 	}
 
-	/**
-	 * 
-	 * @param cat
-	 * @return
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public List<Transaction> getTransactionsByCategory(final Category cat) {
 		return getTransactions(Views.TRANSACTIONS_CATEGORY_VIEW, Views.TRANS_CAT_V_CAT_ID
 				+ " = " + cat.getId());
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public List<Transaction> getAllTransactions() throws RemoteException {
 		return getTransactions(Transactions.TABLE, null);
 	}
@@ -81,7 +86,6 @@ public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
 		final String sortOrder = Transactions.DATE + " DESC";
 		final String[] columns = Transactions.COLUMNS;
 
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final List<Transaction> transactions = new ArrayList<Transaction>();
@@ -106,9 +110,8 @@ public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
 		return transactions;
 	}
 
-	/**
-	 * @param actions
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public void insertTransactionsAssignTags(
 			final List<ApplyFilterTagAction> actions) {
 		final AnalyticsDbHelper helper = new AnalyticsDbHelper();

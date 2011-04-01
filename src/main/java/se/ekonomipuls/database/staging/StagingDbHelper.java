@@ -15,11 +15,11 @@
  */
 package se.ekonomipuls.database.staging;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.inject.Inject;
-import se.ekonomipuls.database.AbstractDbHelper;
+
+import se.ekonomipuls.database.abstr.AbstractDbHelper;
 import se.ekonomipuls.util.EkonomipulsUtil;
 
 import static se.ekonomipuls.LogTag.TAG;
@@ -31,8 +31,8 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  */
 public class StagingDbHelper extends AbstractDbHelper {
 
-    @Inject
-    private EkonomipulsUtil ekonomipulsUtil;
+	@Inject
+	private EkonomipulsUtil ekonomipulsUtil;
 
 	private static final int DB_VERSION = 1;
 	private static String DB_NAME = "ekonomipuls_staging.db";
@@ -63,7 +63,8 @@ public class StagingDbHelper extends AbstractDbHelper {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
+			final int newVersion) {
 		throw new IllegalAccessError("Upgrade is not yet implemented.");
 	}
 

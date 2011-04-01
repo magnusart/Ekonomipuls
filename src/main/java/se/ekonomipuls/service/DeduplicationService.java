@@ -13,53 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.database;
+package se.ekonomipuls.service;
 
 import java.util.List;
 
-import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.Transaction;
-import android.os.RemoteException;
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
  * @author Michael Svensson
  * @since 1 apr 2011
  */
-public interface AnalyticsTransactionsDbFacade {
+@Singleton
+public class DeduplicationService {
 
 	/**
-	 * 
+	 * @param transactions
 	 * @return
 	 */
-	public abstract List<Transaction> getUnfilteredTransactions();
-
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract List<Transaction> getUnverifiedTransactions();
-
-	/**
-	 * 
-	 * @param cat
-	 * @return
-	 */
-	public abstract List<Transaction> getTransactionsByCategory(
-			final Category cat);
-
-	/**
-	 * 
-	 * @return
-	 */
-	public abstract List<Transaction> getAllTransactions()
-			throws RemoteException;
-
-	/**
-	 * @param actions
-	 */
-	public abstract void insertTransactionsAssignTags(
-			final List<ApplyFilterTagAction> actions);
+	public List<Transaction> deduplicate(
+			final List<Transaction> transactions) {
+		return transactions;
+	}
 
 }

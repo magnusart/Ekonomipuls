@@ -22,10 +22,10 @@ import java.util.List;
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.service.etl.ExtractTransformLoadTransactionsTask;
+import se.ekonomipuls.service.ExtractTransformLoadService;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
@@ -56,10 +56,10 @@ public class EkonomipulsHome extends RoboActivity {
 	private AnalyticsCategoriesDbFacade analyticsCategoriesDbFacade;
 
 	@Inject
-	private AnalyticsTransactionsDbImpl analyticsTransactionsDbFacade;
+	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
 	@Inject
-	private Provider<ExtractTransformLoadTransactionsTask> etlTaskProvider;
+	private Provider<ExtractTransformLoadService> etlTaskProvider;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 

@@ -51,7 +51,6 @@ public class BankDroidModelSqlMapper {
 	 */
 	public static BankDroidTransaction mapStagedTransactionModel(
 			final Cursor cur, final int[] indices) {
-		final int id = cur.getInt(indices[0]);
 		final String glob = cur.getString(indices[1]);
 		final String date = cur.getString(indices[2]);
 		final String desc = cur.getString(indices[3]);

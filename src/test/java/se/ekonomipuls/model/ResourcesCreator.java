@@ -27,7 +27,7 @@ import se.ekonomipuls.proxy.BankDroidTransaction;
  * @author Michael Svensson
  * @since 1 apr 2011
  */
-public class TestResourcesCreator {
+public class ResourcesCreator {
 
 	private static final String ACC_ID = "1_1";
 	private static final String CURRENCY = "SEK";

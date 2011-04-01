@@ -16,27 +16,39 @@
 package se.ekonomipuls.database.analytics;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.RemoteException;
 import se.ekonomipuls.actions.AddCategoryReportAction;
-import se.ekonomipuls.database.AbstractDbFacade;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDbFacade;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
-public class AnalyticsCategoriesDbImpl extends AbstractDbFacade implements AnalyticsCategoriesDbFacade {
+/**
+ * 
+ * @author Magnus Andersson
+ * @author Michael Svensson
+ * @since 1 apr 2011
+ */
+@Singleton
+public class AnalyticsCategoriesDbImpl extends AbstractDbFacade implements
+		AnalyticsCategoriesDbFacade {
+	@Inject
+	private final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 
 	/** {@inheritDoc} */
 	@Override
 	public List<Category> getCategoriesByReport(final long reportId) {
-		return getCategories(Views.CATEGORIES_REPORT_VIEW, Views.REP_CAT_REP_ID + " = " + reportId);
+		return getCategories(Views.CATEGORIES_REPORT_VIEW, Views.REP_CAT_REP_ID
+				+ " = " + reportId);
 	}
 
 	/** {@inheritDoc} */
@@ -45,21 +57,20 @@ public class AnalyticsCategoriesDbImpl extends AbstractDbFacade implements Analy
 		return getCategories(Categories.TABLE, null);
 	}
 
-	private List<Category> getCategories(final String table, final String selection) {
+	private List<Category> getCategories(final String table,
+			final String selection) {
 
 		final String[] selectionArgs = null;
 		final String having = null;
 		final String sortOrder = null;
 		final String[] columns = Categories.COLUMNS;
 
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final List<Category> categories = new ArrayList<Category>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection,
-					selectionArgs, having, sortOrder, null);
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, having, sortOrder, null);
 
 			final int[] indices = ModelSqlMapper.getCategoryCursorIndices(cur);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.service.importer;
+package se.ekonomipuls.service;
 
 import static se.ekonomipuls.LogTag.TAG;
 
@@ -62,8 +62,6 @@ public class BankDroidImportService extends RoboIntentService {
 			Log.v(TAG, "Fetching transactions from BankDroid content provider");
 			final List<BankDroidTransaction> transactions = bankDroidProxy
 					.getBankDroidTransactions(accountId);
-
-			// TODO: Cleanse incoming transactions from duplicates.
 
 			if (transactions.size() > 0) {
 				Log.v(TAG, "Bulk inserting transactions");

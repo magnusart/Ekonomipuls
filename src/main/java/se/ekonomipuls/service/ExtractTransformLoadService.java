@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.service.etl;
+package se.ekonomipuls.service;
 
 import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.InjectResource;
@@ -32,8 +29,6 @@ import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -43,7 +38,7 @@ import com.google.inject.Inject;
  * @author Michael Svensson
  * @since 15 mar 2011
  */
-public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
+public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
 
 	@InjectResource(R.string.dialog_stage_import_message)
 	protected String importMessage;
@@ -54,10 +49,19 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 	private EkonomipulsUtil util;
 
 	@Inject
+	private ExternalModelMapper extMapper;
+
+	@Inject
 	private StagingDbFacade stagingDbFacade;
 
 	@Inject
 	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
+
+	@Inject
+	private DeduplicationService dedupService;
+
+	@Inject
+	private FilterService filterService;
 
 	/** {@inheritDoc} */
 	@Override
@@ -81,13 +85,16 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 		Log.d(TAG, "Loaded staged transactions: " + stagedTransactions);
 
 		// Transform to internal model
-		final List<Transaction> transactions = new ExternalModelMapper()
+		final List<Transaction> transactions = extMapper
 				.fromBdTransactionsToTransactions(stagedTransactions);
 
-		// Transform and apply filters (separate this step later)
-		final List<ApplyFilterTagAction> filteredTransactions = applyDefaultFilter(transactions);
+		// Clean out any duplicates before we add them to the staging table
+		final List<Transaction> deduplicatedTransactions = dedupService
+				.deduplicate(transactions);
 
-		// Do filtering
+		// Transform and apply filters (separate this step later)
+		final List<ApplyFilterTagAction> filteredTransactions = filterService
+				.applyFilters(deduplicatedTransactions);
 
 		// Load the transactions into the Analytics table
 		analyticsTransactionsDbFacade
@@ -103,42 +110,12 @@ public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 	}
 
 	/**
-	 * @param transactions
-	 * @return
-	 */
-	private List<ApplyFilterTagAction> applyDefaultFilter(
-			final List<Transaction> transactions) {
-		final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
-
-		for (final Transaction t : transactions) {
-			Log.d(TAG, "Applying filter to Transaction " + t);
-
-			// Only if no filters matched, set default tag.
-
-			final SharedPreferences pref = PreferenceManager
-					.getDefaultSharedPreferences(context);
-
-			final long tagId = pref.getLong(CONF_DEF_TAG, -1);
-
-			assert (tagId != -1);
-
-			t.setFiltered(true); // A filter have been applied.
-
-			filteredTransactions.add(new ApplyFilterTagAction(t, tagId));
-
-		}
-
-		return filteredTransactions;
-	}
-
-	/**
 	 * @param dialog
 	 *            the dialog to set
 	 * 
 	 * @return instance of self.
 	 */
-	public ExtractTransformLoadTransactionsTask setDialog(
-			final ProgressDialog dialog) {
+	public ExtractTransformLoadService setDialog(final ProgressDialog dialog) {
 		this.dialog = dialog;
 		return this;
 	}

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.service.etl;
+package se.ekonomipuls.service;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -29,15 +31,15 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.ExternalModelMapper;
-import se.ekonomipuls.model.TestResourcesCreator;
+import se.ekonomipuls.model.ResourcesCreator;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.service.ExtractTransformLoadService;
 import se.ekonomipuls.util.EkonomipulsUtil;
 
 import com.google.inject.Inject;
@@ -51,14 +53,21 @@ import com.google.inject.Inject;
 public class ExtractTransformLoadTest {
 
 	@Inject
-	TestResourcesCreator resources;
+	private ResourcesCreator resources;
 
 	@Inject
 	@InjectMocks
-	ExtractTransformLoadTransactionsTask task;
+	private ExtractTransformLoadService task;
+
+	@Mock
+	private FilterService filterService;
+
+	@Mock
+	private DeduplicationService dedupService;
 
 	@Mock
 	private AnalyticsTransactionsDbFacade analyticsTransDbFacade;
+
 	@Mock
 	private StagingDbFacade stagingDbFacade;
 
@@ -91,10 +100,32 @@ public class ExtractTransformLoadTest {
 		when(mapper.fromBdTransactionsToTransactions(eq(mockedStagingTrans)))
 				.thenReturn(mockedTransactions);
 
+		// Simulate that transactions have been removed in dedup.
+		final List<Transaction> dedupTransactions = new ArrayList<Transaction>(
+				mockedTransactions);
+		Collections.copy(dedupTransactions, mockedTransactions);
+		dedupTransactions.remove(0);
+
+		when(dedupService.deduplicate(eq(mockedTransactions)))
+				.thenReturn(dedupTransactions);
+
+		// Simulate that transactions have been removed in dedup.
+		mockedActions.remove(0);
+		when(filterService.applyFilters(eq(dedupTransactions)))
+				.thenReturn(mockedActions);
+
 		// Emulate .execute call but stay in this thread.
 		task.onPreExecute();
 		task.call();
 		task.onFinally();
+
+		verify(stagingDbFacade).getStagedTransactions();
+
+		verify(mapper).fromBdTransactionsToTransactions(eq(mockedStagingTrans));
+
+		verify(dedupService).deduplicate(eq(mockedTransactions));
+
+		verify(filterService).applyFilters(eq(dedupTransactions));
 
 		verify(analyticsTransDbFacade)
 				.insertTransactionsAssignTags(eq(mockedActions));

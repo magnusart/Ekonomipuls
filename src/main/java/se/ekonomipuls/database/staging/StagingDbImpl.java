@@ -16,13 +16,14 @@
 package se.ekonomipuls.database.staging;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.inject.Inject;
-import se.ekonomipuls.database.AbstractDbFacade;
+import com.google.inject.Singleton;
+
 import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDbFacade;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
@@ -32,24 +33,28 @@ import java.util.List;
 
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
+
 /**
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
+@Singleton
 public class StagingDbImpl extends AbstractDbFacade implements StagingDbFacade {
 
-    @Inject
-    private StagingDbHelper stagingDbHelper;
+	@Inject
+	private StagingDbHelper stagingDbHelper;
 
 	/**
 	 * Bulk insert transactions.
-	 *
+	 * 
 	 * @param transactions
 	 */
 
-	public void bulkInsertBdTransactions(final List<BankDroidTransaction> transactions) {
+	public void bulkInsertBdTransactions(
+			final List<BankDroidTransaction> transactions) {
 
-		final ContentValues[] values = ModelSqlMapper.mapBankDroidTransactionSql(transactions);
+		final ContentValues[] values = ModelSqlMapper
+				.mapBankDroidTransactionSql(transactions);
 		final SQLiteDatabase db = stagingDbHelper.getWritableDatabase();
 
 		try {
@@ -64,52 +69,51 @@ public class StagingDbImpl extends AbstractDbFacade implements StagingDbFacade {
 		}
 	}
 
-    /**
-     * @return
-     */
-    public List<BankDroidTransaction> getStagedTransactions() {
+	/**
+	 * @return
+	 */
+	public List<BankDroidTransaction> getStagedTransactions() {
 
-        final String table = Staging.TABLE;
-        final String selection = null;
-        final String[] selectionArgs = null;
-        final String having = null;
-        final String groupBy = null;
-        final String sortOrder = Staging.DATE + " DESC";
-        final String[] columns = Staging.COLUMNS;
+		final String table = Staging.TABLE;
+		final String selection = null;
+		final String[] selectionArgs = null;
+		final String having = null;
+		final String groupBy = null;
+		final String sortOrder = Staging.DATE + " DESC";
+		final String[] columns = Staging.COLUMNS;
 
-        final SQLiteDatabase db = stagingDbHelper.getReadableDatabase();
+		final SQLiteDatabase db = stagingDbHelper.getReadableDatabase();
 
-        final List<BankDroidTransaction> stagedTransactions = new ArrayList<BankDroidTransaction>();
+		final List<BankDroidTransaction> stagedTransactions = new ArrayList<BankDroidTransaction>();
 
-        try {
-            final Cursor cur = query(db, table, columns, selection,
-                    selectionArgs, groupBy, having, sortOrder);
+		try {
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
-            final int[] indices = BankDroidModelSqlMapper
-                    .getStagedTransactionCursorIndices(cur);
+			final int[] indices = BankDroidModelSqlMapper
+					.getStagedTransactionCursorIndices(cur);
 
-            while (cur.moveToNext()) {
+			while (cur.moveToNext()) {
 
-                final BankDroidTransaction transaction = BankDroidModelSqlMapper
-                        .mapStagedTransactionModel(cur, indices);
+				final BankDroidTransaction transaction = BankDroidModelSqlMapper
+						.mapStagedTransactionModel(cur, indices);
 
-                Log.d(TAG, "Fetching staged transaction " + transaction);
-                stagedTransactions.add(transaction);
-            }
-            cur.close();
-        } catch (final IllegalArgumentException e) {
-            Log.e(TAG, "Could not find required database columns", e);
-            throw e;
-        } finally {
-            shutdownDb(db, stagingDbHelper);
-        }
+				Log.d(TAG, "Fetching staged transaction " + transaction);
+				stagedTransactions.add(transaction);
+			}
+			cur.close();
+		} catch (final IllegalArgumentException e) {
+			Log.e(TAG, "Could not find required database columns", e);
+			throw e;
+		} finally {
+			shutdownDb(db, stagingDbHelper);
+		}
 
-        return stagedTransactions;
-    }
+		return stagedTransactions;
+	}
 
 	/**
 	 * Delete all the transactions in the staging table.
-     */
+	 */
 	public int purgeStagingTable() {
 		final SQLiteDatabase db = stagingDbHelper.getReadableDatabase();
 
