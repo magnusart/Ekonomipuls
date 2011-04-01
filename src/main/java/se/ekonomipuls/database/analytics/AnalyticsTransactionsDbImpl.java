@@ -49,7 +49,10 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		AnalyticsTransactionsDbFacade {
 
 	@Inject
-	private final AnalyticsDbHelper helper = new AnalyticsDbHelper();
+	private AnalyticsDbHelper helper;
+
+	@Inject
+	private ModelSqlMapper mapper;
 
 	/** {@inheritDoc} */
 	@Override
@@ -94,12 +97,10 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		try {
 			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
-			final int[] indices = ModelSqlMapper
-					.getTransactionCursorIndices(cur);
+			final int[] indices = mapper.getTransactionCursorIndices(cur);
 
 			while (cur.moveToNext()) {
-				transactions.add(ModelSqlMapper
-						.mapTransactionModel(cur, indices));
+				transactions.add(mapper.mapTransactionModel(cur, indices));
 			}
 			cur.close();
 		} catch (final IllegalArgumentException e) {
@@ -126,14 +127,13 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 				final Transaction transaction = action.getTransaction();
 				final List<Tag> tags = action.getTags();
 
-				ContentValues values = ModelSqlMapper
-						.mapTransactionSql(transaction);
+				ContentValues values = mapper.mapTransactionSql(transaction);
 
 				final long transId = insert(db, table, values);
 
 				for (final Tag tag : tags) {
-					values = ModelSqlMapper
-							.mapTransactionTagJoinSql(transId, tag.getId());
+					values = mapper.mapTransactionTagJoinSql(transId, tag
+							.getId());
 
 					insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
 				}

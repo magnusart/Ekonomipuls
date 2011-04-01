@@ -41,8 +41,12 @@ import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 @Singleton
 public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		AnalyticsCategoriesDbFacade {
+
 	@Inject
-	private final AnalyticsDbHelper helper = new AnalyticsDbHelper();
+	private AnalyticsDbHelper helper;
+
+	@Inject
+	private ModelSqlMapper mapper;
 
 	/** {@inheritDoc} */
 	@Override
@@ -72,10 +76,10 @@ public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		try {
 			final Cursor cur = query(db, table, columns, selection, selectionArgs, having, sortOrder, null);
 
-			final int[] indices = ModelSqlMapper.getCategoryCursorIndices(cur);
+			final int[] indices = mapper.getCategoryCursorIndices(cur);
 
 			while (cur.moveToNext()) {
-				categories.add(ModelSqlMapper.mapCategoryModel(cur, indices));
+				categories.add(mapper.mapCategoryModel(cur, indices));
 			}
 
 			cur.close();
@@ -93,13 +97,13 @@ public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		try {
-			ContentValues values = ModelSqlMapper.mapCategorySql(action);
+			ContentValues values = mapper.mapCategorySql(action);
 
 			final long catId = insert(db, Categories.TABLE, values);
 
 			final long reportId = action.getReportId();
 
-			values = ModelSqlMapper.mapCategoryReportSql(reportId, catId);
+			values = mapper.mapCategoryReportSql(reportId, catId);
 
 			insert(db, Joins.REPORTS_CATEGORIES_TABLE, values);
 

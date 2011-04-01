@@ -84,7 +84,6 @@ public class FilterService {
 													// applied.
 					break; // Break the loop
 				}
-
 			}
 		}
 

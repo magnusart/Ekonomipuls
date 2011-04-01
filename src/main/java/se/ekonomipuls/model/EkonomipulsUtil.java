@@ -16,9 +16,11 @@
 package se.ekonomipuls.model;
 
 import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
-import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
+
+import java.util.List;
+
 import roboguice.inject.InjectResource;
+import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
@@ -45,13 +47,28 @@ import com.google.inject.Singleton;
  * @since 13 feb 2011
  */
 @Singleton
-public class EkonomipulsUtil {
+public class EkonomipulsUtil implements PropertiesConstants {
 
 	@Inject
 	private Context context;
 
+	@InjectResource(R.string.default_category_name)
+	private String defaultCategoryName;
+
 	@InjectResource(R.string.default_tag_name)
-	private String tagName;
+	private String defaultTagName;
+
+	@InjectResource(R.string.economic_overview_name)
+	private String reportName;
+
+	@InjectResource(R.string.economic_overview_desc)
+	private String reportDesc;
+
+	@InjectResource(R.string.economic_overview_date_from)
+	private String reportFrom;
+
+	@InjectResource(R.string.economic_overview_date_to)
+	private String reportTo;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -218,11 +235,54 @@ public class EkonomipulsUtil {
 	 * @return tag id
 	 */
 	public Tag getDefaultTag() {
-		final SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		final long tagId = pref.getLong(CONF_DEF_TAG, -1);
+		final long tagId = PreferenceManager
+				.getDefaultSharedPreferences(context).getLong(CONF_DEF_TAG, 0L);
 
-		return new Tag(tagId, tagName);
+		return new Tag(tagId, defaultTagName);
 	}
 
+	public Category getDefaultCategory() {
+		final long catId = PreferenceManager
+				.getDefaultSharedPreferences(context).getLong(CONF_DEF_CAT, 0L);
+
+		return new Category(catId, Color.GRAY, defaultCategoryName);
+	}
+
+	/**
+	 * @return
+	 */
+	public Report getDefaultReport() {
+		final long repId = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getLong(ECONOMIC_OVERVIEW_REPORT_ID, 0L);
+
+		return new Report(repId, reportName, reportDesc, reportFrom, reportTo);
+	}
+
+	/**
+	 * @param tagId
+	 * @param catId
+	 * @param repId
+	 */
+	public void setDefaults(final long tagId, final long catId, final long repId) {
+		final SharedPreferences.Editor editor = PreferenceManager
+				.getDefaultSharedPreferences(context).edit();
+
+		// Commit to preferences
+		editor.putLong(CONF_DEF_CAT, catId);
+		editor.putLong(CONF_DEF_TAG, tagId);
+		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
+		editor.commit();
+	}
+
+	/**
+	 * @return
+	 */
+	public FilterRule getDefaultFilterRule(final List<Tag> tags) {
+		return new FilterRule(
+				0L,
+				"Catch all filter",
+				"Default filter that catches transactions that are not handeled by other filter rules.",
+				"*", tags, true, Integer.MIN_VALUE);
+	}
 }

@@ -27,9 +27,10 @@ public class FilterRule {
 	private final Long id;
 	private final String name;
 	private final String description;
-	private final List<Tag> tags;
+	private List<Tag> tags;
 	private final boolean markFiltered;
 	private final String pattern;
+	private final int priority;
 
 	/**
 	 * 
@@ -51,13 +52,14 @@ public class FilterRule {
 	 */
 	FilterRule(final Long id, final String name, final String description,
 			final String pattern, final List<Tag> tags,
-			final boolean markFiltered) {
+			final boolean markFiltered, final int priority) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.pattern = pattern;
 		this.tags = tags;
 		this.markFiltered = markFiltered;
+		this.priority = priority;
 	}
 
 	/**
@@ -96,10 +98,25 @@ public class FilterRule {
 	}
 
 	/**
+	 * @param tags
+	 *            the tags to set
+	 */
+	public void setTags(final List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	/**
 	 * @return the markFiltered
 	 */
 	public boolean isMarkFiltered() {
 		return markFiltered;
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public int getPriority() {
+		return priority;
 	}
 
 	/** {@inheritDoc} */
@@ -113,6 +130,7 @@ public class FilterRule {
 		result = prime * result + (markFiltered ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
+		result = prime * result + priority;
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		return result;
 	}
@@ -161,6 +179,9 @@ public class FilterRule {
 		} else if (!pattern.equals(other.pattern)) {
 			return false;
 		}
+		if (priority != other.priority) {
+			return false;
+		}
 		if (tags == null) {
 			if (other.tags != null) {
 				return false;
@@ -176,7 +197,8 @@ public class FilterRule {
 	public String toString() {
 		return "FilterRule [id=" + id + ", name=" + name + ", description="
 				+ description + ", tags=" + tags + ", markFiltered="
-				+ markFiltered + ", pattern=" + pattern + "]";
+				+ markFiltered + ", pattern=" + pattern + ", priority="
+				+ priority + "]";
 	}
 
 }

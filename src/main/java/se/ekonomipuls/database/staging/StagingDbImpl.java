@@ -44,6 +44,9 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 	@Inject
 	private StagingDbHelper stagingDbHelper;
 
+	@Inject
+	private ModelSqlMapper mapper;
+
 	/**
 	 * Bulk insert transactions.
 	 * 
@@ -53,7 +56,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 	public void bulkInsertBdTransactions(
 			final List<BankDroidTransaction> transactions) {
 
-		final ContentValues[] values = ModelSqlMapper
+		final ContentValues[] values = mapper
 				.mapBankDroidTransactionSql(transactions);
 		final SQLiteDatabase db = stagingDbHelper.getWritableDatabase();
 

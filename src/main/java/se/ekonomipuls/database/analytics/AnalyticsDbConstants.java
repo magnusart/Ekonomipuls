@@ -65,7 +65,7 @@ public interface AnalyticsDbConstants {
 
 	static interface Reports {
 		public final static String TABLE = "reports";
-		// Columns for reports Table
+		// Columns for Reports table
 		public final static String ID = "_id";
 		public final static String NAME = "name";
 		public final static String DESC = "description";
@@ -74,6 +74,20 @@ public interface AnalyticsDbConstants {
 
 		public static final String[] COLUMNS = new String[] { ID, NAME, DESC,
 				DATE_FROM, DATE_TO };
+	}
+
+	static interface FilterRules {
+		public final static String TABLE = "filter_rules";
+		// Columns for Filter Rules table
+		public final static String ID = "_id";
+		public final static String NAME = "name";
+		public final static String DESC = "description";
+		public final static String PATTERN = "pattern";
+		public final static String MARK_FILTER = "mark_filtered";
+		public final static String PRIORITY = "priority";
+
+		public static final String[] COLUMNS = new String[] { ID, NAME, DESC,
+				PATTERN, MARK_FILTER, PRIORITY };
 	}
 
 	static interface Joins {
@@ -91,6 +105,12 @@ public interface AnalyticsDbConstants {
 		// Columns for Reports/Categories join table
 		public final static String REP_FK = "report_fk";
 		public final static String CAT_FK_2 = "category_fk";
+
+		public final static String FILTER_RULES_TAGS_TABLE = "filter_rules_tags_table";
+		// Columns for Filter Rules/Tags join table
+		public final static String FILTER_RULE_FK = "filter_rule_fk";
+		public final static String TAG_FK_3 = "tag_fk";
+
 	}
 
 	static interface Views {
@@ -101,5 +121,9 @@ public interface AnalyticsDbConstants {
 		public final static String CATEGORIES_REPORT_VIEW = "categories_report_view";
 		// Special columns for this view
 		public final static String REP_CAT_REP_ID = "rep_id";
+
+		public final static String FILTER_RULES_TAGS_VIEW = "filter_rules_report_view";
+		// Special columns for this view
+		public final static String FILTER_RULE_TAGS_FILTER_ID = "filter_rule_id";
 	}
 }

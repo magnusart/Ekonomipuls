@@ -18,9 +18,19 @@ package se.ekonomipuls.database.analytics;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDb;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.FilterRules;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Tags;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Views;
 import se.ekonomipuls.model.FilterRule;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.model.Tag;
 
 /**
  * @author Magnus Andersson
@@ -30,10 +40,64 @@ import se.ekonomipuls.model.FilterRule;
 public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		AnalyticsFilterRulesDbFacade {
 
+	@Inject
+	private AnalyticsDbHelper helper;
+
+	@Inject
+	private ModelSqlMapper mapper;
+
 	/** {@inheritDoc} */
 	@Override
 	public List<FilterRule> getFilterRules() {
+
+		final String table = FilterRules.TABLE;
+		final String selection = null;
+		final String[] selectionArgs = null;
+		final String groupBy = null;
+		final String having = null;
+		final String sortOrder = FilterRules.PRIORITY + " DESC";
+		final String[] columns = FilterRules.COLUMNS;
+
+		final String view = Views.FILTER_RULES_TAGS_VIEW;
+		String viewSelection = Views.FILTER_RULE_TAGS_FILTER_ID;
+		final String[] viewColumns = Tags.COLUMNS;
+		final String viewSortOrder = null;
+
+		final SQLiteDatabase db = helper.getReadableDatabase();
+
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
+
+		try {
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
+
+			final int[] indices = mapper.getFilterRuleCursorIndices(cur);
+
+			while (cur.moveToNext()) {
+				final FilterRule rule = mapper.mapFilterRuleModel(cur, indices);
+				viewSelection += " = " + rule.getId();
+
+				final Cursor cur2 = query(db, view, viewColumns, viewSelection, selectionArgs, groupBy, having, viewSortOrder);
+
+				final List<Tag> tags = new ArrayList<Tag>();
+
+				final int[] tagIndices = mapper.getTagsCursorIndices(cur);
+
+				while (cur2.moveToNext()) {
+					final Tag tag = mapper.mapTagModel(cur2, tagIndices);
+					tags.add(tag);
+				}
+
+				rule.setTags(tags);
+				rules.add(rule);
+
+				cur2.close();
+			}
+
+			cur.close();
+		} finally {
+			shutdownDb(db, helper);
+		}
+
 		return rules;
 	}
 

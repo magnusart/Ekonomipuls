@@ -86,7 +86,8 @@ public class ModelResources {
 		tags.add(getDefaultTag());
 
 		final FilterRule catchAllRule = new FilterRule(1L, "Default rule",
-				"Built in default catch all rule", "*", tags, true);
+				"Built in default catch all rule", "*", tags, true,
+				Integer.MIN_VALUE);
 
 		rules.add(catchAllRule);
 

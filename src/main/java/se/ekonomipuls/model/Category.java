@@ -21,7 +21,7 @@ package se.ekonomipuls.model;
  */
 public class Category {
 
-	private final int id;
+	private final long id;
 	private final int color;
 	private final String name;
 
@@ -30,7 +30,7 @@ public class Category {
 	 * @param string
 	 * @param subList
 	 */
-	protected Category(final int id, final int color, final String name) {
+	protected Category(final long id, final int color, final String name) {
 		this.id = id;
 		this.color = color;
 		this.name = name;
@@ -39,7 +39,7 @@ public class Category {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -59,18 +59,11 @@ public class Category {
 
 	/** {@inheritDoc} */
 	@Override
-	public String toString() {
-		return "Category [id=" + id + ", color=" + color + ", name=" + name
-				+ "]";
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + color;
-		result = prime * result + id;
+		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -84,7 +77,7 @@ public class Category {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof Category)) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		final Category other = (Category) obj;
@@ -102,6 +95,13 @@ public class Category {
 			return false;
 		}
 		return true;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "Category [id=" + id + ", color=" + color + ", name=" + name
+				+ "]";
 	}
 
 }
