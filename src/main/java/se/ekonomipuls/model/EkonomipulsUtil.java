@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.util;
+package se.ekonomipuls.model;
 
 import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 import static se.ekonomipuls.PropertiesConstants.ECONOMIC_OVERVIEW_REPORT_ID;
+import roboguice.inject.InjectResource;
 import se.ekonomipuls.R;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
@@ -47,6 +49,9 @@ public class EkonomipulsUtil {
 
 	@Inject
 	private Context context;
+
+	@InjectResource(R.string.default_tag_name)
+	private String tagName;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
@@ -205,6 +210,19 @@ public class EkonomipulsUtil {
 
 		return prefs.getBoolean(context
 				.getString(R.string.setting_staging_contains_updates), false);
+	}
+
+	/**
+	 * Returns the default category tag id
+	 * 
+	 * @return tag id
+	 */
+	public Tag getDefaultTag() {
+		final SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		final long tagId = pref.getLong(CONF_DEF_TAG, -1);
+
+		return new Tag(tagId, tagName);
 	}
 
 }

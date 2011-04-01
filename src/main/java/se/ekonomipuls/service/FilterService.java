@@ -15,19 +15,14 @@
  */
 package se.ekonomipuls.service;
 
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.inject.Inject;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
 import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.model.FilterRule;
 import se.ekonomipuls.model.Transaction;
 
 /**
@@ -40,47 +35,77 @@ public class FilterService {
 	@Inject
 	Context context;
 
+	@Inject
+	EkonomipulsUtil util;
+
+	@Inject
+	AnalyticsFilterRulesDbFacade filterRulesDbFacade;
+
 	/**
 	 * @param deduplicatedTransactions
 	 * @return
 	 */
 	public List<ApplyFilterTagAction> applyFilters(
 			final List<Transaction> transactions) {
-		return catchAllFilter(transactions);
-	}
 
-	/**
-	 * @param transactions
-	 * @return
-	 */
-	private List<ApplyFilterTagAction> catchAllFilter(
-			final List<Transaction> transactions) {
-		final List<ApplyFilterTagAction> filteredTransactions = new ArrayList<ApplyFilterTagAction>();
+		final List<FilterRule> rules = filterRulesDbFacade.getFilterRules();
 
-		for (final Transaction t : transactions) {
-			Log.d(TAG, "Applying filter to Transaction " + t);
+		final List<ApplyFilterTagAction> actions = new ArrayList<ApplyFilterTagAction>();
 
-			final long tagId = getTagId();
-
-			assert (tagId != -1);
-
-			t.setFiltered(true); // A filter have been applied.
-
-			filteredTransactions.add(new ApplyFilterTagAction(t, tagId));
+		for (final Transaction transaction : transactions) {
+			actions.addAll(applyFilter(transaction, rules));
 		}
 
-		return filteredTransactions;
+		return actions;
 	}
 
 	/**
+	 * @param transaction
+	 * @param rules
 	 * @return
 	 */
-	long getTagId() {
-		final SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(context);
+	private List<ApplyFilterTagAction> applyFilter(
+			final Transaction transaction, final List<FilterRule> rules) {
 
-		final long tagId = pref.getLong(CONF_DEF_TAG, -1);
-		return tagId;
+		// One transaction can be filtered several times
+		final List<ApplyFilterTagAction> filterActions = new ArrayList<ApplyFilterTagAction>();
+
+		// Start applying rules, starting with the highest priority
+		for (final FilterRule rule : rules) {
+			if (matches(transaction, rule)) {
+
+				// The rule matched the transaction, add it.
+				filterActions.add(new ApplyFilterTagAction(transaction, rule
+						.getTags()));
+
+				// This determines if we should continue processing
+				if (rule.isMarkFiltered()) {
+					transaction.setFiltered(true); // A filter have been
+													// applied.
+					break; // Break the loop
+				}
+
+			}
+		}
+
+		assert transaction.isFiltered() : "Catch all rule never applied!";
+
+		return filterActions;
 	}
 
+	/**
+	 * @param transaction
+	 * @param rule
+	 * @return
+	 */
+	private boolean matches(final Transaction transaction, final FilterRule rule) {
+
+		// Catch all rule, until the day proper regexp matching is needed.
+		if (rule.getPattern().equals("*")) {
+			return true;
+		}
+
+		// Simplistic matching, lets start out easy.
+		return transaction.getDescription().contains(rule.getPattern());
+	}
 }

@@ -28,7 +28,7 @@ import static se.ekonomipuls.LogTag.TAG;
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
-public abstract class AbstractDbFacade {
+public abstract class AbstractDb {
 
 	/**
 	 * @param db

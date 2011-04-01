@@ -19,7 +19,7 @@ import com.google.inject.Inject;
 import roboguice.activity.RoboActivity;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;

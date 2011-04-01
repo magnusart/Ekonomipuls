@@ -20,7 +20,7 @@ import android.util.Log;
 import com.google.inject.Inject;
 
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil;
 
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;

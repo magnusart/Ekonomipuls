@@ -21,9 +21,9 @@ import java.util.List;
 
 import roboguice.service.RoboIntentService;
 import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
-import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Intent;
 import android.util.Log;
 

@@ -21,7 +21,7 @@ import java.util.List;
 import roboguice.adapter.IterableAdapter;
 import se.ekonomipuls.R;
 import se.ekonomipuls.model.Category;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;

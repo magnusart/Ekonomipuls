@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import se.ekonomipuls.database.StagingDbFacade;
-import se.ekonomipuls.database.abstr.AbstractDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDb;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
 import se.ekonomipuls.proxy.BankDroidTransaction;
@@ -39,7 +39,7 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  * @since 13 mar 2011
  */
 @Singleton
-public class StagingDbImpl extends AbstractDbFacade implements StagingDbFacade {
+public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 
 	@Inject
 	private StagingDbHelper stagingDbHelper;

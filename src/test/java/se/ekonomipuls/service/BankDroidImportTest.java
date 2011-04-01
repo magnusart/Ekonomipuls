@@ -32,10 +32,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.proxy.BankDroidProxy;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.BankDroidImportService;
-import se.ekonomipuls.util.EkonomipulsUtil;
 import android.content.Intent;
 
 import com.xtremelabs.robolectric.RobolectricTestRunner;

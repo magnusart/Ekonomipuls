@@ -15,6 +15,10 @@
  */
 package se.ekonomipuls.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import se.ekonomipuls.model.Tag;
 import se.ekonomipuls.model.Transaction;
 
 /**
@@ -27,16 +31,28 @@ import se.ekonomipuls.model.Transaction;
 public final class ApplyFilterTagAction {
 
 	private final Transaction transaction;
-	private final long tagId;
+	private final List<Tag> tags;
+
+	/**
+	 * @param transaction
+	 *            Transaction that should be modified
+	 * @param tag
+	 */
+	public ApplyFilterTagAction(final Transaction transaction, final Tag tag) {
+		this.transaction = transaction;
+		this.tags = new ArrayList<Tag>();
+		tags.add(tag);
+	}
 
 	/**
 	 * @param transaction
 	 *            Transaction that should be modified
 	 * @param tagId
 	 */
-	public ApplyFilterTagAction(final Transaction transaction, final long tagId) {
+	public ApplyFilterTagAction(final Transaction transaction,
+			final List<Tag> tags) {
 		this.transaction = transaction;
-		this.tagId = tagId;
+		this.tags = tags;
 	}
 
 	/**
@@ -47,10 +63,10 @@ public final class ApplyFilterTagAction {
 	}
 
 	/**
-	 * @return the tagId
+	 * @return the tags
 	 */
-	public long getTagId() {
-		return tagId;
+	public List<Tag> getTags() {
+		return tags;
 	}
 
 	/** {@inheritDoc} */
@@ -58,7 +74,7 @@ public final class ApplyFilterTagAction {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (tagId ^ (tagId >>> 32));
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		result = prime * result
 				+ ((transaction == null) ? 0 : transaction.hashCode());
 		return result;
@@ -77,7 +93,11 @@ public final class ApplyFilterTagAction {
 			return false;
 		}
 		final ApplyFilterTagAction other = (ApplyFilterTagAction) obj;
-		if (tagId != other.tagId) {
+		if (tags == null) {
+			if (other.tags != null) {
+				return false;
+			}
+		} else if (!tags.equals(other.tags)) {
 			return false;
 		}
 		if (transaction == null) {
@@ -93,7 +113,8 @@ public final class ApplyFilterTagAction {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "ApplyFilterTagAction [transaction=" + transaction + ", tagId="
-				+ tagId + "]";
+		return "ApplyFilterTagAction [transaction=" + transaction + ", tags="
+				+ tags + "]";
 	}
+
 }

@@ -20,7 +20,7 @@ import static se.ekonomipuls.LogTag.TAG;
 import java.util.ArrayList;
 
 import roboguice.activity.RoboActivity;
-import se.ekonomipuls.util.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

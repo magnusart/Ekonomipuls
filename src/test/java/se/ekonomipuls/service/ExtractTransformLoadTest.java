@@ -17,7 +17,7 @@ package se.ekonomipuls.service;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,12 +35,12 @@ import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ExternalModelMapper;
-import se.ekonomipuls.model.ResourcesCreator;
+import se.ekonomipuls.model.ModelResources;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.ExtractTransformLoadService;
-import se.ekonomipuls.util.EkonomipulsUtil;
 
 import com.google.inject.Inject;
 
@@ -53,11 +53,11 @@ import com.google.inject.Inject;
 public class ExtractTransformLoadTest {
 
 	@Inject
-	private ResourcesCreator resources;
+	private ModelResources resources;
 
 	@Inject
 	@InjectMocks
-	private ExtractTransformLoadService task;
+	private ExtractTransformLoadService service;
 
 	@Mock
 	private FilterService filterService;
@@ -75,7 +75,7 @@ public class ExtractTransformLoadTest {
 	private ExternalModelMapper mapper;
 
 	@Mock
-	private EkonomipulsUtil ekonomipulsUtil;
+	private EkonomipulsUtil util;
 
 	@Before
 	public void setUp() {
@@ -89,7 +89,7 @@ public class ExtractTransformLoadTest {
 				.getStagingTransactions();
 
 		final List<Transaction> mockedTransactions = resources
-				.getConvertedBdTransactions();
+				.getTransactions();
 
 		final List<ApplyFilterTagAction> mockedActions = resources
 				.getTagFilterActions(mockedTransactions);
@@ -115,9 +115,9 @@ public class ExtractTransformLoadTest {
 				.thenReturn(mockedActions);
 
 		// Emulate .execute call but stay in this thread.
-		task.onPreExecute();
-		task.call();
-		task.onFinally();
+		service.onPreExecute();
+		service.call();
+		service.onFinally();
 
 		verify(stagingDbFacade).getStagedTransactions();
 
@@ -132,6 +132,6 @@ public class ExtractTransformLoadTest {
 
 		verify(stagingDbFacade).purgeStagingTable();
 
-		verify(ekonomipulsUtil).setNewTransactionStatus(eq(false));
+		verify(util).setNewTransactionStatus(eq(false));
 	}
 }

@@ -22,13 +22,13 @@ package se.ekonomipuls.model;
 public class Tag {
 
 	private final String name;
-	private final int id;
+	private final long id;
 
 	/**
 	 * @param id
 	 * @param name
 	 */
-	Tag(final int id, final String name) {
+	Tag(final long id, final String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -43,8 +43,44 @@ public class Tag {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Tag other = (Tag) obj;
+		if (id != other.id) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
 	}
 
 	/** {@inheritDoc} */

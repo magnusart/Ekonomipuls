@@ -24,10 +24,10 @@ import se.ekonomipuls.R;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
-import se.ekonomipuls.util.EkonomipulsUtil;
 import android.app.ProgressDialog;
 import android.util.Log;
 

@@ -26,9 +26,10 @@ import com.google.inject.Singleton;
 
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.database.abstr.AbstractDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDb;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.model.Tag;
 import se.ekonomipuls.model.Transaction;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
  * @since 1 apr 2011
  */
 @Singleton
-public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
+public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		AnalyticsTransactionsDbFacade {
 
 	@Inject
@@ -123,17 +124,19 @@ public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
 			for (final ApplyFilterTagAction action : actions) {
 
 				final Transaction transaction = action.getTransaction();
-				final long tagId = action.getTagId();
+				final List<Tag> tags = action.getTags();
 
 				ContentValues values = ModelSqlMapper
 						.mapTransactionSql(transaction);
 
 				final long transId = insert(db, table, values);
 
-				values = ModelSqlMapper
-						.mapTransactionTagJoinSql(transId, tagId);
+				for (final Tag tag : tags) {
+					values = ModelSqlMapper
+							.mapTransactionTagJoinSql(transId, tag.getId());
 
-				insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
+					insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
+				}
 			}
 
 			db.setTransactionSuccessful();

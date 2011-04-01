@@ -20,7 +20,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
-import se.ekonomipuls.database.abstr.AbstractDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDb;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.ModelSqlMapper;
 
@@ -39,7 +39,7 @@ import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
  * @since 1 apr 2011
  */
 @Singleton
-public class AnalyticsCategoriesDbImpl extends AbstractDbFacade implements
+public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		AnalyticsCategoriesDbFacade {
 	@Inject
 	private final AnalyticsDbHelper helper = new AnalyticsDbHelper();

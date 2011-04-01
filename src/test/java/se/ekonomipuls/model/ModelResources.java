@@ -18,7 +18,6 @@ package se.ekonomipuls.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 
@@ -27,13 +26,14 @@ import se.ekonomipuls.proxy.BankDroidTransaction;
  * @author Michael Svensson
  * @since 1 apr 2011
  */
-public class ResourcesCreator {
+public class ModelResources {
 
 	private static final String ACC_ID = "1_1";
 	private static final String CURRENCY = "SEK";
 	private static final String BASE_DATE = "2011-04-1";
 	private static final String BASE_DESC = "Desc";
-	public static final long TAG_ID = -1;
+	public static final long TAG_ID = 20L;
+	private static final String TAG_NAME = "Default Tag";
 
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class ResourcesCreator {
 	/**
 	 * @return
 	 */
-	public List<Transaction> getConvertedBdTransactions() {
+	public List<Transaction> getTransactions() {
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 		for (int i = 0; i < 10; i++) {
 			transactions.add(new Transaction(0, "" + i + 1, BASE_DATE + i,
@@ -66,10 +66,30 @@ public class ResourcesCreator {
 			final List<Transaction> transactions) {
 		final List<ApplyFilterTagAction> actions = new ArrayList<ApplyFilterTagAction>();
 		for (final Transaction trans : transactions) {
-			actions.add(new ApplyFilterTagAction(trans, TAG_ID));
+			actions.add(new ApplyFilterTagAction(trans, getDefaultTag()));
 		}
 
 		return actions;
 	}
 
+	public Tag getDefaultTag() {
+		return new Tag(TAG_ID, TAG_NAME);
+	}
+
+	/**
+	 * @return
+	 */
+	public List<FilterRule> getFilterRules() {
+		final List<FilterRule> rules = new ArrayList<FilterRule>();
+
+		final List<Tag> tags = new ArrayList<Tag>();
+		tags.add(getDefaultTag());
+
+		final FilterRule catchAllRule = new FilterRule(1L, "Default rule",
+				"Built in default catch all rule", "*", tags, true);
+
+		rules.add(catchAllRule);
+
+		return rules;
+	}
 }
