@@ -34,6 +34,7 @@ public class ModelResources {
 	private static final String BASE_DESC = "Desc";
 	public static final long TAG_ID = 20L;
 	private static final String TAG_NAME = "Default Tag";
+	private Tag foodTag;
 
 	/**
 	 * 
@@ -82,15 +83,85 @@ public class ModelResources {
 	public List<FilterRule> getFilterRules() {
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
 
-		final List<Tag> tags = new ArrayList<Tag>();
-		tags.add(getDefaultTag());
+		foodTag = new Tag(34, "Food");
+
+		final FilterRule matchICA = new FilterRule(1L, "ICA Stores",
+				"Match agains anything with ICA in it", "ICA", foodTag, true,
+				200);
+
+		final FilterRule matchLIDL = new FilterRule(1L, "LIDL Stores",
+				"Match agains anything with LIDL in it", "LIDL", foodTag, true,
+				100);
+
+		final FilterRule matchHemkop = new FilterRule(1L, "Hemkop Stores",
+				"Match agains anything with Hemkop in it", "Hemkop", foodTag,
+				true, 40);
 
 		final FilterRule catchAllRule = new FilterRule(1L, "Default rule",
-				"Built in default catch all rule", "*", tags, true,
+				"Built in default catch all rule", "*", getDefaultTag(), true,
 				Integer.MIN_VALUE);
 
+		rules.add(matchICA);
+		rules.add(matchLIDL);
+		rules.add(matchHemkop);
 		rules.add(catchAllRule);
 
 		return rules;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Transaction> getUnfilteredTransactions() {
+		final List<Transaction> transactions = new ArrayList<Transaction>();
+
+		transactions.add(new Transaction(1, "GLOBAL_ID_1", "2011-04-14",
+				"ICA Kvantum", "", new BigDecimal(-200), CURRENCY, true, false,
+				ACC_ID));
+
+		transactions.add(new Transaction(2, "GLOBAL_ID_2", "2011-04-14",
+				"ICA Nära", "", new BigDecimal(-400), CURRENCY, true, false,
+				ACC_ID));
+
+		transactions.add(new Transaction(3, "GLOBAL_ID_3", "2011-04-14",
+				"Hemkop", "", new BigDecimal(-400), CURRENCY, true, false,
+				ACC_ID));
+
+		transactions.add(new Transaction(4, "GLOBAL_ID_4", "2011-04-14",
+				"LiDl Linné", "", new BigDecimal(-400), CURRENCY, true, false,
+				ACC_ID));
+
+		transactions.add(new Transaction(5, "GLOBAL_ID_5", "2011-04-14",
+				"LIDL 2", "", new BigDecimal(-200), CURRENCY, true, false,
+				ACC_ID));
+
+		transactions.add(new Transaction(6, "GLOBAL_ID_6", "2011-04-14",
+				"Willys", "", new BigDecimal(-400), CURRENCY, true, false,
+				ACC_ID));
+
+		return transactions;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<ApplyFilterTagAction> getFilteredTransactions() {
+		final List<ApplyFilterTagAction> actions = new ArrayList<ApplyFilterTagAction>();
+
+		final ArrayList<Transaction> ftrans = new ArrayList<Transaction>(
+				getUnfilteredTransactions());
+
+		for (final Transaction t : ftrans) {
+			t.setFiltered(true);
+		}
+
+		actions.add(new ApplyFilterTagAction(ftrans.get(0), foodTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(1), foodTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(2), foodTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(3), foodTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(4), foodTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(5), getDefaultTag()));
+
+		return actions;
 	}
 }

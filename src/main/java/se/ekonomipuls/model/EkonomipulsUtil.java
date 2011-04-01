@@ -17,8 +17,6 @@ package se.ekonomipuls.model;
 
 import static se.ekonomipuls.LogTag.TAG;
 
-import java.util.List;
-
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
@@ -278,11 +276,13 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	/**
 	 * @return
 	 */
-	public FilterRule getDefaultFilterRule(final List<Tag> tags) {
+	public FilterRule getDefaultFilterRule(final Tag tag) {
+
+		// TODO Put descriptions below into configuration file
 		return new FilterRule(
 				0L,
 				"Catch all filter",
 				"Default filter that catches transactions that are not handeled by other filter rules.",
-				"*", tags, true, Integer.MIN_VALUE);
+				"*", tag, true, Integer.MIN_VALUE);
 	}
 }

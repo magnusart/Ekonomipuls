@@ -30,7 +30,7 @@ import se.ekonomipuls.model.Transaction;
  * @author Michael Svensson
  * @since 1 apr 2011
  */
-public class FilterService {
+public class FilterRuleService {
 
 	@Inject
 	Context context;
@@ -76,7 +76,7 @@ public class FilterService {
 
 				// The rule matched the transaction, add it.
 				filterActions.add(new ApplyFilterTagAction(transaction, rule
-						.getTags()));
+						.getTag()));
 
 				// This determines if we should continue processing
 				if (rule.isMarkFiltered()) {
@@ -104,7 +104,8 @@ public class FilterService {
 			return true;
 		}
 
-		// Simplistic matching, lets start out easy.
-		return transaction.getDescription().contains(rule.getPattern());
+		// Simplistic matching, lets start out easy. Match is case insensitive
+		return transaction.getDescription().toUpperCase()
+				.contains(rule.getPattern().toUpperCase());
 	}
 }

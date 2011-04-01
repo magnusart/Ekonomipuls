@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
@@ -49,8 +48,7 @@ public class FilterServiceTest {
 
 	@Inject
 	@InjectMocks
-	@Spy
-	private FilterService service;
+	private FilterRuleService service;
 
 	@Mock
 	private EkonomipulsUtil util;
@@ -72,9 +70,9 @@ public class FilterServiceTest {
 				.thenReturn(resources.getFilterRules());
 
 		final List<ApplyFilterTagAction> actions = service
-				.applyFilters(resources.getTransactions());
+				.applyFilters(resources.getUnfilteredTransactions());
 
-		assertEquals(resources.getTagFilterActions(resources.getTransactions()), actions);
+		assertEquals(resources.getFilteredTransactions(), actions);
 
 	}
 }

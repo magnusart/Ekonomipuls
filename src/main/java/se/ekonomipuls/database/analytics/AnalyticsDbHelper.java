@@ -15,9 +15,6 @@
  */
 package se.ekonomipuls.database.analytics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.inject.Inject;
 
 import android.content.ContentValues;
@@ -132,10 +129,7 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 		util.setDefaults(tagId, catId, repId);
 		Log.d(TAG, "Added default values for Category and Tag");
 
-		final List<Tag> tags = new ArrayList<Tag>();
-		tags.add(util.getDefaultTag());
-
-		final FilterRule rule = util.getDefaultFilterRule(tags);
+		final FilterRule rule = util.getDefaultFilterRule(util.getDefaultTag());
 		values = mapper.mapFilterRuleSql(rule);
 		values.remove(FilterRules.ID); // We do not want this when inserting
 		final long ruleId = db.insert(FilterRules.TABLE, null, values);

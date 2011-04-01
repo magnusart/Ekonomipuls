@@ -78,16 +78,13 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 
 				final Cursor cur2 = query(db, view, viewColumns, viewSelection, selectionArgs, groupBy, having, viewSortOrder);
 
-				final List<Tag> tags = new ArrayList<Tag>();
-
 				final int[] tagIndices = mapper.getTagsCursorIndices(cur);
 
 				while (cur2.moveToNext()) {
 					final Tag tag = mapper.mapTagModel(cur2, tagIndices);
-					tags.add(tag);
+					rule.setTag(tag);
 				}
 
-				rule.setTags(tags);
 				rules.add(rule);
 
 				cur2.close();

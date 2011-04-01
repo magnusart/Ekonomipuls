@@ -61,7 +61,7 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
 	private DeduplicationService dedupService;
 
 	@Inject
-	private FilterService filterService;
+	private FilterRuleService filterService;
 
 	/** {@inheritDoc} */
 	@Override

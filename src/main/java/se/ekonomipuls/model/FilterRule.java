@@ -15,8 +15,6 @@
  */
 package se.ekonomipuls.model;
 
-import java.util.List;
-
 /**
  * @author Magnus Andersson
  * @author Michael Svensson
@@ -27,10 +25,10 @@ public class FilterRule {
 	private final Long id;
 	private final String name;
 	private final String description;
-	private List<Tag> tags;
 	private final boolean markFiltered;
 	private final String pattern;
 	private final int priority;
+	private Tag tag;
 
 	/**
 	 * 
@@ -43,7 +41,7 @@ public class FilterRule {
 	 * @param pattern
 	 *            Regular expression to use for matching transaction
 	 *            description.
-	 * @param tags
+	 * @param tag
 	 *            Tags to apply to transaction if a match is found.
 	 * @param markFiltered
 	 *            Mark transaction as filtered after match. If false
@@ -51,13 +49,13 @@ public class FilterRule {
 	 *            filter rules
 	 */
 	FilterRule(final Long id, final String name, final String description,
-			final String pattern, final List<Tag> tags,
-			final boolean markFiltered, final int priority) {
+			final String pattern, final Tag tag, final boolean markFiltered,
+			final int priority) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.pattern = pattern;
-		this.tags = tags;
+		this.tag = tag;
 		this.markFiltered = markFiltered;
 		this.priority = priority;
 	}
@@ -91,21 +89,6 @@ public class FilterRule {
 	}
 
 	/**
-	 * @return the tags
-	 */
-	public List<Tag> getTags() {
-		return tags;
-	}
-
-	/**
-	 * @param tags
-	 *            the tags to set
-	 */
-	public void setTags(final List<Tag> tags) {
-		this.tags = tags;
-	}
-
-	/**
 	 * @return the markFiltered
 	 */
 	public boolean isMarkFiltered() {
@@ -117,6 +100,21 @@ public class FilterRule {
 	 */
 	public int getPriority() {
 		return priority;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public Tag getTag() {
+		return tag;
+	}
+
+	/**
+	 * @param tag
+	 *            the tag to set
+	 */
+	public void setTag(final Tag tag) {
+		this.tag = tag;
 	}
 
 	/** {@inheritDoc} */
@@ -131,7 +129,7 @@ public class FilterRule {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
 		result = prime * result + priority;
-		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
 		return result;
 	}
 
@@ -182,11 +180,11 @@ public class FilterRule {
 		if (priority != other.priority) {
 			return false;
 		}
-		if (tags == null) {
-			if (other.tags != null) {
+		if (tag == null) {
+			if (other.tag != null) {
 				return false;
 			}
-		} else if (!tags.equals(other.tags)) {
+		} else if (!tag.equals(other.tag)) {
 			return false;
 		}
 		return true;
@@ -196,9 +194,8 @@ public class FilterRule {
 	@Override
 	public String toString() {
 		return "FilterRule [id=" + id + ", name=" + name + ", description="
-				+ description + ", tags=" + tags + ", markFiltered="
-				+ markFiltered + ", pattern=" + pattern + ", priority="
-				+ priority + "]";
+				+ description + ", markFiltered=" + markFiltered + ", pattern="
+				+ pattern + ", priority=" + priority + ", tag=" + tag + "]";
 	}
 
 }

@@ -60,7 +60,7 @@ public class ExtractTransformLoadTest {
 	private ExtractTransformLoadService service;
 
 	@Mock
-	private FilterService filterService;
+	private FilterRuleService filterService;
 
 	@Mock
 	private DeduplicationService dedupService;

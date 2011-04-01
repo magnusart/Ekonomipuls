@@ -125,18 +125,15 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 			for (final ApplyFilterTagAction action : actions) {
 
 				final Transaction transaction = action.getTransaction();
-				final List<Tag> tags = action.getTags();
+				final Tag tag = action.getTag();
 
 				ContentValues values = mapper.mapTransactionSql(transaction);
 
 				final long transId = insert(db, table, values);
 
-				for (final Tag tag : tags) {
-					values = mapper.mapTransactionTagJoinSql(transId, tag
-							.getId());
+				values = mapper.mapTransactionTagJoinSql(transId, tag.getId());
 
-					insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
-				}
+				insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
 			}
 
 			db.setTransactionSuccessful();

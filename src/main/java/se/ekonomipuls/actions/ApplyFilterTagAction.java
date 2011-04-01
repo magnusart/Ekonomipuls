@@ -15,9 +15,6 @@
  */
 package se.ekonomipuls.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import se.ekonomipuls.model.Tag;
 import se.ekonomipuls.model.Transaction;
 
@@ -30,8 +27,8 @@ import se.ekonomipuls.model.Transaction;
  */
 public final class ApplyFilterTagAction {
 
-	private final Transaction transaction;
-	private final List<Tag> tags;
+	private Transaction transaction;
+	private Tag tag;
 
 	/**
 	 * @param transaction
@@ -40,19 +37,8 @@ public final class ApplyFilterTagAction {
 	 */
 	public ApplyFilterTagAction(final Transaction transaction, final Tag tag) {
 		this.transaction = transaction;
-		this.tags = new ArrayList<Tag>();
-		tags.add(tag);
-	}
+		this.tag = tag;
 
-	/**
-	 * @param transaction
-	 *            Transaction that should be modified
-	 * @param tagId
-	 */
-	public ApplyFilterTagAction(final Transaction transaction,
-			final List<Tag> tags) {
-		this.transaction = transaction;
-		this.tags = tags;
 	}
 
 	/**
@@ -63,10 +49,26 @@ public final class ApplyFilterTagAction {
 	}
 
 	/**
-	 * @return the tags
+	 * @param transaction
+	 *            the transaction to set
 	 */
-	public List<Tag> getTags() {
-		return tags;
+	public void setTransaction(final Transaction transaction) {
+		this.transaction = transaction;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public Tag getTag() {
+		return tag;
+	}
+
+	/**
+	 * @param tag
+	 *            the tag to set
+	 */
+	public void setTag(final Tag tag) {
+		this.tag = tag;
 	}
 
 	/** {@inheritDoc} */
@@ -74,7 +76,7 @@ public final class ApplyFilterTagAction {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
 		result = prime * result
 				+ ((transaction == null) ? 0 : transaction.hashCode());
 		return result;
@@ -93,11 +95,11 @@ public final class ApplyFilterTagAction {
 			return false;
 		}
 		final ApplyFilterTagAction other = (ApplyFilterTagAction) obj;
-		if (tags == null) {
-			if (other.tags != null) {
+		if (tag == null) {
+			if (other.tag != null) {
 				return false;
 			}
-		} else if (!tags.equals(other.tags)) {
+		} else if (!tag.equals(other.tag)) {
 			return false;
 		}
 		if (transaction == null) {
@@ -113,8 +115,8 @@ public final class ApplyFilterTagAction {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "ApplyFilterTagAction [transaction=" + transaction + ", tags="
-				+ tags + "]";
+		return "ApplyFilterTagAction [transaction=" + transaction + ", tag="
+				+ tag + "]";
 	}
 
 }
