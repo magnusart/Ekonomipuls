@@ -56,19 +56,6 @@ public class ModelSqlMapper {
 	}
 
 	/**
-	 * @param transaction
-	 * @return
-	 */
-	public static ContentValues mapTransactionFilterSql(
-			final Transaction transaction) {
-		final ContentValues values = new ContentValues(1);
-		final int filtered = (transaction.isFiltered()) ? 1 : 0;
-		values.put(Transactions.FILTERED, filtered);
-
-		return values;
-	}
-
-	/**
 	 * @param transId
 	 * @param tagId
 	 * @return

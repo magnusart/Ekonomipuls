@@ -54,7 +54,7 @@ public class BankDroidImportService extends RoboIntentService {
 
 	/** {@inheritDoc} */
 	@Override
-	public void onHandleIntent(final Intent intent) {
+	protected void onHandleIntent(final Intent intent) {
 		Log.v(TAG, "Starting to import transactions");
 
 		final String accountId = intent.getExtras().getString(ACCOUNT_ID);

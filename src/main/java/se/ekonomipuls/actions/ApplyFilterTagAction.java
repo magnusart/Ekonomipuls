@@ -55,6 +55,43 @@ public final class ApplyFilterTagAction {
 
 	/** {@inheritDoc} */
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (tagId ^ (tagId >>> 32));
+		result = prime * result
+				+ ((transaction == null) ? 0 : transaction.hashCode());
+		return result;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ApplyFilterTagAction other = (ApplyFilterTagAction) obj;
+		if (tagId != other.tagId) {
+			return false;
+		}
+		if (transaction == null) {
+			if (other.transaction != null) {
+				return false;
+			}
+		} else if (!transaction.equals(other.transaction)) {
+			return false;
+		}
+		return true;
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public String toString() {
 		return "ApplyFilterTagAction [transaction=" + transaction + ", tagId="
 				+ tagId + "]";

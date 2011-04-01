@@ -36,39 +36,44 @@ import java.util.List;
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
-public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements AnalyticsTransactionsDbFacade {
+public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements
+		AnalyticsTransactionsDbFacade {
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public List<Transaction> getUnfilteredTransactions() throws RemoteException {
-		return getTransactions(Transactions.TABLE, Transactions.FILTERED + " = 0");
+		return getTransactions(Transactions.TABLE, Transactions.FILTERED
+				+ " = 0");
 	}
 
-    @Override
+	@Override
 	public List<Transaction> getUnverifiedTransactions() {
-		return getTransactions(Transactions.TABLE, Transactions.VERIFIED + " = 0");
+		return getTransactions(Transactions.TABLE, Transactions.VERIFIED
+				+ " = 0");
 	}
 
 	/**
-	 *
+	 * 
 	 * @param cat
 	 * @return
 	 */
 	public List<Transaction> getTransactionsByCategory(final Category cat) {
-		return getTransactions(Views.TRANSACTIONS_CATEGORY_VIEW, Views.TRANS_CAT_V_CAT_ID + " = " + cat.getId());
+		return getTransactions(Views.TRANSACTIONS_CATEGORY_VIEW, Views.TRANS_CAT_V_CAT_ID
+				+ " = " + cat.getId());
 	}
 
 	/**
-	 *
+	 * 
 	 * @return
 	 */
 	public List<Transaction> getAllTransactions() throws RemoteException {
 		return getTransactions(Transactions.TABLE, null);
 	}
 
-	private List<Transaction> getTransactions(final String table, final String selection) {
+	private List<Transaction> getTransactions(final String table,
+			final String selection) {
 
 		final String[] selectionArgs = null;
 		final String having = null;
@@ -82,15 +87,14 @@ public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements Ana
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection,
-					selectionArgs, groupBy, having, sortOrder);
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
 			final int[] indices = ModelSqlMapper
 					.getTransactionCursorIndices(cur);
 
 			while (cur.moveToNext()) {
-				transactions.add(ModelSqlMapper.mapTransactionModel(cur,
-						indices));
+				transactions.add(ModelSqlMapper
+						.mapTransactionModel(cur, indices));
 			}
 			cur.close();
 		} catch (final IllegalArgumentException e) {
@@ -105,43 +109,8 @@ public class AnalyticsTransactionsDbImpl extends AbstractDbFacade implements Ana
 	/**
 	 * @param actions
 	 */
-	public void updateTransactionsAssignTags(final List<ApplyFilterTagAction> actions) {
-
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
-		final SQLiteDatabase db = helper.getReadableDatabase();
-
-		try {
-
-			for (final ApplyFilterTagAction action : actions) {
-
-				final Transaction transaction = action.getTransaction();
-				final long tagId = action.getTagId();
-				final long transId = transaction.getId();
-
-				ContentValues values = ModelSqlMapper
-						.mapTransactionFilterSql(transaction);
-				final String selection = Transactions.ID + " = " + transId;
-
-				update(db, Transactions.TABLE, values, selection);
-
-				values = ModelSqlMapper
-						.mapTransactionTagJoinSql(transId, tagId);
-
-				insert(db, Joins.TRANSACTIONS_TAGS_TABLE, values);
-
-			}
-
-			db.setTransactionSuccessful();
-
-		} finally {
-			shutdownDb(db, helper);
-		}
-	}
-
-	/**
-	 * @param actions
-	 */
-	public void insertTransactionsAssignTags(final List<ApplyFilterTagAction> actions) {
+	public void insertTransactionsAssignTags(
+			final List<ApplyFilterTagAction> actions) {
 		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getReadableDatabase();
 

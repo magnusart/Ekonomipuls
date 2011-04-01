@@ -21,7 +21,6 @@ import static se.ekonomipuls.PropertiesConstants.CONF_DEF_TAG;
 import java.util.ArrayList;
 import java.util.List;
 
-import roboguice.inject.ContextScoped;
 import roboguice.inject.InjectResource;
 import roboguice.util.RoboAsyncTask;
 import se.ekonomipuls.R;
@@ -44,7 +43,6 @@ import com.google.inject.Inject;
  * @author Michael Svensson
  * @since 15 mar 2011
  */
-@ContextScoped
 public class ExtractTransformLoadTransactionsTask extends RoboAsyncTask<Void> {
 
 	@InjectResource(R.string.dialog_stage_import_message)
