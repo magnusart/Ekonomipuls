@@ -17,11 +17,12 @@ package se.ekonomipuls.service;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -31,6 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
@@ -41,6 +43,9 @@ import se.ekonomipuls.model.ModelResources;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import se.ekonomipuls.service.ExtractTransformLoadService;
+
+import android.os.Handler.Callback;
+import android.os.Message;
 
 import com.google.inject.Inject;
 
@@ -114,10 +119,19 @@ public class ExtractTransformLoadTest {
 		when(filterService.applyFilters(eq(dedupTransactions)))
 				.thenReturn(mockedActions);
 
-		// Emulate .execute call but stay in this thread.
-		service.onPreExecute();
-		service.call();
-		service.onFinally();
+		final CountDownLatch latch = new CountDownLatch(1);
+
+		service.setCallback(new Callback() {
+			@Override
+			public boolean handleMessage(final Message msg) {
+				latch.countDown();
+				return false;
+			}
+		});
+
+		service.execute();
+
+		latch.await();
 
 		verify(stagingDbFacade).getStagedTransactions();
 

@@ -56,6 +56,12 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	@InjectResource(R.string.default_tag_name)
 	private String defaultTagName;
 
+	@InjectResource(R.string.default_filter_name)
+	private String defaultFilterName;
+
+	@InjectResource(R.string.default_filter_desc)
+	private String defaultFilterDesc;
+
 	@InjectResource(R.string.economic_overview_name)
 	private String reportName;
 
@@ -277,12 +283,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return
 	 */
 	public FilterRule getDefaultFilterRule(final Tag tag) {
-
-		// TODO Put descriptions below into configuration file
-		return new FilterRule(
-				0L,
-				"Catch all filter",
-				"Default filter that catches transactions that are not handeled by other filter rules.",
-				"*", tag, true, Integer.MIN_VALUE);
+		return new FilterRule(0L, defaultFilterName, defaultFilterDesc, "*",
+				tag, true, Integer.MIN_VALUE);
 	}
 }

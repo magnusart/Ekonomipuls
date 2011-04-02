@@ -15,19 +15,30 @@
  */
 package se.ekonomipuls;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
+import se.ekonomipuls.model.EkonomipulsUtil;
+
+import com.google.inject.Inject;
+
 import android.os.Bundle;
 
 /**
  * @author Magnus Andersson
  * @since 13 feb 2011
  */
-public class Filters extends Activity implements LogTag {
+public class FilterRuleOverview extends RoboActivity implements LogTag {
+
+	@Inject
+	private EkonomipulsUtil util;
 
 	/** {@inheritDoc} */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.filter_rules_overview); // Injection doesn't
+														// happen until you
+		// call setContentView()
+		util.removeGradientBanding(getWindow());
 	}
 
 }

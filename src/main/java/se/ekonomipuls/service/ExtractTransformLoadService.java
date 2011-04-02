@@ -29,6 +29,7 @@ import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.BankDroidTransaction;
 import android.app.ProgressDialog;
+import android.os.Handler.Callback;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -38,12 +39,10 @@ import com.google.inject.Inject;
  * @author Michael Svensson
  * @since 15 mar 2011
  */
-public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
+public class ExtractTransformLoadService extends RoboAsyncTask<Boolean> {
 
 	@InjectResource(R.string.dialog_stage_import_message)
 	protected String importMessage;
-
-	private ProgressDialog dialog;
 
 	@Inject
 	private EkonomipulsUtil util;
@@ -63,6 +62,10 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
 	@Inject
 	private FilterRuleService filterService;
 
+	private ProgressDialog dialog;
+
+	private Callback callback;
+
 	/** {@inheritDoc} */
 	@Override
 	protected void onPreExecute() {
@@ -76,7 +79,15 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Void call() {
+	protected void onFinally() throws RuntimeException {
+		if ((dialog instanceof ProgressDialog) && dialog.isShowing()) {
+			dialog.dismiss();
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean call() {
 
 		// Get staged transactions with external model
 		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade
@@ -106,25 +117,29 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Void> {
 		// Reset the new transactions toggle
 		util.setNewTransactionStatus(false);
 
-		return null;
-	}
-
-	/**
-	 * @param dialog
-	 *            the dialog to set
-	 * 
-	 * @return instance of self.
-	 */
-	public ExtractTransformLoadService setDialog(final ProgressDialog dialog) {
-		this.dialog = dialog;
-		return this;
+		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected void onFinally() {
-		if ((dialog instanceof ProgressDialog) && dialog.isShowing()) {
-			dialog.dismiss();
+	protected void onSuccess(final Boolean t) throws Exception {
+		if (callback instanceof Callback) {
+			callback.handleMessage(null);
 		}
 	}
+
+	/**
+	 * @param callback
+	 */
+	public void setCallback(final Callback callback) {
+		this.callback = callback;
+	}
+
+	/**
+	 * @param dialog
+	 */
+	public void setDialog(final ProgressDialog dialog) {
+		this.dialog = dialog;
+	}
+
 }

@@ -18,7 +18,6 @@ package se.ekonomipuls;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
@@ -33,6 +32,8 @@ import se.ekonomipuls.views.charts.SeriesEntry;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,7 +42,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * @author Magnus Andersson
@@ -59,7 +59,7 @@ public class EkonomipulsHome extends RoboActivity {
 	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
 	@Inject
-	private Provider<ExtractTransformLoadService> etlTaskProvider;
+	private ExtractTransformLoadService etlService;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 
@@ -90,7 +90,21 @@ public class EkonomipulsHome extends RoboActivity {
 	 * @param view
 	 */
 	public void importStagingTransactions(final View view) {
-		etlTaskProvider.get().setDialog(new ProgressDialog(this)).execute();
+		final ProgressDialog dialog = new ProgressDialog(this);
+		etlService.setDialog(dialog);
+		etlService.setCallback(new Callback() {
+			@Override
+			public boolean handleMessage(final Message msg) {
+
+				verifyTransactions();
+
+				return true;
+			}
+		});
+		etlService.execute();
+	}
+
+	public void verifyTransactions() {
 		final Intent intent = new Intent(this, VerifyTransactions.class);
 		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
 	}
@@ -136,6 +150,9 @@ public class EkonomipulsHome extends RoboActivity {
 		switch (item.getItemId()) {
 		case (R.id.settings_item):
 			intent = new Intent(this, OverviewSettings.class);
+			break;
+		case (R.id.filter_rules_item):
+			intent = new Intent(this, FilterRuleOverview.class);
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

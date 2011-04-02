@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest package="se.ekonomipuls" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.1.Pre-Alpha-2" android:versionCode="2">
-	<application 
-            android:name="se.ekonomipuls.EkonomipulsApplication"
-            android:label="@string/app_homescreen"
-            android:icon="@drawable/ic_launcher_ekonomipuls"
-            android:debuggable="true">
+<manifest package="se.ekonomipuls" xmlns:android="http://schemas.android.com/apk/res/android"
+	android:versionName="0.1.Pre-Alpha-2" android:versionCode="2">
+	<application android:name="se.ekonomipuls.EkonomipulsApplication"
+		android:label="@string/app_homescreen" android:icon="@drawable/ic_launcher_ekonomipuls"
+		android:debuggable="true">
 		<activity android:name="EkonomipulsHome" android:theme="@android:style/Theme.NoTitleBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -20,17 +19,18 @@
 		</receiver>
 		<service android:enabled="true" android:name=".service.BankDroidImportService"></service>
 
-	<activity android:name="OverviewSettings" android:theme="@android:style/Theme.NoTitleBar"></activity>
+		<activity android:name="OverviewSettings" android:theme="@android:style/Theme.NoTitleBar"></activity>
 
 
-<activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
-<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar">
-    <!--Remove this after debugging-->
-    <intent-filter>
+		<activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
+		<activity android:name="FilterRuleOverview" android:theme="@android:style/Theme.NoTitleBar"></activity>
+		<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar">
+			<!--Remove this after debugging -->
+			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
-    </intent-filter>
-</activity>
-</application>
+			</intent-filter>
+		</activity>
+	</application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission
 		android:name="com.liato.bankdroid.permission.READ_ACCESS_BANK_TRANSACTIONS" />

@@ -3,14 +3,19 @@
  	<string name="app_homescreen">Ekonomipuls</string>
 	<string name="app_name">Ekonomipuls</string>
 	<string name="no_data">No data</string>
+	
 	<string name="settings_item">Economic Overview Settings</string>
+	<string name="filter_rules_item">Manage Filter Rules</string>
 
 	<string name="default_category_name">Unspecified</string>
 	<string name="default_tag_name">Default</string>
 
+	<string name="default_filter_name">Catch all filter</string>
+	<string name="default_filter_desc">Default filter that catches transactions that are not handled by other filter rules.</string>
+
+
 	<string name="economic_overview_name">Economic overview</string>
-	<string name="economic_overview_desc">Economic overview is a report of your transactions for the current month.
-	</string>
+	<string name="economic_overview_desc">Economic overview is a report of your transactions for the current month.</string>
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Categories</string>
