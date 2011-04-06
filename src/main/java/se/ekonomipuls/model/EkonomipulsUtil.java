@@ -30,16 +30,16 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.os.RemoteException;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
- * Global utility methods for Ekonomipuls.
+ * Global utility methods for Ekonomipuls aka "Slasktratten".
  * 
  * @author Magnus Andersson
  * @since 13 feb 2011
@@ -48,7 +48,10 @@ import com.google.inject.Singleton;
 public class EkonomipulsUtil implements PropertiesConstants {
 
 	@Inject
-	private Context context;
+	private Provider<Context> contextProvider;
+
+	@Inject
+	private Provider<SharedPreferences> prefProvider;
 
 	@InjectResource(R.string.default_category_name)
 	private String defaultCategoryName;
@@ -191,14 +194,13 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return The Report Id for Economic Overview
 	 */
 	public long getEconomicOverviewId() {
-		final SharedPreferences pref = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		return pref.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+		return prefProvider.get().getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
 	public void toastDbError(final RemoteException e) {
 		final String message = "Unable to complete database query";
-		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+		final Toast toast = Toast
+				.makeText(contextProvider.get(), message, Toast.LENGTH_LONG);
 		toast.show();
 		Log.d(TAG, message, e);
 	}
@@ -210,10 +212,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 *            new status.
 	 */
 	public void setNewTransactionStatus(final boolean status) {
-		final SharedPreferences.Editor editor = PreferenceManager
-				.getDefaultSharedPreferences(context).edit();
+		final SharedPreferences.Editor editor = prefProvider.get().edit();
 
-		final String containsUpdates = context
+		final String containsUpdates = contextProvider.get()
 				.getString(R.string.setting_staging_contains_updates);
 		editor.putBoolean(containsUpdates, status); // No updates when
 													// initiated.
@@ -226,10 +227,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return True if new transactions exists.
 	 */
 	public boolean getNewTransactionsStatus() {
-		final SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-
-		return prefs.getBoolean(context
+		return prefProvider.get().getBoolean(contextProvider.get()
 				.getString(R.string.setting_staging_contains_updates), false);
 	}
 
@@ -239,15 +237,13 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return tag id
 	 */
 	public Tag getDefaultTag() {
-		final long tagId = PreferenceManager
-				.getDefaultSharedPreferences(context).getLong(CONF_DEF_TAG, 0L);
+		final long tagId = prefProvider.get().getLong(CONF_DEF_TAG, 0L);
 
 		return new Tag(tagId, defaultTagName);
 	}
 
 	public Category getDefaultCategory() {
-		final long catId = PreferenceManager
-				.getDefaultSharedPreferences(context).getLong(CONF_DEF_CAT, 0L);
+		final long catId = prefProvider.get().getLong(CONF_DEF_CAT, 0L);
 
 		return new Category(catId, Color.GRAY, defaultCategoryName);
 	}
@@ -256,8 +252,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return
 	 */
 	public Report getDefaultReport() {
-		final long repId = PreferenceManager
-				.getDefaultSharedPreferences(context)
+		final long repId = prefProvider.get()
 				.getLong(ECONOMIC_OVERVIEW_REPORT_ID, 0L);
 
 		return new Report(repId, reportName, reportDesc, reportFrom, reportTo);
@@ -269,8 +264,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @param repId
 	 */
 	public void setDefaults(final long tagId, final long catId, final long repId) {
-		final SharedPreferences.Editor editor = PreferenceManager
-				.getDefaultSharedPreferences(context).edit();
+		final SharedPreferences.Editor editor = prefProvider.get().edit();
 
 		// Commit to preferences
 		editor.putLong(CONF_DEF_CAT, catId);
