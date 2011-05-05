@@ -53,7 +53,9 @@ public class FilterRuleService {
 		final List<ApplyFilterTagAction> actions = new ArrayList<ApplyFilterTagAction>();
 
 		for (final Transaction transaction : transactions) {
-			actions.addAll(applyFilter(transaction, rules));
+			if (!transaction.isFiltered()) { // Process unfiltered transactions
+				actions.addAll(applyFilter(transaction, rules));
+			}
 		}
 
 		return actions;

@@ -35,6 +35,7 @@ public class ModelResources {
 	public static final long TAG_ID = 20L;
 	private static final String TAG_NAME = "Default Tag";
 	private Tag foodTag;
+	private Tag salaryTag;
 
 	/**
 	 * 
@@ -84,6 +85,7 @@ public class ModelResources {
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
 
 		foodTag = new Tag(34, "Food");
+		salaryTag = new Tag(35, "Salary");
 
 		final FilterRule matchICA = new FilterRule(1L, "ICA Stores",
 				"Match agains anything with ICA in it", "ICA", foodTag, true,
@@ -97,6 +99,10 @@ public class ModelResources {
 				"Match agains anything with Hemkop in it", "Hemkop", foodTag,
 				true, 40);
 
+		final FilterRule matchSalary = new FilterRule(1L, "Montly salary",
+				"Match against anything with LÖN in it", "lön", salaryTag,
+				true, 30);
+
 		final FilterRule catchAllRule = new FilterRule(1L, "Default rule",
 				"Built in default catch all rule", "*", getDefaultTag(), true,
 				Integer.MIN_VALUE);
@@ -104,6 +110,7 @@ public class ModelResources {
 		rules.add(matchICA);
 		rules.add(matchLIDL);
 		rules.add(matchHemkop);
+		rules.add(matchSalary);
 		rules.add(catchAllRule);
 
 		return rules;
@@ -115,28 +122,46 @@ public class ModelResources {
 	public List<Transaction> getUnfilteredTransactions() {
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
+		// Expenses
 		transactions.add(new Transaction(1, "GLOBAL_ID_1", "2011-04-14",
-				"ICA Kvantum", "", new BigDecimal(-200), CURRENCY, true, false,
-				ACC_ID));
+				"ICA Kvantum", "", new BigDecimal(-200), CURRENCY, false,
+				false, ACC_ID));
 
 		transactions.add(new Transaction(2, "GLOBAL_ID_2", "2011-04-14",
-				"ICA Nära", "", new BigDecimal(-400), CURRENCY, true, false,
+				"ICA Nära", "", new BigDecimal(-400), CURRENCY, false, false,
 				ACC_ID));
 
 		transactions.add(new Transaction(3, "GLOBAL_ID_3", "2011-04-14",
-				"Hemkop", "", new BigDecimal(-400), CURRENCY, true, false,
+				"Hemkop", "", new BigDecimal(-400), CURRENCY, false, false,
 				ACC_ID));
 
 		transactions.add(new Transaction(4, "GLOBAL_ID_4", "2011-04-14",
-				"LiDl Linné", "", new BigDecimal(-400), CURRENCY, true, false,
+				"LiDl Linné", "", new BigDecimal(-400), CURRENCY, false, false,
 				ACC_ID));
 
 		transactions.add(new Transaction(5, "GLOBAL_ID_5", "2011-04-14",
-				"LIDL 2", "", new BigDecimal(-200), CURRENCY, true, false,
+				"LIDL 2", "", new BigDecimal(-200), CURRENCY, false, false,
 				ACC_ID));
 
 		transactions.add(new Transaction(6, "GLOBAL_ID_6", "2011-04-14",
-				"Willys", "", new BigDecimal(-400), CURRENCY, true, false,
+				"Willys", "", new BigDecimal(-400), CURRENCY, false, false,
+				ACC_ID));
+
+		// Income
+		transactions.add(new Transaction(7, "GLOBAL_ID_7", "2011-03-25", "LÖN",
+				"", new BigDecimal(25000), CURRENCY, false, false, ACC_ID));
+
+		transactions.add(new Transaction(8, "GLOBAL_ID_8", "2011-03-25",
+				"Engångsgåva", "", new BigDecimal(5000), CURRENCY, false,
+				false, ACC_ID));
+
+		// Already filtered rule, should not be filtered again
+		transactions.add(new Transaction(9, "GLOBAL_ID_9", "2011-02-25",
+				"GAMMAL LÖN", "", new BigDecimal(25000), CURRENCY, true, true,
+				ACC_ID));
+
+		transactions.add(new Transaction(10, "GLOBAL_ID_10", "2011-02-26",
+				"Hemkop", "", new BigDecimal(-110), CURRENCY, true, true,
 				ACC_ID));
 
 		return transactions;
@@ -155,12 +180,17 @@ public class ModelResources {
 			t.setFiltered(true);
 		}
 
+		// Expenses
 		actions.add(new ApplyFilterTagAction(ftrans.get(0), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(1), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(2), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(3), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(4), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(5), getDefaultTag()));
+
+		// Income
+		actions.add(new ApplyFilterTagAction(ftrans.get(6), salaryTag));
+		actions.add(new ApplyFilterTagAction(ftrans.get(7), getDefaultTag()));
 
 		return actions;
 	}
