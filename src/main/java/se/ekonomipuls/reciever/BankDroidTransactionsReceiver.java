@@ -15,11 +15,11 @@
  */
 package se.ekonomipuls.reciever;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import roboguice.receiver.RoboBroadcastReceiver;
 import se.ekonomipuls.service.BankDroidImportService;
 
 import static se.ekonomipuls.LogTag.TAG;
@@ -31,13 +31,13 @@ import static se.ekonomipuls.LogTag.TAG;
  * @author Magnus Andersson
  * @since 30 dec 2010
  */
-public class BankDroidTransactionsReceiver extends BroadcastReceiver {
+public class BankDroidTransactionsReceiver extends RoboBroadcastReceiver {
 
 	private static final String UPDATE_TRANSACTIONS = "com.liato.bankdroid.action.TRANSACTIONS";
 
 	/** {@inheritDoc} */
 	@Override
-	public void onReceive(final Context context, final Intent intent) {
+	protected void handleReceive(final Context context, final Intent intent) {
 		Log.v(TAG, "Recived broadcast: " + intent.getAction());
 
 		if (UPDATE_TRANSACTIONS.equals(intent.getAction())) {
@@ -57,6 +57,6 @@ public class BankDroidTransactionsReceiver extends BroadcastReceiver {
 
 			Log.v(TAG, "Handed over to import service");
 		}
-
 	}
+
 }

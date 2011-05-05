@@ -35,7 +35,6 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
@@ -48,10 +47,10 @@ import com.google.inject.Singleton;
 public class EkonomipulsUtil implements PropertiesConstants {
 
 	@Inject
-	private Provider<Context> contextProvider;
+	private Context context;
 
 	@Inject
-	private Provider<SharedPreferences> prefProvider;
+	private SharedPreferences preferences;
 
 	@InjectResource(R.string.default_category_name)
 	private String defaultCategoryName;
@@ -194,13 +193,12 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return The Report Id for Economic Overview
 	 */
 	public long getEconomicOverviewId() {
-		return prefProvider.get().getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
+		return preferences.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
 	public void toastDbError(final RemoteException e) {
 		final String message = "Unable to complete database query";
-		final Toast toast = Toast
-				.makeText(contextProvider.get(), message, Toast.LENGTH_LONG);
+		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 		toast.show();
 		Log.d(TAG, message, e);
 	}
@@ -212,9 +210,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 *            new status.
 	 */
 	public void setNewTransactionStatus(final boolean status) {
-		final SharedPreferences.Editor editor = prefProvider.get().edit();
+		final SharedPreferences.Editor editor = preferences.edit();
 
-		final String containsUpdates = contextProvider.get()
+		final String containsUpdates = context
 				.getString(R.string.setting_staging_contains_updates);
 		editor.putBoolean(containsUpdates, status); // No updates when
 													// initiated.
@@ -227,7 +225,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return True if new transactions exists.
 	 */
 	public boolean getNewTransactionsStatus() {
-		return prefProvider.get().getBoolean(contextProvider.get()
+		return preferences.getBoolean(context
 				.getString(R.string.setting_staging_contains_updates), false);
 	}
 
@@ -237,13 +235,13 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return tag id
 	 */
 	public Tag getDefaultTag() {
-		final long tagId = prefProvider.get().getLong(CONF_DEF_TAG, 0L);
+		final long tagId = preferences.getLong(CONF_DEF_TAG, 0L);
 
 		return new Tag(tagId, defaultTagName);
 	}
 
 	public Category getDefaultCategory() {
-		final long catId = prefProvider.get().getLong(CONF_DEF_CAT, 0L);
+		final long catId = preferences.getLong(CONF_DEF_CAT, 0L);
 
 		return new Category(catId, Color.GRAY, defaultCategoryName);
 	}
@@ -252,8 +250,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return
 	 */
 	public Report getDefaultReport() {
-		final long repId = prefProvider.get()
-				.getLong(ECONOMIC_OVERVIEW_REPORT_ID, 0L);
+		final long repId = preferences.getLong(ECONOMIC_OVERVIEW_REPORT_ID, 0L);
 
 		return new Report(repId, reportName, reportDesc, reportFrom, reportTo);
 	}
@@ -264,7 +261,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @param repId
 	 */
 	public void setDefaults(final long tagId, final long catId, final long repId) {
-		final SharedPreferences.Editor editor = prefProvider.get().edit();
+		final SharedPreferences.Editor editor = preferences.edit();
 
 		// Commit to preferences
 		editor.putLong(CONF_DEF_CAT, catId);
