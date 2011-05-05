@@ -3,7 +3,7 @@ tmp/**
 .DS_Store
 *.tmp
 *.bak
-tmp/**/*
+/tmp
 *.swp
 *~.nib
 Thumbs.db
@@ -15,8 +15,7 @@ gen
 local.properties
 *.jar
 dev/
-target/**/*
-target/*
-.settings/*
+/target
+/.settings
 .classpath
 .project
