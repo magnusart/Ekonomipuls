@@ -16,6 +16,7 @@
 package se.ekonomipuls.actions;
 
 import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.EntityType;
 
 /**
  * 
@@ -30,8 +31,9 @@ public class AddCategoryReportAction {
 		 * @param color
 		 * @param name
 		 */
-		AddCategoryAction(final int color, final String name) {
-			super(0, color, name);
+		AddCategoryAction(final int color, final String name,
+				final EntityType type) {
+			super(0, color, name, type);
 		}
 	}
 
@@ -43,9 +45,9 @@ public class AddCategoryReportAction {
 	 * @param name
 	 */
 	public AddCategoryReportAction(final int color, final String name,
-									final long reportId) {
+			final EntityType type, final long reportId) {
 		this.reportId = reportId;
-		category = new AddCategoryAction(color, name);
+		category = new AddCategoryAction(color, name, type);
 	}
 
 	/**

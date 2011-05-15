@@ -32,7 +32,7 @@ public interface AnalyticsDbScripts {
 	String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE + " ( " + Transactions.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Transactions.GLOBAL_ID
-			+ " STRING NOT NULL, " + Transactions.DATE + " TEXT NOT NULL, "
+			+ " TEXT NOT NULL, " + Transactions.DATE + " TEXT NOT NULL, "
 			+ Transactions.AMOUNT + " TEXT NOT NULL, "
 			+ Transactions.DESCRIPTION + " TEXT NOT NULL, "
 			+ Transactions.COMMENT + " TEXT, " + Transactions.CURRENCY
@@ -46,12 +46,13 @@ public interface AnalyticsDbScripts {
 			+ Categories.TABLE + " ( " + Categories.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Categories.NAME
 			+ " TEXT NOT NULL, " + Categories.COLOR + " INTEGER NOT NULL, "
-			+ "UNIQUE( " + Categories.NAME + " ) " + " )";
+			+ Categories.TYPE + " TEXT NOT NULL, " + "UNIQUE( "
+			+ Categories.NAME + " ) " + " )";
 
 	String DB_CREATE_TAGS_TABLE = "CREATE TABLE IF NOT EXISTS " + Tags.TABLE
 			+ " ( " + Tags.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ Tags.NAME + " TEXT NOT NULL, " + "UNIQUE ( " + Tags.NAME + " )"
-			+ " )";
+			+ Tags.NAME + " TEXT NOT NULL, " + Tags.TYPE + " TEXT NOT NULL, "
+			+ "UNIQUE ( " + Tags.NAME + " )" + " )";
 
 	String DB_CREATE_FILTER_RULES_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ FilterRules.TABLE + " ( " + FilterRules.ID
@@ -179,7 +180,8 @@ public interface AnalyticsDbScripts {
 			+ Views.CATEGORIES_REPORT_VIEW + " AS " + "SELECT "
 			+ Categories.TABLE + "." + Categories.ID + ", " + Categories.TABLE
 			+ "." + Categories.NAME + ", " + Categories.TABLE + "."
-			+ Categories.COLOR + ", " + Reports.TABLE + "." + Reports.ID
+			+ Categories.COLOR + ", " + Categories.TABLE + "."
+			+ Categories.TYPE + ", " + Reports.TABLE + "." + Reports.ID
 			+ " AS " + Views.REP_CAT_REP_ID + " FROM " + Reports.TABLE
 			+ " INNER JOIN " + Joins.REPORTS_CATEGORIES_TABLE + " ON "
 			+ Reports.TABLE + "." + Reports.ID + " = "
@@ -191,12 +193,12 @@ public interface AnalyticsDbScripts {
 	String DB_CREATE_FILTER_RULE_TAGS_VIEW = "CREATE VIEW IF NOT EXISTS "
 			+ Views.FILTER_RULES_TAGS_VIEW + " AS " + "SELECT " + Tags.TABLE
 			+ "." + Tags.ID + ", " + Tags.TABLE + "." + Tags.NAME + ", "
-			+ FilterRules.TABLE + "." + FilterRules.ID + " AS "
-			+ Views.FILTER_RULE_TAGS_FILTER_ID + " FROM " + FilterRules.TABLE
-			+ " INNER JOIN " + Joins.FILTER_RULES_TAGS_TABLE + " ON "
-			+ FilterRules.TABLE + "." + FilterRules.ID + " = "
-			+ Joins.FILTER_RULES_TAGS_TABLE + "." + Joins.FILTER_RULE_FK
-			+ " INNER JOIN " + Tags.TABLE + " ON "
+			+ Tags.TABLE + "." + Tags.TYPE + ", " + FilterRules.TABLE + "."
+			+ FilterRules.ID + " AS " + Views.FILTER_RULE_TAGS_FILTER_ID
+			+ " FROM " + FilterRules.TABLE + " INNER JOIN "
+			+ Joins.FILTER_RULES_TAGS_TABLE + " ON " + FilterRules.TABLE + "."
+			+ FilterRules.ID + " = " + Joins.FILTER_RULES_TAGS_TABLE + "."
+			+ Joins.FILTER_RULE_FK + " INNER JOIN " + Tags.TABLE + " ON "
 			+ Joins.FILTER_RULES_TAGS_TABLE + "." + Joins.TAG_FK_3 + " = "
 			+ Tags.TABLE + "." + Tags.ID;
 }

@@ -52,17 +52,29 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	@Inject
 	private SharedPreferences preferences;
 
-	@InjectResource(R.string.default_category_name)
-	private String defaultCategoryName;
+	@InjectResource(R.string.default_expense_category_name)
+	private String defaultExpenseCategoryName;
 
-	@InjectResource(R.string.default_tag_name)
-	private String defaultTagName;
+	@InjectResource(R.string.default_incomes_category_name)
+	private String defaultIncomeCategoryName;
 
-	@InjectResource(R.string.default_filter_name)
-	private String defaultFilterName;
+	@InjectResource(R.string.default_expense_tag_name)
+	private String defaultExpensesTagName;
 
-	@InjectResource(R.string.default_filter_desc)
-	private String defaultFilterDesc;
+	@InjectResource(R.string.default_expenses_filter_name)
+	private String defaultExpensesFilterName;
+
+	@InjectResource(R.string.default_expenses_filter_desc)
+	private String defaultExpensesFilterDesc;
+
+	@InjectResource(R.string.default_incomes_tag_name)
+	private String defaultIncomesTagName;
+
+	@InjectResource(R.string.default_incomes_filter_name)
+	private String defaultIncomesFilterName;
+
+	@InjectResource(R.string.default_incomes_filter_desc)
+	private String defaultIncomesFilterDesc;
 
 	@InjectResource(R.string.economic_overview_name)
 	private String reportName;
@@ -234,16 +246,35 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * 
 	 * @return tag id
 	 */
-	public Tag getDefaultTag() {
-		final long tagId = preferences.getLong(CONF_DEF_TAG, 0L);
+	public Tag getDefaultExpenseTag() {
+		final long tagId = preferences.getLong(CONF_EXPENSES_DEF_TAG, 0L);
 
-		return new Tag(tagId, defaultTagName);
+		return new Tag(tagId, defaultExpensesTagName, EntityType.EXPENSE);
 	}
 
-	public Category getDefaultCategory() {
-		final long catId = preferences.getLong(CONF_DEF_CAT, 0L);
+	/**
+	 * Returns the default category tag id
+	 * 
+	 * @return tag id
+	 */
+	public Tag getDefaultIncomeTag() {
+		final long tagId = preferences.getLong(CONF_EXPENSES_DEF_TAG, 0L);
 
-		return new Category(catId, Color.GRAY, defaultCategoryName);
+		return new Tag(tagId, defaultIncomesTagName, EntityType.INCOME);
+	}
+
+	public Category getDefaultExpenseCategory() {
+		final long catId = preferences.getLong(CONF_EXPENSES_DEF_CAT, 0L);
+
+		return new Category(catId, Color.GRAY, defaultExpenseCategoryName,
+				EntityType.EXPENSE);
+	}
+
+	public Category getDefaultIncomesCategory() {
+		final long catId = preferences.getLong(CONF_EXPENSES_DEF_CAT, 0L);
+
+		return new Category(catId, Color.GREEN, defaultIncomeCategoryName,
+				EntityType.INCOME);
 	}
 
 	/**
@@ -260,12 +291,15 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @param catId
 	 * @param repId
 	 */
-	public void setDefaults(final long tagId, final long catId, final long repId) {
+	public void setDefaults(final long expensesTagId, final long expensesCatId,
+			final long incomesTagId, final long incomesCatId, final long repId) {
 		final SharedPreferences.Editor editor = preferences.edit();
 
 		// Commit to preferences
-		editor.putLong(CONF_DEF_CAT, catId);
-		editor.putLong(CONF_DEF_TAG, tagId);
+		editor.putLong(CONF_EXPENSES_DEF_CAT, expensesCatId);
+		editor.putLong(CONF_EXPENSES_DEF_TAG, expensesTagId);
+		editor.putLong(CONF_INCOMES_DEF_CAT, incomesCatId);
+		editor.putLong(CONF_INCOMES_DEF_TAG, incomesTagId);
 		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
 		editor.commit();
 	}
@@ -273,8 +307,17 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	/**
 	 * @return
 	 */
-	public FilterRule getDefaultFilterRule(final Tag tag) {
-		return new FilterRule(0L, defaultFilterName, defaultFilterDesc, "*",
-				tag, true, Integer.MIN_VALUE);
+	public FilterRule getDefaultExpensesFilterRule(final Tag tag) {
+		return new FilterRule(0L, defaultExpensesFilterName,
+				defaultExpensesFilterDesc, "*", tag, true,
+				Integer.MIN_VALUE + 1);
+	}
+
+	/**
+	 * @return
+	 */
+	public FilterRule getDefaultIncomesFilterRule(final Tag tag) {
+		return new FilterRule(0L, defaultIncomesFilterName,
+				defaultIncomesFilterDesc, "*", tag, true, Integer.MIN_VALUE);
 	}
 }

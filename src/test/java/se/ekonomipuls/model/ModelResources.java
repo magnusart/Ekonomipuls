@@ -68,14 +68,21 @@ public class ModelResources {
 			final List<Transaction> transactions) {
 		final List<ApplyFilterTagAction> actions = new ArrayList<ApplyFilterTagAction>();
 		for (final Transaction trans : transactions) {
-			actions.add(new ApplyFilterTagAction(trans, getDefaultTag()));
+			actions.add(new ApplyFilterTagAction(trans, getDefaultExpenseTag()));
 		}
 
 		return actions;
 	}
 
-	public Tag getDefaultTag() {
-		return new Tag(TAG_ID, TAG_NAME);
+	public Tag getDefaultExpenseTag() {
+		return new Tag(TAG_ID, TAG_NAME, EntityType.EXPENSE);
+	}
+
+	/**
+	 * @return
+	 */
+	private Tag getDefaultIncomeTag() {
+		return new Tag(TAG_ID, TAG_NAME, EntityType.INCOME);
 	}
 
 	/**
@@ -84,8 +91,8 @@ public class ModelResources {
 	public List<FilterRule> getFilterRules() {
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
 
-		foodTag = new Tag(34, "Food");
-		salaryTag = new Tag(35, "Salary");
+		foodTag = new Tag(34, "Food", EntityType.EXPENSE);
+		salaryTag = new Tag(35, "Salary", EntityType.INCOME);
 
 		final FilterRule matchICA = new FilterRule(1L, "ICA Stores",
 				"Match agains anything with ICA in it", "ICA", foodTag, true,
@@ -103,15 +110,20 @@ public class ModelResources {
 				"Match against anything with LÖN in it", "lön", salaryTag,
 				true, 30);
 
-		final FilterRule catchAllRule = new FilterRule(1L, "Default rule",
-				"Built in default catch all rule", "*", getDefaultTag(), true,
-				Integer.MIN_VALUE);
+		final FilterRule catchExpensesRule = new FilterRule(1L,
+				"Default Expense rule", "Built in default catch all rule", "<",
+				getDefaultExpenseTag(), true, Integer.MIN_VALUE);
+
+		final FilterRule catchIncomeRule = new FilterRule(1L,
+				"Default Income rule", "Built in default catch all rule", ">",
+				getDefaultIncomeTag(), true, Integer.MIN_VALUE);
 
 		rules.add(matchICA);
 		rules.add(matchLIDL);
 		rules.add(matchHemkop);
 		rules.add(matchSalary);
-		rules.add(catchAllRule);
+		rules.add(catchExpensesRule);
+		rules.add(catchIncomeRule);
 
 		return rules;
 	}
@@ -186,12 +198,15 @@ public class ModelResources {
 		actions.add(new ApplyFilterTagAction(ftrans.get(2), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(3), foodTag));
 		actions.add(new ApplyFilterTagAction(ftrans.get(4), foodTag));
-		actions.add(new ApplyFilterTagAction(ftrans.get(5), getDefaultTag()));
+		actions.add(new ApplyFilterTagAction(ftrans.get(5),
+				getDefaultExpenseTag()));
 
 		// Income
 		actions.add(new ApplyFilterTagAction(ftrans.get(6), salaryTag));
-		actions.add(new ApplyFilterTagAction(ftrans.get(7), getDefaultTag()));
+		actions.add(new ApplyFilterTagAction(ftrans.get(7),
+				getDefaultIncomeTag()));
 
 		return actions;
 	}
+
 }

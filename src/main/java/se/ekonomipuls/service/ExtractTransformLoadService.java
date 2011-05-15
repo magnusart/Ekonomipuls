@@ -103,7 +103,7 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Boolean> {
 		final List<Transaction> deduplicatedTransactions = dedupService
 				.deduplicate(transactions);
 
-		// Transform and apply filters (separate this step later)
+		// Apply filters
 		final List<ApplyFilterTagAction> filteredTransactions = filterService
 				.applyFilters(deduplicatedTransactions);
 

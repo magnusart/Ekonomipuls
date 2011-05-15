@@ -50,8 +50,10 @@ public interface AnalyticsDbConstants {
 		public final static String ID = "_id";
 		public final static String NAME = "name";
 		public final static String COLOR = "color";
+		public static final String TYPE = "entity_type";
 
-		public static final String[] COLUMNS = new String[] { ID, COLOR, NAME };
+		public static final String[] COLUMNS = new String[] { ID, COLOR, NAME,
+				TYPE };
 	}
 
 	static interface Tags {
@@ -59,8 +61,9 @@ public interface AnalyticsDbConstants {
 		// Columns for Tags
 		public final static String ID = "_id";
 		public final static String NAME = "name";
+		public static final String TYPE = "entity_type";
 
-		public static final String[] COLUMNS = new String[] { ID, NAME };
+		public static final String[] COLUMNS = new String[] { ID, NAME, TYPE };
 	}
 
 	static interface Reports {

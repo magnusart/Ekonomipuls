@@ -23,14 +23,16 @@ public class Tag {
 
 	private final String name;
 	private final long id;
+	private final EntityType type;
 
 	/**
 	 * @param id
 	 * @param name
 	 */
-	Tag(final long id, final String name) {
+	Tag(final long id, final String name, final EntityType type) {
 		this.id = id;
 		this.name = name;
+		this.type = type;
 	}
 
 	/**
@@ -47,6 +49,13 @@ public class Tag {
 		return id;
 	}
 
+	/**
+	 * @return the type
+	 */
+	public EntityType getType() {
+		return type;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
@@ -54,6 +63,7 @@ public class Tag {
 		int result = 1;
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -80,12 +90,16 @@ public class Tag {
 		} else if (!name.equals(other.name)) {
 			return false;
 		}
+		if (type != other.type) {
+			return false;
+		}
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "Tag [name=" + name + ", id=" + id + "]";
+		return "Tag [name=" + name + ", id=" + id + ", type=" + type + "]";
 	}
+
 }

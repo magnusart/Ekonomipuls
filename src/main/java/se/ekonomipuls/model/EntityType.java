@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Magnus Andersson
+ * Copyright 2011 Magnus Andersson, Michael Svensson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls;
+package se.ekonomipuls.model;
 
 /**
  * @author Magnus Andersson
- * @since 17 feb 2011
+ * @since 7 maj 2011
  */
-public interface PropertiesConstants {
-
-	public final static String CONF_EXPENSES_DEF_CAT = "default.expenses.category";
-	public final static String CONF_EXPENSES_DEF_TAG = "default.expenses.tag";
-
-	public final static String CONF_INCOMES_DEF_CAT = "default.incomes.category";
-	public final static String CONF_INCOMES_DEF_TAG = "default.incomes.tag";
-
-	public final static String ECONOMIC_OVERVIEW_REPORT_ID = "cashjournal.report_id";
+public enum EntityType {
+	INCOME, EXPENSE;
 }

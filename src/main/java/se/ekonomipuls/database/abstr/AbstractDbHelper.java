@@ -34,22 +34,23 @@ public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 
 	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
 
-    @Inject
-    protected static Provider<Context> contextProvider;
+	@Inject
+	protected static Provider<Context> contextProvider;
 
 	/**
 	 * @param name
 	 * @param factory
 	 * @param version
 	 */
-	public AbstractDbHelper(final String name, final CursorFactory factory, final int version) {
+	public AbstractDbHelper(final String name, final CursorFactory factory,
+			final int version) {
 		super(contextProvider.get(), name, factory, version);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		db.execSQL(TURN_ON_FK); // Has to be outside an transaction
+		// db.execSQL(TURN_ON_FK); // Has to be outside an transaction
 		db.beginTransaction();
 		createTables(db);
 		initTables(db);
@@ -64,7 +65,7 @@ public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 	public void onOpen(final SQLiteDatabase db) {
 		// The transaction is closed in LeaklessCursor#close()
 		if (!db.isReadOnly()) {
-			db.execSQL(TURN_ON_FK);
+			// db.execSQL(TURN_ON_FK);
 			Log.v(TAG, "Beginning transaction for " + db.toString());
 			db.beginTransaction();
 		}

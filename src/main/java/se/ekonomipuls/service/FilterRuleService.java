@@ -15,6 +15,7 @@
  */
 package se.ekonomipuls.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.inject.Inject;
@@ -101,13 +102,37 @@ public class FilterRuleService {
 	 */
 	private boolean matches(final Transaction transaction, final FilterRule rule) {
 
-		// Catch all rule, until the day proper regexp matching is needed.
-		if (rule.getPattern().equals("*")) {
+		// Catch all rules, until the day proper regexp matching is needed.
+		// If we have an Expense (less than zero or zero)
+		if (rule.getPattern().equals("<")
+				&& lessThanOrZero(transaction.getAmount())) {
+			return true;
+		} else if (rule.getPattern().equals(">")
+				&& greaterThanZero(transaction.getAmount())) {
+			return true;
+		} else if (rule.getPattern().equals("*")) {
 			return true;
 		}
 
 		// Simplistic matching, lets start out easy. Match is case insensitive
 		return transaction.getDescription().toUpperCase()
 				.contains(rule.getPattern().toUpperCase());
+	}
+
+	/**
+	 * @param amount
+	 * @return
+	 */
+	private boolean greaterThanZero(final BigDecimal amount) {
+		return amount.compareTo(BigDecimal.ZERO) > 0;
+	}
+
+	/**
+	 * @param amount
+	 * @return
+	 */
+	private boolean lessThanOrZero(final BigDecimal amount) {
+		return (amount.compareTo(BigDecimal.ZERO) < 0)
+				|| (amount.compareTo(BigDecimal.ZERO) == 0);
 	}
 }

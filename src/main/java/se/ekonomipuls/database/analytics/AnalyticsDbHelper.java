@@ -111,36 +111,61 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	@Override
 	protected void initTables(final SQLiteDatabase db) {
 
-		final Tag tag = util.getDefaultTag();
+		Tag tag = util.getDefaultExpenseTag();
 		ContentValues values = mapper.mapTagSql(tag);
 		values.remove(Tags.ID); // We do not want this when inserting
-		final long tagId = db.insert(Tags.TABLE, null, values);
+		final long expensesTagId = db.insert(Tags.TABLE, null, values);
 
-		final Category category = util.getDefaultCategory();
+		tag = util.getDefaultIncomeTag();
+		values = mapper.mapTagSql(tag);
+		values.remove(Tags.ID); // We do not want this when inserting
+		final long incomesTagId = db.insert(Tags.TABLE, null, values);
+
+		Category category = util.getDefaultExpenseCategory();
 		values = mapper.mapCategorySql(category);
 		values.remove(Categories.ID); // We do not want this when inserting
-		final long catId = db.insert(Categories.TABLE, null, values);
+		final long expensesCatId = db.insert(Categories.TABLE, null, values);
+
+		category = util.getDefaultIncomesCategory();
+		values = mapper.mapCategorySql(category);
+		values.remove(Categories.ID); // We do not want this when inserting
+		final long incomesCatId = db.insert(Categories.TABLE, null, values);
 
 		final Report report = util.getDefaultReport();
 		values = mapper.mapReportSql(report);
 		values.remove(Reports.ID); // We do not want this when inserting
 		final long repId = db.insert(Reports.TABLE, null, values);
 
-		util.setDefaults(tagId, catId, repId);
+		util.setDefaults(expensesTagId, expensesCatId, incomesTagId, incomesCatId, repId);
 		Log.d(TAG, "Added default values for Category and Tag");
 
-		final FilterRule rule = util.getDefaultFilterRule(util.getDefaultTag());
+		FilterRule rule = util.getDefaultExpensesFilterRule(util
+				.getDefaultExpenseTag());
 		values = mapper.mapFilterRuleSql(rule);
 		values.remove(FilterRules.ID); // We do not want this when inserting
-		final long ruleId = db.insert(FilterRules.TABLE, null, values);
+		final long expensesRuleId = db.insert(FilterRules.TABLE, null, values);
 
-		values = mapper.mapCategoryTagsSql(catId, tagId);
+		rule = util.getDefaultIncomesFilterRule(util.getDefaultExpenseTag());
+		values = mapper.mapFilterRuleSql(rule);
+		values.remove(FilterRules.ID); // We do not want this when inserting
+		final long incomesRuleId = db.insert(FilterRules.TABLE, null, values);
+
+		values = mapper.mapCategoryTagsSql(expensesCatId, expensesTagId);
 		db.insert(Joins.CATEGORIES_TAGS_TABLE, null, values);
 
-		values = mapper.mapReportCategoriesSql(repId, catId);
+		values = mapper.mapCategoryTagsSql(incomesCatId, incomesTagId);
+		db.insert(Joins.CATEGORIES_TAGS_TABLE, null, values);
+
+		values = mapper.mapReportCategoriesSql(repId, expensesCatId);
 		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
 
-		values = mapper.mapFilterRuleTagSql(ruleId, tagId);
+		values = mapper.mapReportCategoriesSql(repId, incomesCatId);
+		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
+
+		values = mapper.mapFilterRuleTagSql(expensesRuleId, expensesTagId);
+		db.insert(Joins.FILTER_RULES_TAGS_TABLE, null, values);
+
+		values = mapper.mapFilterRuleTagSql(incomesRuleId, incomesTagId);
 		db.insert(Joins.FILTER_RULES_TAGS_TABLE, null, values);
 
 	}

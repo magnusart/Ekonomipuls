@@ -20,10 +20,11 @@
 	android:paddingLeft="10dp" 
 	android:paddingTop="4dp"
 	android:paddingBottom="4dp"
-	android:background="@drawable/dark_header_background"
+	android:background="#10FFFFFF"
 	android:textColor="#FFFFFF"
 	android:textStyle="bold"
-	android:textSize="15sp"/>
+	android:textSize="15sp"
+	android:layout_below="@drawable/label_background_shadow"/>
 <ListView 
 	android:id="@+id/legendList" 
 	android:layout_width="fill_parent" 

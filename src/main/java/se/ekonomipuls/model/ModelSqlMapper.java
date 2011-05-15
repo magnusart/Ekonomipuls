@@ -90,6 +90,7 @@ public class ModelSqlMapper {
 		values.put(Categories.ID, category.getId());
 		values.put(Categories.NAME, category.getName());
 		values.put(Categories.COLOR, category.getColor());
+		values.put(Categories.TYPE, category.getType().toString());
 
 		return values;
 	}
@@ -118,8 +119,9 @@ public class ModelSqlMapper {
 		final int id = cur.getInt(indices[0]);
 		final int color = cur.getInt(indices[1]);
 		final String name = cur.getString(indices[2]);
+		final EntityType type = EntityType.valueOf(cur.getString(indices[3]));
 
-		return new Category(id, color, name);
+		return new Category(id, color, name, type);
 	}
 
 	/**
@@ -171,6 +173,7 @@ public class ModelSqlMapper {
 
 		values.put(Tags.ID, tag.getId());
 		values.put(Tags.NAME, tag.getName());
+		values.put(Tags.TYPE, tag.getType().toString());
 
 		return values;
 	}
@@ -184,8 +187,9 @@ public class ModelSqlMapper {
 	public Tag mapTagModel(final Cursor cur, final int[] indices) {
 		final int id = cur.getInt(indices[0]);
 		final String name = cur.getString(indices[1]);
+		final EntityType type = EntityType.valueOf(cur.getString(indices[2]));
 
-		return new Tag(id, name);
+		return new Tag(id, name, type);
 	}
 
 	/**

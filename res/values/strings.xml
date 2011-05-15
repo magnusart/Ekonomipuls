@@ -7,11 +7,16 @@
 	<string name="settings_item">Economic Overview Settings</string>
 	<string name="filter_rules_item">Manage Filter Rules</string>
 
-	<string name="default_category_name">Unspecified</string>
-	<string name="default_tag_name">Default</string>
+	<string name="default_expense_category_name">Unspecified Expenses</string>
+	<string name="default_incomes_category_name">Unspecified Incomes</string>
+	<string name="default_expense_tag_name">Expenses</string>
+	<string name="default_incomes_tag_name">Incomes</string>
 
-	<string name="default_filter_name">Catch all filter</string>
-	<string name="default_filter_desc">Default filter that catches transactions that are not handled by other filter rules.</string>
+	<string name="default_expenses_filter_name">Catch all expenses filter</string>
+	<string name="default_expenses_filter_desc">Default filter that catches expenses that are not handled by other filter rules.</string>
+
+	<string name="default_incomes_filter_name">Catch all incomes filter</string>
+	<string name="default_incomes_filter_desc">Default filter that catches incomes that are not handled by other filter rules.</string>
 
 
 	<string name="economic_overview_name">Economic overview</string>

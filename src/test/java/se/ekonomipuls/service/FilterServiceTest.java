@@ -64,7 +64,7 @@ public class FilterServiceTest {
 	@Test
 	public void applyFiltersToTransactions() {
 
-		when(util.getDefaultTag()).thenReturn(resources.getDefaultTag());
+		when(util.getDefaultExpenseTag()).thenReturn(resources.getDefaultExpenseTag());
 
 		when(filterRulesDbFacade.getFilterRules())
 				.thenReturn(resources.getFilterRules());

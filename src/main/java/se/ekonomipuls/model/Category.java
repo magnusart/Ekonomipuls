@@ -24,16 +24,19 @@ public class Category {
 	private final long id;
 	private final int color;
 	private final String name;
+	private final EntityType type;
 
 	/**
 	 * @param i
 	 * @param string
 	 * @param subList
 	 */
-	protected Category(final long id, final int color, final String name) {
+	protected Category(final long id, final int color, final String name,
+			final EntityType type) {
 		this.id = id;
 		this.color = color;
 		this.name = name;
+		this.type = type;
 	}
 
 	/**
@@ -57,6 +60,13 @@ public class Category {
 		return name;
 	}
 
+	/**
+	 * @return the type
+	 */
+	public EntityType getType() {
+		return type;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
@@ -65,6 +75,7 @@ public class Category {
 		result = prime * result + color;
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -94,6 +105,9 @@ public class Category {
 		} else if (!name.equals(other.name)) {
 			return false;
 		}
+		if (type != other.type) {
+			return false;
+		}
 		return true;
 	}
 
@@ -101,7 +115,7 @@ public class Category {
 	@Override
 	public String toString() {
 		return "Category [id=" + id + ", color=" + color + ", name=" + name
-				+ "]";
+				+ ", type=" + type + "]";
 	}
 
 }
