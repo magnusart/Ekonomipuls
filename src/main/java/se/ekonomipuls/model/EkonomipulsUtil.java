@@ -17,9 +17,18 @@ package se.ekonomipuls.model;
 
 import static se.ekonomipuls.LogTag.TAG;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
+import se.ekonomipuls.proxy.InitialConfiguratorProxy;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -51,6 +60,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 
 	@Inject
 	private SharedPreferences preferences;
+
+	@Inject
+	private InitialConfiguratorProxy initialConfig;
 
 	@InjectResource(R.string.default_expense_category_name)
 	private String defaultExpenseCategoryName;
@@ -97,6 +109,8 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
+
+	private static final String CATEGORIES_FILE = "categories.json";
 
 	/**
 	 * 
@@ -319,5 +333,38 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	public FilterRule getDefaultIncomesFilterRule(final Tag tag) {
 		return new FilterRule(0L, defaultIncomesFilterName,
 				defaultIncomesFilterDesc, "*", tag, true, Integer.MIN_VALUE);
+	}
+
+	public String getCategoriesConfigurationFile() throws IOException {
+		final InputStream is = context.getAssets().open(CATEGORIES_FILE);
+		return convertStreamToString(is);
+	}
+
+	private String convertStreamToString(final InputStream is)
+			throws IOException {
+		/*
+		 * To convert the InputStream to String we use the Reader.read(char[]
+		 * buffer) method. We iterate until the Reader return -1 which means
+		 * there's no more data to read. We use the StringWriter class to
+		 * produce the string.
+		 */
+		if (is != null) {
+			final Writer writer = new StringWriter();
+
+			final char[] buffer = new char[1024];
+			try {
+				final Reader reader = new BufferedReader(new InputStreamReader(
+						is, "UTF-8"));
+				int n;
+				while ((n = reader.read(buffer)) != -1) {
+					writer.write(buffer, 0, n);
+				}
+			} finally {
+				is.close();
+			}
+			return writer.toString();
+		} else {
+			return "";
+		}
 	}
 }
