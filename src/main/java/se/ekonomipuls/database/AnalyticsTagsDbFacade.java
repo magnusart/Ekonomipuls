@@ -15,39 +15,21 @@
  */
 package se.ekonomipuls.database;
 
-import java.util.List;
-
-import se.ekonomipuls.actions.AddCategoryReportAction;
-import se.ekonomipuls.model.Category;
-import android.os.RemoteException;
+import se.ekonomipuls.actions.AddTagAction;
 
 /**
  * @author Magnus Andersson
- * @author Michael Svensson
- * @since 1 apr 2011
+ * @since 20 maj 2011
  */
-public interface AnalyticsCategoriesDbFacade {
+public interface AnalyticsTagsDbFacade {
 
 	/**
 	 * 
-	 * @param reportId
+	 * @param tagAction
+	 * @param catId
 	 * @return
-	 * @throws RemoteException
 	 */
-	public abstract List<Category> getCategoriesByReport(final long reportId);
-
-	/**
-	 * @return
-	 * @throws RemoteException
-	 */
-	public abstract List<Category> getAllCategories();
-
-	/**
-	 * @param action
-	 * @return
-	 * @throws RemoteException
-	 */
-	public abstract long insertAssignCategoryReport(
-			final AddCategoryReportAction action);
+	public abstract long insertAssignTagCategory(final AddTagAction action,
+			final long catId);
 
 }

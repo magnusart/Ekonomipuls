@@ -18,15 +18,17 @@ package se.ekonomipuls.proxy;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
+import se.ekonomipuls.actions.AddTagAction;
+import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-
-import se.ekonomipuls.model.EkonomipulsUtil;
 
 /**
  * This class loads the default categories for initial configuration of the
@@ -45,7 +47,8 @@ public class InitialConfiguratorProxy {
 	public List<AddCategoryAction> getCategories() throws JsonIOException,
 			JsonSyntaxException, IOException {
 
-		final String json = util.getCategoriesConfigurationFile();
+		final String json = util
+				.getConfigurationFile(ConfigurationFileType.CATEGORIES);
 
 		final Type listType = new TypeToken<List<AddCategoryAction>>() {
 		}.getType();
@@ -54,5 +57,23 @@ public class InitialConfiguratorProxy {
 				.fromJson(json, listType);
 
 		return categories;
+	}
+
+	/**
+	 * @return
+	 */
+	public Map<String, List<AddTagAction>> getTags() throws JsonIOException,
+			JsonSyntaxException, IOException {
+
+		final Type mapType = new TypeToken<Map<String, List<AddTagAction>>>() {
+		}.getType();
+
+		final String json = util
+				.getConfigurationFile(ConfigurationFileType.TAGS);
+
+		final Map<String, List<AddTagAction>> tags = gson
+				.fromJson(json, mapType);
+
+		return tags;
 	}
 }

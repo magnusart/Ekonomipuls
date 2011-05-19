@@ -30,6 +30,8 @@ import static se.ekonomipuls.LogTag.TAG;
  */
 public abstract class AbstractDb {
 
+	private SQLiteDatabase db;
+
 	/**
 	 * @param db
 	 * @param helper

@@ -1,106 +1,448 @@
-Kommunikation
--------------------
-Tv
-Fast telefoni
-Mobil telefoni
-Internet
-Mobilt internet
-Annat
-
-Mat & Dryck
---------------------
-Livsmedel
-Luncher
-Fika
-Frukost
-Middag
-Alkohol
-Annat
-
-Transport
----------------------
-Bil
-Båt
-Flyg
-Taxi
-Tåg
-Kollektivt
-Bränsle
-Parkering/Vägtullar
-Annat
-
-Boende
------------------------
-Hyra/Avgift
-El
-Gas/Fjärrvärme
-Vatten
-Sophämtning
-Garage/Parkering
-Reparation/Drift
-Fritidshus
-Hemelektronik
-Vitvaror
-Möbler/Husgeråd
-Annat
-
-Försäkringar
-------------------------
-Bil
-Hem
-Villa
-Bostadsrätt
-Liv/Sjuk/Olycksfall
-Barnförsäkring
-Ålderspension
-Djurförsäkring
-Inkomstförsäkring
-Annat
-
-Nöjen/Shopping
--------------------------
-Shopping
-Kläder
-Bio
-Fest
-Resor
-Sport/Fritid/Hälsa
-Spel och dobbel
-Musik/Show/Konsert
-Media/Bok/Kultur
-Hemelektronik
-Trädgård/Blommor
-Annat
-
-Lån
---------------------------
-Bolån
-Banklån
-Studielån
-Snabblån
-Billån
-Återbetalning
-Annat
-
-Övrigt
----------------------------
-Hygien
-A-kassa
-Fackavgift
-Kåravgift
-Studiematerial
-Förbrukningsvaror
-Vård
-Tandvård
-Snus/Cigaretter
-Frisör/Skönhet
-Förskola/Dagmamma
-Välgörenhet
-Meldemsskap/Tjänster
-Prenumerationer
-Presenter
-Djur
-Linser/Glasögon
-Korrigering
-Bank/Finans
-Uttag/Kontanter
+{
+	
+	"Lön":[{
+	    "color":773377,
+	 	"name":"Lön",
+	 	"type":"INCOME"
+	 }],
+	"Sommarjobb":[{
+	    "color":773377,
+	 	"name":"Sommarjobb",
+	 	"type":"INCOME"
+	 }],
+	"Gåva":[{
+	    "color":773377,
+	 	"name":"Gåva",
+	 	"type":"INCOME"
+	 }],
+	"Övrig inkomst":[{
+	    "color":773377,
+	 	"name":"Övrig inkomst",
+	 	"type":"INCOME"
+	 }],
+	"A-kassa":[{
+	    "color":773377,
+	 	"name":"A-kassa",
+	 	"type":"INCOME"
+	 }],
+	"Studiebidrag/Lån":[{
+	    "color":773377,
+	 	"name":"Studiebidrag/Lån",
+	 	"type":"INCOME"
+	 }],
+	"Bidrag":[{
+	    "color":773377,
+	 	"name":"Bidrag",
+	 	"type":"INCOME"
+	 }],
+	"Föräldrapenning":[{
+	    "color":773377,
+	 	"name":"Föräldrapenning",
+	 	"type":"INCOME"
+	 }],
+	"Barnbidrag":[{
+	    "color":773377,
+	 	"name":"Barnbidrag",
+	 	"type":"INCOME"
+	 }],
+	"Skuld":[{
+	    "color":773377,
+	 	"name":"Skuld",
+	 	"type":"INCOME"
+	 }],
+	"Från sparande":[{
+	    "color":773377,
+	 	"name":"Från sparande",
+	 	"type":"INCOME"
+	 }],
+	"Pension":[{
+	    "color":773377,
+	 	"name":"Pension",
+	 	"type":"INCOME"
+	 }],
+	"Återbäring":[{
+	    "color":773377,
+	 	"name":"Återbäring",
+	 	"type":"INCOME"
+	 }],
+	"Korrigering":[{
+	    "color":773377,
+	 	"name":"Korrigering",
+	 	"type":"INCOME"
+	 }],
+	"Kommunikation":[{
+	 	"name":"Tv",
+	 	"id":0,
+	 	"type":"EXPENSE"
+	 },
+	 {
+	     "name":"Fast telefoni",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Mobil telefoni",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Internet",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Mobilt internet",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+     "Mat & Dryck":[{
+	 	"name":"Livsmedel",
+	 	"id":0,
+	 	"type":"EXPENSE"
+	 },
+	 {
+	     "name":"Luncher",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Fika",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Frukost",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Middag",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Alkohol",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Transport":[{
+	     "name":"Bil",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Båt",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Flyg",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Taxi",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Tåg",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Kollektivt",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Bränsle",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Parkering/Vägtullar",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Boende":[{
+	     "name":"Hyra/Avgift",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"El",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Gas/Fjärrvärme",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Vatten",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Sophämtning",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Garage/Parkering",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Reparation/Drift",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Fritidshus",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Hemelektronik",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Vitvaror",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Möbler/Husgeråd",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Försäkringar":[{
+	     "name":"Bilförsäkring",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Hem",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Villa",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Bostadsrätt",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Liv/Sjuk/Olycksfall",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Barnförsäkring",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Ålderspension",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Djurförsäkring",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Inkomstförsäkring",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Nöjen/Shopping":[{
+	     "name":"Shopping",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Kläder",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Bio",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Fest",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Resor",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Sport/Fritid/Hälsa",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Spel och dobbel",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Musik/Show/Konsert",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Media/Bok/Kultur",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Trädgård/Blommor",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Lån":[{
+	     "name":"Bolån",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Banklån",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Studielån",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Snabblån",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Billån",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Återbetalning",
+	     "id":0,
+	     "type":"EXPENSE"
+     }],
+    "Övrigt":[{
+	     "name":"Hygien",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"A-kassa",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Fackavgift",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Kåravgift",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Studiematerial",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Förbrukningsvaror",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Vård",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Tandvård",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Snus/Cigaretter",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Frisör/Skönhet",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Förskola/Dagmamma",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Välgörenhet",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Meldemsskap/Tjänster",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Prenumerationer",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Presenter",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Djur",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Linser/Glasögon",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Korrigering",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Bank/Finans",
+	     "id":0,
+	     "type":"EXPENSE"
+     },
+     {
+	     "name":"Uttag/Kontanter",
+	     "id":0,
+	     "type":"EXPENSE"
+     }]
+ }

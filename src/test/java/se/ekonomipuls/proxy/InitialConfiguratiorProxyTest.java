@@ -15,7 +15,8 @@
  */
 package se.ekonomipuls.proxy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedInputStream;
@@ -28,20 +29,23 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-
-import se.ekonomipuls.InjectedTestRunner;
-import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.google.inject.Inject;
+import se.ekonomipuls.InjectedTestRunner;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
+import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import se.ekonomipuls.model.EntityType;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
@@ -52,6 +56,8 @@ public class InitialConfiguratiorProxyTest {
 
 	private static final String TEST_CATEGORY_CONFIG_FILE = "assets/categories.json";
 
+	private static final String TEST_TAGS_CONFIG_FILE = "assets/tags.json";
+
 	@Inject
 	@InjectMocks
 	private InitialConfiguratorProxy config;
@@ -59,21 +65,17 @@ public class InitialConfiguratiorProxyTest {
 	@Mock
 	private EkonomipulsUtil util;
 
+	private InputStream is;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void loadConfigurationFromFile() throws Exception {
+	public void loadCategoriesFromFile() throws Exception {
 
-		final InputStream is = new BufferedInputStream(new FileInputStream(
-				TEST_CATEGORY_CONFIG_FILE));
-
-		when(util.getCategoriesConfigurationFile())
-				.thenReturn(convertStreamToString(is));
-
-		final List<AddCategoryAction> categories = config.getCategories();
+		final List<AddCategoryAction> categories = setupCategoryFileMock();
 
 		assertNotNull("Category list should not be null", categories);
 		assertTrue("Category list should be exactly 22 entries", categories.size() == 22);
@@ -87,6 +89,49 @@ public class InitialConfiguratiorProxyTest {
 
 		assertTrue("Eight Categories should be Expense Categories", i == 8);
 
+	}
+
+	@Test
+	public void loadTagConfigurationFromFile() throws Exception {
+		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
+		final List<AddCategoryAction> categories = setupCategoryFileMock();
+
+		assertNotNull("Tags map should not be null", tags);
+
+		// Make sure all categories are represented in the tags file
+		for (final AddCategoryAction cat : categories) {
+			assertTrue("Could not find the the key " + cat.getName()
+					+ " in the tag map.", tags.containsKey(cat.getName()));
+		}
+	}
+
+	/**
+	 * @return
+	 * 
+	 */
+	private Map<String, List<AddTagAction>> setupTagFileMock() throws Exception {
+		final InputStream is = new BufferedInputStream(new FileInputStream(
+				TEST_TAGS_CONFIG_FILE));
+
+		when(util.getConfigurationFile(ConfigurationFileType.TAGS))
+				.thenReturn(convertStreamToString(is));
+
+		return config.getTags();
+	}
+
+	/**
+	 * @return
+	 * @throws IOException
+	 * 
+	 */
+	private List<AddCategoryAction> setupCategoryFileMock() throws Exception {
+		final InputStream is = new BufferedInputStream(new FileInputStream(
+				TEST_CATEGORY_CONFIG_FILE));
+
+		when(util.getConfigurationFile(ConfigurationFileType.CATEGORIES))
+				.thenReturn(convertStreamToString(is));
+
+		return config.getCategories();
 	}
 
 	// FIXME only use one version of this code, duplicated here from

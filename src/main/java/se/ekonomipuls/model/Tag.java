@@ -29,7 +29,7 @@ public class Tag {
 	 * @param id
 	 * @param name
 	 */
-	Tag(final long id, final String name, final EntityType type) {
+	protected Tag(final long id, final String name, final EntityType type) {
 		this.id = id;
 		this.name = name;
 		this.type = type;

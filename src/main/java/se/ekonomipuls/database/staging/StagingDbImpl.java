@@ -42,7 +42,7 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
 public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 
 	@Inject
-	private StagingDbHelper stagingDbHelper;
+	private StagingDbHelper helper;
 
 	@Inject
 	private ModelSqlMapper mapper;
@@ -58,7 +58,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 
 		final ContentValues[] values = mapper
 				.mapBankDroidTransactionSql(transactions);
-		final SQLiteDatabase db = stagingDbHelper.getWritableDatabase();
+		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		try {
 			insert(db, Staging.TABLE, values);
@@ -68,7 +68,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 			db.setTransactionSuccessful();
 
 		} finally {
-			shutdownDb(db, stagingDbHelper);
+			shutdownDb(db, helper);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 		final String sortOrder = Staging.DATE + " DESC";
 		final String[] columns = Staging.COLUMNS;
 
-		final SQLiteDatabase db = stagingDbHelper.getReadableDatabase();
+		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final List<BankDroidTransaction> stagedTransactions = new ArrayList<BankDroidTransaction>();
 
@@ -108,7 +108,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 			Log.e(TAG, "Could not find required database columns", e);
 			throw e;
 		} finally {
-			shutdownDb(db, stagingDbHelper);
+			shutdownDb(db, helper);
 		}
 
 		return stagedTransactions;
@@ -118,7 +118,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 	 * Delete all the transactions in the staging table.
 	 */
 	public int purgeStagingTable() {
-		final SQLiteDatabase db = stagingDbHelper.getReadableDatabase();
+		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final String table = Staging.TABLE;
 		final String whereClause = null;
@@ -129,7 +129,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 		try {
 			numDeleted = delete(db, table, whereClause, whereArgs);
 		} finally {
-			shutdownDb(db, stagingDbHelper);
+			shutdownDb(db, helper);
 		}
 
 		return numDeleted;

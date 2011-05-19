@@ -40,6 +40,12 @@ public class AddCategoryReportAction {
 	private final AddCategoryAction category;
 	private final long reportId;
 
+	public AddCategoryReportAction(final AddCategoryAction categoryAction,
+			final long reportId) {
+		category = categoryAction;
+		this.reportId = reportId;
+	}
+
 	/**
 	 * @param color
 	 * @param name

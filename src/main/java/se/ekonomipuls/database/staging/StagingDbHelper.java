@@ -18,6 +18,7 @@ package se.ekonomipuls.database.staging;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
 import se.ekonomipuls.model.EkonomipulsUtil;
@@ -29,6 +30,7 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
+@Singleton
 public class StagingDbHelper extends AbstractDbHelper {
 
 	@Inject

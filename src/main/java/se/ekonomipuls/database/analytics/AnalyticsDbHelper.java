@@ -17,16 +17,23 @@ package se.ekonomipuls.database.analytics;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
+import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.actions.AddTagAction;
+import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.AnalyticsTagsDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
@@ -43,6 +50,7 @@ import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
  * @author Magnus Andersson
  * @since 13 mar 2011
  */
+@Singleton
 public class AnalyticsDbHelper extends AbstractDbHelper implements
 		AnalyticsDbScripts {
 
@@ -56,6 +64,12 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 	@Inject
 	InitialConfiguratorProxy config;
+
+	@Inject
+	Provider<AnalyticsCategoriesDbFacade> categoriesProvider;
+
+	@Inject
+	Provider<AnalyticsTagsDbFacade> tagsProvider;
 
 	public AnalyticsDbHelper() {
 		super(ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
@@ -142,14 +156,41 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final List<AddCategoryAction> categoryActions = config
 					.getCategories();
 
-			for (final AddCategoryAction action : categoryActions) {
-				values = mapper.mapCategorySql(action);
-				values.remove(Categories.ID); // We do not want this when
-												// inserting
-				final long catId = db.insert(Categories.TABLE, null, values);
+			final Map<String, List<AddTagAction>> tagsActions = config
+					.getTags();
 
-				values = mapper.mapReportCategoriesSql(repId, catId);
-				db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
+			// Assign Categories to Report
+			for (final AddCategoryAction categoryAction : categoryActions) {
+				// Make sure we have corresponding tags
+				if (tagsActions.containsKey(categoryAction.getName())) {
+
+					Log.d(TAG, "Assigning Category " + categoryAction.getName()
+							+ " to default report");
+
+					final AddCategoryReportAction action = new AddCategoryReportAction(
+							categoryAction, repId);
+
+					final AnalyticsCategoriesDbImpl categoriesFacade = (AnalyticsCategoriesDbImpl) categoriesProvider
+							.get();
+
+					final long catId = categoriesFacade
+							.insertAssignCategoryReportCore(action, db);
+
+					final List<AddTagAction> tagActions = tagsActions
+							.get(categoryAction.getName());
+
+					// Assign tags to categories
+					for (final AddTagAction tagAction : tagActions) {
+						Log.d(TAG, "Assigning Tag " + tagAction.getName()
+								+ " to Category " + categoryAction.getName());
+
+						final AnalyticsTagsDbImpl tagsFacade = (AnalyticsTagsDbImpl) tagsProvider
+								.get();
+
+						final long tagId = tagsFacade
+								.insertAssignTagCategoryCore(tagAction, catId, db);
+					}
+				}
 			}
 
 		} catch (final JsonIOException e) {

@@ -55,6 +55,28 @@ import com.google.inject.Singleton;
 @Singleton
 public class EkonomipulsUtil implements PropertiesConstants {
 
+	/**
+	 * @author Magnus Andersson
+	 * @since 19 maj 2011
+	 */
+	public static enum ConfigurationFileType {
+		CATEGORIES("categories.json"), TAGS("tags.json"), FILTER_RULES(
+				"filter_rules.json");
+
+		private final String fileName;
+
+		ConfigurationFileType(final String fileName) {
+			this.fileName = fileName;
+		}
+
+		/**
+		 * @return the fileName
+		 */
+		public String getFileName() {
+			return fileName;
+		}
+	}
+
 	@Inject
 	private Context context;
 
@@ -109,8 +131,6 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	// When a slice is unselected
 	private static final float SELECT_DESATURATION = 0.2f;
 	private static final float SELECT_DIM = 0.1f;
-
-	private static final String CATEGORIES_FILE = "categories.json";
 
 	/**
 	 * 
@@ -335,8 +355,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 				defaultIncomesFilterDesc, "*", tag, true, Integer.MIN_VALUE);
 	}
 
-	public String getCategoriesConfigurationFile() throws IOException {
-		final InputStream is = context.getAssets().open(CATEGORIES_FILE);
+	public String getConfigurationFile(final ConfigurationFileType type)
+			throws IOException {
+		final InputStream is = context.getAssets().open(type.getFileName());
 		return convertStreamToString(is);
 	}
 

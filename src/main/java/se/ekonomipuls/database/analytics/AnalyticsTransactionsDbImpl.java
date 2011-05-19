@@ -116,8 +116,7 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 	@Override
 	public void insertTransactionsAssignTags(
 			final List<ApplyFilterTagAction> actions) {
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
-		final SQLiteDatabase db = helper.getReadableDatabase();
+		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		final String table = Transactions.TABLE;
 

@@ -89,29 +89,47 @@ public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		return categories;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return
+	 */
 	@Override
-	public void insertAssignCategoryReport(final AddCategoryReportAction action) {
+	public long insertAssignCategoryReport(final AddCategoryReportAction action) {
 
-		final AnalyticsDbHelper helper = new AnalyticsDbHelper();
 		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		try {
-			ContentValues values = mapper.mapCategorySql(action);
-
-			final long catId = insert(db, Categories.TABLE, values);
-
-			final long reportId = action.getReportId();
-
-			values = mapper.mapCategoryReportSql(reportId, catId);
-
-			insert(db, Joins.REPORTS_CATEGORIES_TABLE, values);
+			final long catId = insertAssignCategoryReportCore(action, db);
 
 			db.setTransactionSuccessful();
 
+			return catId;
 		} finally {
 			shutdownDb(db, helper);
 		}
+	}
+
+	/**
+	 * @param action
+	 * @param db
+	 * @return
+	 */
+	long insertAssignCategoryReportCore(final AddCategoryReportAction action,
+			final SQLiteDatabase db) {
+		ContentValues values = mapper.mapCategorySql(action);
+		values.remove(Categories.ID); // We need to remove the ID when inserting
+										// a new post.
+
+		final long catId = insert(db, Categories.TABLE, values);
+
+		final long reportId = action.getReportId();
+
+		values = mapper.mapCategoryReportSql(reportId, catId);
+
+		insert(db, Joins.REPORTS_CATEGORIES_TABLE, values);
+
+		return catId;
 	}
 
 }

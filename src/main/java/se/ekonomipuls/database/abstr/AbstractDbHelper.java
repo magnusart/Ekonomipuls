@@ -22,7 +22,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-
 import static se.ekonomipuls.LogTag.TAG;
 
 /**
