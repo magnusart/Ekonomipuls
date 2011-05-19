@@ -47,12 +47,12 @@ public interface AnalyticsDbScripts {
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Categories.NAME
 			+ " TEXT NOT NULL, " + Categories.COLOR + " INTEGER NOT NULL, "
 			+ Categories.TYPE + " TEXT NOT NULL, " + "UNIQUE( "
-			+ Categories.NAME + " ) " + " )";
+			+ Categories.NAME + ", " + Categories.TYPE + " ) " + " )";
 
 	String DB_CREATE_TAGS_TABLE = "CREATE TABLE IF NOT EXISTS " + Tags.TABLE
 			+ " ( " + Tags.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ Tags.NAME + " TEXT NOT NULL, " + Tags.TYPE + " TEXT NOT NULL, "
-			+ "UNIQUE ( " + Tags.NAME + " )" + " )";
+			+ "UNIQUE ( " + Tags.NAME + ", " + Tags.TYPE + " )" + " )";
 
 	String DB_CREATE_FILTER_RULES_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ FilterRules.TABLE + " ( " + FilterRules.ID

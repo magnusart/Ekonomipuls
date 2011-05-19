@@ -26,11 +26,6 @@
 	},
 	{
 		"color":111111,
-		"name":"A-kassa",
-		"type":"INCOME"	
-	},
-	{
-		"color":111111,
 		"name":"Studiebidrag/Lån",
 		"type":"INCOME"	
 	},

@@ -15,12 +15,18 @@
  */
 package se.ekonomipuls.database.analytics;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
@@ -28,6 +34,7 @@ import se.ekonomipuls.model.FilterRule;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
 import se.ekonomipuls.model.Tag;
+import se.ekonomipuls.proxy.InitialConfiguratorProxy;
 
 import static se.ekonomipuls.LogTag.TAG;
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
@@ -46,6 +53,9 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 	@Inject
 	ModelSqlMapper mapper;
+
+	@Inject
+	InitialConfiguratorProxy config;
 
 	public AnalyticsDbHelper() {
 		super(ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
@@ -121,6 +131,35 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 		values.remove(Tags.ID); // We do not want this when inserting
 		final long incomesTagId = db.insert(Tags.TABLE, null, values);
 
+		final Report report = util.getDefaultReport();
+		values = mapper.mapReportSql(report);
+		values.remove(Reports.ID); // We do not want this when inserting
+		final long repId = db.insert(Reports.TABLE, null, values);
+
+		Log.d(TAG, "Adding Categories");
+
+		try {
+			final List<AddCategoryAction> categoryActions = config
+					.getCategories();
+
+			for (final AddCategoryAction action : categoryActions) {
+				values = mapper.mapCategorySql(action);
+				values.remove(Categories.ID); // We do not want this when
+												// inserting
+				final long catId = db.insert(Categories.TABLE, null, values);
+
+				values = mapper.mapReportCategoriesSql(repId, catId);
+				db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
+			}
+
+		} catch (final JsonIOException e) {
+			e.printStackTrace();
+		} catch (final JsonSyntaxException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+
 		Category category = util.getDefaultExpenseCategory();
 		values = mapper.mapCategorySql(category);
 		values.remove(Categories.ID); // We do not want this when inserting
@@ -130,11 +169,6 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 		values = mapper.mapCategorySql(category);
 		values.remove(Categories.ID); // We do not want this when inserting
 		final long incomesCatId = db.insert(Categories.TABLE, null, values);
-
-		final Report report = util.getDefaultReport();
-		values = mapper.mapReportSql(report);
-		values.remove(Reports.ID); // We do not want this when inserting
-		final long repId = db.insert(Reports.TABLE, null, values);
 
 		util.setDefaults(expensesTagId, expensesCatId, incomesTagId, incomesCatId, repId);
 		Log.d(TAG, "Added default values for Category and Tag");

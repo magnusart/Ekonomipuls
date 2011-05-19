@@ -76,7 +76,7 @@ public class InitialConfiguratiorProxyTest {
 		final List<AddCategoryAction> categories = config.getCategories();
 
 		assertNotNull("Category list should not be null", categories);
-		assertTrue("Category list should not be exactly", categories.size() == 23);
+		assertTrue("Category list should be exactly 22 entries", categories.size() == 22);
 
 		int i = 0;
 		for (final AddCategoryAction cat : categories) {
@@ -89,6 +89,8 @@ public class InitialConfiguratiorProxyTest {
 
 	}
 
+	// FIXME only use one version of this code, duplicated here from
+	// EkonomipulsUtil
 	private String convertStreamToString(final InputStream is)
 			throws IOException {
 		/*

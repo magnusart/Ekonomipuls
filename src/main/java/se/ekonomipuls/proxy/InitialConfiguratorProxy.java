@@ -20,8 +20,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
-import se.ekonomipuls.model.ModelResources;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -44,10 +42,7 @@ public class InitialConfiguratorProxy {
 	@Inject
 	Gson gson;
 
-	@Inject
-	ModelResources resources;
-
-	List<AddCategoryAction> getCategories() throws JsonIOException,
+	public List<AddCategoryAction> getCategories() throws JsonIOException,
 			JsonSyntaxException, IOException {
 
 		final String json = util.getCategoriesConfigurationFile();
