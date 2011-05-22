@@ -40,6 +40,7 @@ import org.mockito.MockitoAnnotations;
 
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
+import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
@@ -54,9 +55,15 @@ import com.google.inject.Inject;
 @RunWith(InjectedTestRunner.class)
 public class InitialConfiguratiorProxyTest {
 
-	private static final String TEST_CATEGORY_CONFIG_FILE = "assets/categories.json";
+	private static final String ASSETS = "assets/";
 
-	private static final String TEST_TAGS_CONFIG_FILE = "assets/tags.json";
+	private static final int FILTER_RULE_SIZE = 5;
+
+	private static final int CATEGORY_SIZE = 22;
+
+	private static final String EXPENSES_TAG_NAME = "Övriga utgifter";
+
+	private static final String INCOME_TAG_NAME = "Övriga inkomster";
 
 	@Inject
 	@InjectMocks
@@ -64,8 +71,6 @@ public class InitialConfiguratiorProxyTest {
 
 	@Mock
 	private EkonomipulsUtil util;
-
-	private InputStream is;
 
 	@Before
 	public void setUp() {
@@ -78,7 +83,8 @@ public class InitialConfiguratiorProxyTest {
 		final List<AddCategoryAction> categories = setupCategoryFileMock();
 
 		assertNotNull("Category list should not be null", categories);
-		assertTrue("Category list should be exactly 22 entries", categories.size() == 22);
+		assertTrue("Category list should be exactly " + CATEGORY_SIZE
+				+ " entries, found " + categories.size() + ".", categories.size() == CATEGORY_SIZE);
 
 		int i = 0;
 		for (final AddCategoryAction cat : categories) {
@@ -93,8 +99,8 @@ public class InitialConfiguratiorProxyTest {
 
 	@Test
 	public void loadTagConfigurationFromFile() throws Exception {
-		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
 		final List<AddCategoryAction> categories = setupCategoryFileMock();
+		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
 
 		assertNotNull("Tags map should not be null", tags);
 
@@ -105,13 +111,48 @@ public class InitialConfiguratiorProxyTest {
 		}
 	}
 
+	@Test
+	public void loadFilterRuleFromFile() throws Exception {
+		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
+
+		assertNotNull("Filter Rules list should no be null", rules);
+		assertTrue("Filter rule list should be exactly " + FILTER_RULE_SIZE
+				+ " entries, found " + rules.size() + ".", rules.size() == FILTER_RULE_SIZE);
+
+		assertTrue(rules.containsKey("Lön"));
+		assertTrue(rules.containsKey("Luncher"));
+	}
+
+	@Test
+	public void validateConfigurationTest() throws Exception {
+		final List<AddCategoryAction> categories = setupCategoryFileMock();
+		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
+		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
+
+		config.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
+	}
+
+	/**
+	 * @return
+	 */
+	private Map<String, List<AddFilterRuleAction>> setupFilterRulesFileMock()
+			throws Exception {
+		final InputStream is = new BufferedInputStream(new FileInputStream(
+				ASSETS + ConfigurationFileType.FILTER_RULES.getFileName()));
+
+		when(util.getConfigurationFile(ConfigurationFileType.FILTER_RULES))
+				.thenReturn(convertStreamToString(is));
+
+		return config.getFilterRules();
+	}
+
 	/**
 	 * @return
 	 * 
 	 */
 	private Map<String, List<AddTagAction>> setupTagFileMock() throws Exception {
 		final InputStream is = new BufferedInputStream(new FileInputStream(
-				TEST_TAGS_CONFIG_FILE));
+				ASSETS + ConfigurationFileType.TAGS.getFileName()));
 
 		when(util.getConfigurationFile(ConfigurationFileType.TAGS))
 				.thenReturn(convertStreamToString(is));
@@ -126,7 +167,7 @@ public class InitialConfiguratiorProxyTest {
 	 */
 	private List<AddCategoryAction> setupCategoryFileMock() throws Exception {
 		final InputStream is = new BufferedInputStream(new FileInputStream(
-				TEST_CATEGORY_CONFIG_FILE));
+				ASSETS + ConfigurationFileType.CATEGORIES.getFileName()));
 
 		when(util.getConfigurationFile(ConfigurationFileType.CATEGORIES))
 				.thenReturn(convertStreamToString(is));

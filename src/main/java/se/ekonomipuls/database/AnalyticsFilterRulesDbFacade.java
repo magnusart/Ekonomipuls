@@ -17,6 +17,7 @@ package se.ekonomipuls.database;
 
 import java.util.List;
 
+import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.model.FilterRule;
 
 /**
@@ -32,5 +33,7 @@ public interface AnalyticsFilterRulesDbFacade {
 	 * @return All the filter rules.
 	 */
 	List<FilterRule> getFilterRules();
+
+	long insertFilterRule(AddFilterRuleAction action);
 
 }

@@ -20,12 +20,15 @@ import java.util.List;
 
 import com.google.inject.Inject;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDb;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.FilterRules;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Joins;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Tags;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Views;
 import se.ekonomipuls.model.FilterRule;
@@ -96,6 +99,40 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		}
 
 		return rules;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long insertFilterRule(final AddFilterRuleAction action) {
+		final SQLiteDatabase db = helper.getWritableDatabase();
+
+		try {
+			final long ruleId = insertFilterRuleCore(action, db);
+
+			db.setTransactionSuccessful();
+
+			return ruleId;
+		} finally {
+			shutdownDb(db, helper);
+		}
+	}
+
+	/**
+	 * @param action
+	 * @param db
+	 * @return
+	 */
+	long insertFilterRuleCore(final AddFilterRuleAction action,
+			final SQLiteDatabase db) {
+
+		ContentValues values = mapper.mapFilterRuleSql(action);
+		values.remove(FilterRules.ID); // We do not want this when inserting
+		final long ruleId = db.insert(FilterRules.TABLE, null, values);
+
+		values = mapper.mapFilterRuleTagSql(ruleId, action.getTagId());
+		db.insert(Joins.FILTER_RULES_TAGS_TABLE, null, values);
+
+		return ruleId;
 	}
 
 }

@@ -15,9 +15,9 @@
 	 	"name":"Gåva",
 	 	"type":"INCOME"
 	 }],
-	"Övrig inkomst":[{
+	"Övriga inkomster":[{
 	    "color":773377,
-	 	"name":"Övrig inkomst",
+	 	"name":"Övriga inkomster",
 	 	"type":"INCOME"
 	 }],
 	"A-kassa":[{
@@ -444,5 +444,9 @@
 	     "name":"Uttag/Kontanter",
 	     "id":0,
 	     "type":"EXPENSE"
-     }]
+     },
+     {	 "name":"Övriga utgifter",
+     	 "id":0,
+     	 "type":"EXPENSE"
+ 	 }]
  }

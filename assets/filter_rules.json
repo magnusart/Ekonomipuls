@@ -1,0 +1,43 @@
+{
+	"Lön":[{
+		"name":"FilterName",
+		"description":"Filter Desc",
+		"markFiltered":true,
+		"pattern":"LIDL",
+		"priority":-10
+		 }],
+	 "Livsmedel":[{
+	    "name":"ICA Butiker",
+		"description":"ICA Mataffär",
+		"markFiltered":true,
+		"pattern":"ICA",
+		"priority":10},
+	    {"name":"Lidl Butiker",
+		"description":"Lidl Mataffär",
+		"markFiltered":true,
+		"pattern":"LIDL",
+		"priority":10 
+	     }],
+     "Luncher":[{
+       	"name":"Restaurang Varianten",
+		"description":"Restaurang Varianten, VCC VAK",
+		"markFiltered":true,
+		"pattern":"RESTAURANG VARIA",
+		"priority":11   
+     }],
+     "Övriga utgifter":[{
+       "name":"Övriga utgifter",  
+       "description":"Catch all filter för övriga utgifter",
+       "markFiltered":true,
+       "pattern":"<",
+       "priority":-2147483647
+     }],
+     "Övriga inkomster":[{
+       "name":"Övriga inkomster",  
+       "description":"Catch all filter för övriga inkomster",
+       "markFiltered":true,
+       "pattern":">",
+       "priority":-2147483648
+     }]
+ }
+	

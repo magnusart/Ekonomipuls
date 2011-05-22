@@ -48,9 +48,9 @@ public class FilterRule {
 	 *            transactions with matches will be applicable for any remaining
 	 *            filter rules
 	 */
-	FilterRule(final Long id, final String name, final String description,
-			final String pattern, final Tag tag, final boolean markFiltered,
-			final int priority) {
+	protected FilterRule(final Long id, final String name,
+			final String description, final String pattern, final Tag tag,
+			final boolean markFiltered, final int priority) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

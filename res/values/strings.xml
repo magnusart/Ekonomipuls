@@ -7,24 +7,16 @@
 	<string name="settings_item">Economic Overview Settings</string>
 	<string name="filter_rules_item">Manage Filter Rules</string>
 
-	<string name="default_expense_category_name">Unspecified Expenses</string>
-	<string name="default_incomes_category_name">Unspecified Incomes</string>
 	<string name="default_expense_tag_name">Expenses</string>
 	<string name="default_incomes_tag_name">Incomes</string>
-
-	<string name="default_expenses_filter_name">Catch all expenses filter</string>
-	<string name="default_expenses_filter_desc">Default filter that catches expenses that are not handled by other filter rules.</string>
-
-	<string name="default_incomes_filter_name">Catch all incomes filter</string>
-	<string name="default_incomes_filter_desc">Default filter that catches incomes that are not handled by other filter rules.</string>
-
 
 	<string name="economic_overview_name">Economic overview</string>
 	<string name="economic_overview_desc">Economic overview is a report of your transactions for the current month.</string>
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Categories</string>
-	<string name="category_name_new">Category name...</string><string name="category_name">Category name</string>
+	<string name="category_name_new">Category name...</string>
+	<string name="category_name">Category name</string>
 	<string name="setting_staging_contains_updates">staging_contains_updates</string>
 	<string name="new_transactions">You have new transactions available</string>
 	<string name="dialog_stage_import_message">Processing new transactions...</string>

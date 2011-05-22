@@ -3,17 +3,15 @@
 	<string name="app_homescreen">Ekonomipuls</string>
 	<string name="app_name">Ekonomipuls</string>
 	<string name="no_data">Ingen data</string>
-	<string name="settings_item">Inställningar Ekonomisk Översikt</string>
-
-	<string name="default_expense_category_name">Ospecificerade Utgifter</string>
-	<string name="default_incomes_category_name">Ospecificerade Inkomster</string>
 	
-	<string name="default_expense_tag_name">Utgift</string>
-	<string name="default_incomes_tag_name">Inkomst</string>
+	<string name="settings_item">Inställningar Ekonomisk Översikt</string>
+	<string name="filter_rules_item">Hantera filterregler</string>
+	
+	<string name="default_expense_tag_name">Övriga utgifter</string>
+	<string name="default_incomes_tag_name">Övriga inkomster</string>
 	
 	<string name="economic_overview_name">Ekonomisk översikt</string>
-	<string name="economic_overview_desc">Ekonomisk översikt är en rapport innehålland dina transaktioner innevarande månad.
-	</string>
+	<string name="economic_overview_desc">Ekonomisk översikt är en rapport innehålland dina transaktioner innevarande månad.</string>
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Kategorier</string>

@@ -21,10 +21,7 @@ package se.ekonomipuls;
  */
 public interface PropertiesConstants {
 
-	public final static String CONF_EXPENSES_DEF_CAT = "default.expenses.category";
 	public final static String CONF_EXPENSES_DEF_TAG = "default.expenses.tag";
-
-	public final static String CONF_INCOMES_DEF_CAT = "default.incomes.category";
 	public final static String CONF_INCOMES_DEF_TAG = "default.incomes.tag";
 
 	public final static String ECONOMIC_OVERVIEW_REPORT_ID = "cashjournal.report_id";

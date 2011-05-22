@@ -15,8 +15,6 @@
  */
 package se.ekonomipuls.model;
 
-import static se.ekonomipuls.LogTag.TAG;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +22,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
-import se.ekonomipuls.proxy.InitialConfiguratorProxy;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,11 +36,7 @@ import android.graphics.PixelFormat;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
-import android.os.RemoteException;
-import android.util.Log;
 import android.view.Window;
-import android.widget.Toast;
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -83,32 +77,11 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	@Inject
 	private SharedPreferences preferences;
 
-	@Inject
-	private InitialConfiguratorProxy initialConfig;
-
-	@InjectResource(R.string.default_expense_category_name)
-	private String defaultExpenseCategoryName;
-
-	@InjectResource(R.string.default_incomes_category_name)
-	private String defaultIncomeCategoryName;
-
 	@InjectResource(R.string.default_expense_tag_name)
 	private String defaultExpensesTagName;
 
-	@InjectResource(R.string.default_expenses_filter_name)
-	private String defaultExpensesFilterName;
-
-	@InjectResource(R.string.default_expenses_filter_desc)
-	private String defaultExpensesFilterDesc;
-
 	@InjectResource(R.string.default_incomes_tag_name)
 	private String defaultIncomesTagName;
-
-	@InjectResource(R.string.default_incomes_filter_name)
-	private String defaultIncomesFilterName;
-
-	@InjectResource(R.string.default_incomes_filter_desc)
-	private String defaultIncomesFilterDesc;
 
 	@InjectResource(R.string.economic_overview_name)
 	private String reportName;
@@ -242,13 +215,6 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		return preferences.getLong(ECONOMIC_OVERVIEW_REPORT_ID, -1);
 	}
 
-	public void toastDbError(final RemoteException e) {
-		final String message = "Unable to complete database query";
-		final Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-		toast.show();
-		Log.d(TAG, message, e);
-	}
-
 	/**
 	 * Set the status of new transactions in the staging database.
 	 * 
@@ -297,20 +263,6 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		return new Tag(tagId, defaultIncomesTagName, EntityType.INCOME);
 	}
 
-	public Category getDefaultExpenseCategory() {
-		final long catId = preferences.getLong(CONF_EXPENSES_DEF_CAT, 0L);
-
-		return new Category(catId, Color.GRAY, defaultExpenseCategoryName,
-				EntityType.EXPENSE);
-	}
-
-	public Category getDefaultIncomesCategory() {
-		final long catId = preferences.getLong(CONF_EXPENSES_DEF_CAT, 0L);
-
-		return new Category(catId, Color.GREEN, defaultIncomeCategoryName,
-				EntityType.INCOME);
-	}
-
 	/**
 	 * @return
 	 */
@@ -325,34 +277,15 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @param catId
 	 * @param repId
 	 */
-	public void setDefaults(final long expensesTagId, final long expensesCatId,
-			final long incomesTagId, final long incomesCatId, final long repId) {
+	public void setDefaults(final Map<String, Long> tagIds, final long repId) {
 		final SharedPreferences.Editor editor = preferences.edit();
 
 		// Commit to preferences
-		editor.putLong(CONF_EXPENSES_DEF_CAT, expensesCatId);
-		editor.putLong(CONF_EXPENSES_DEF_TAG, expensesTagId);
-		editor.putLong(CONF_INCOMES_DEF_CAT, incomesCatId);
-		editor.putLong(CONF_INCOMES_DEF_TAG, incomesTagId);
+		editor.putLong(CONF_EXPENSES_DEF_TAG, tagIds
+				.get(defaultExpensesTagName));
+		editor.putLong(CONF_INCOMES_DEF_TAG, tagIds.get(defaultIncomesTagName));
 		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
 		editor.commit();
-	}
-
-	/**
-	 * @return
-	 */
-	public FilterRule getDefaultExpensesFilterRule(final Tag tag) {
-		return new FilterRule(0L, defaultExpensesFilterName,
-				defaultExpensesFilterDesc, "*", tag, true,
-				Integer.MIN_VALUE + 1);
-	}
-
-	/**
-	 * @return
-	 */
-	public FilterRule getDefaultIncomesFilterRule(final Tag tag) {
-		return new FilterRule(0L, defaultIncomesFilterName,
-				defaultIncomesFilterDesc, "*", tag, true, Integer.MIN_VALUE);
 	}
 
 	public String getConfigurationFile(final ConfigurationFileType type)

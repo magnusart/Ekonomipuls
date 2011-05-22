@@ -16,13 +16,15 @@
 package se.ekonomipuls.database.analytics;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.ConfigurationException;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import android.content.ContentValues;
@@ -31,16 +33,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
+import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
 import se.ekonomipuls.database.AnalyticsTagsDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
-import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
-import se.ekonomipuls.model.FilterRule;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
-import se.ekonomipuls.model.Tag;
 import se.ekonomipuls.proxy.InitialConfiguratorProxy;
 
 import static se.ekonomipuls.LogTag.TAG;
@@ -66,10 +67,13 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	InitialConfiguratorProxy config;
 
 	@Inject
-	Provider<AnalyticsCategoriesDbFacade> categoriesProvider;
+	AnalyticsCategoriesDbFacade categoriesFacade;
 
 	@Inject
-	Provider<AnalyticsTagsDbFacade> tagsProvider;
+	AnalyticsTagsDbFacade tagsFacade;
+
+	@Inject
+	AnalyticsFilterRulesDbFacade rulesFacade;
 
 	public AnalyticsDbHelper() {
 		super(ANALYTICS_DB_NAME, null, ANALYTICS_DB_VERSION);
@@ -134,24 +138,10 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	/** {@inheritDoc} */
 	@Override
 	protected void initTables(final SQLiteDatabase db) {
-
-		Tag tag = util.getDefaultExpenseTag();
-		ContentValues values = mapper.mapTagSql(tag);
-		values.remove(Tags.ID); // We do not want this when inserting
-		final long expensesTagId = db.insert(Tags.TABLE, null, values);
-
-		tag = util.getDefaultIncomeTag();
-		values = mapper.mapTagSql(tag);
-		values.remove(Tags.ID); // We do not want this when inserting
-		final long incomesTagId = db.insert(Tags.TABLE, null, values);
-
-		final Report report = util.getDefaultReport();
-		values = mapper.mapReportSql(report);
-		values.remove(Reports.ID); // We do not want this when inserting
-		final long repId = db.insert(Reports.TABLE, null, values);
+		Log.d(TAG, "Adding Default Report");
+		final long repId = initAddDefaultReport(db);
 
 		Log.d(TAG, "Adding Categories");
-
 		try {
 			final List<AddCategoryAction> categoryActions = config
 					.getCategories();
@@ -159,39 +149,52 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final Map<String, List<AddTagAction>> tagsActions = config
 					.getTags();
 
+			final Map<String, List<AddFilterRuleAction>> filterRulesActions = config
+					.getFilterRules();
+
+			final Map<String, Long> tagIds = new HashMap<String, Long>();
+
+			// Throws error if not successful.
+			config.validateConfiguration(categoryActions, tagsActions, filterRulesActions, util
+					.getDefaultExpenseTag().getName(), util
+					.getDefaultIncomeTag().getName());
+
 			// Assign Categories to Report
 			for (final AddCategoryAction categoryAction : categoryActions) {
-				// Make sure we have corresponding tags
-				if (tagsActions.containsKey(categoryAction.getName())) {
+				Log.d(TAG, "Assigning Category " + categoryAction.getName()
+						+ " to default report");
 
-					Log.d(TAG, "Assigning Category " + categoryAction.getName()
-							+ " to default report");
+				final long catId = initAddCategoryToReport(db, repId, categoryAction);
 
-					final AddCategoryReportAction action = new AddCategoryReportAction(
-							categoryAction, repId);
+				final List<AddTagAction> tagActions = tagsActions
+						.get(categoryAction.getName());
 
-					final AnalyticsCategoriesDbImpl categoriesFacade = (AnalyticsCategoriesDbImpl) categoriesProvider
-							.get();
+				// Assign tags to categories
+				for (final AddTagAction tagAction : tagActions) {
+					Log.d(TAG, "Assigning Tag " + tagAction.getName()
+							+ " to Category " + categoryAction.getName());
 
-					final long catId = categoriesFacade
-							.insertAssignCategoryReportCore(action, db);
+					final long tagId = initAssignTagToCategory(db, catId, tagAction);
 
-					final List<AddTagAction> tagActions = tagsActions
-							.get(categoryAction.getName());
+					// Construct temporary map with Tagname -> tagId for
+					// later use.
+					tagIds.put(tagAction.getName(), tagId);
+				}
 
-					// Assign tags to categories
-					for (final AddTagAction tagAction : tagActions) {
-						Log.d(TAG, "Assigning Tag " + tagAction.getName()
-								+ " to Category " + categoryAction.getName());
+				// Add Filter Rules
+				for (final String tagKey : filterRulesActions.keySet()) {
 
-						final AnalyticsTagsDbImpl tagsFacade = (AnalyticsTagsDbImpl) tagsProvider
-								.get();
+					final List<AddFilterRuleAction> ruleActions = filterRulesActions
+							.get(tagKey);
 
-						final long tagId = tagsFacade
-								.insertAssignTagCategoryCore(tagAction, catId, db);
-					}
+					initAddFilterRule(db, tagIds, tagKey, ruleActions);
+
 				}
 			}
+
+			util.setDefaults(tagIds, repId);
+
+			Log.d(TAG, "Added default values for Category and Tag");
 
 		} catch (final JsonIOException e) {
 			e.printStackTrace();
@@ -199,50 +202,75 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			e.printStackTrace();
 		} catch (final IOException e) {
 			e.printStackTrace();
+		} catch (final ConfigurationException e) {
+			e.printStackTrace();
 		}
+	}
 
-		Category category = util.getDefaultExpenseCategory();
-		values = mapper.mapCategorySql(category);
-		values.remove(Categories.ID); // We do not want this when inserting
-		final long expensesCatId = db.insert(Categories.TABLE, null, values);
+	/**
+	 * @param db
+	 * @return
+	 */
+	private long initAddDefaultReport(final SQLiteDatabase db) {
+		final Report report = util.getDefaultReport();
+		final ContentValues values = mapper.mapReportSql(report);
+		values.remove(Reports.ID); // We do not want this when inserting
+		final long repId = db.insert(Reports.TABLE, null, values);
+		return repId;
+	}
 
-		category = util.getDefaultIncomesCategory();
-		values = mapper.mapCategorySql(category);
-		values.remove(Categories.ID); // We do not want this when inserting
-		final long incomesCatId = db.insert(Categories.TABLE, null, values);
+	/**
+	 * @param db
+	 * @param tagIds
+	 * @param tagKey
+	 * @param ruleActions
+	 */
+	private void initAddFilterRule(final SQLiteDatabase db,
+			final Map<String, Long> tagIds, final String tagKey,
+			final List<AddFilterRuleAction> ruleActions) {
+		for (final AddFilterRuleAction ruleAction : ruleActions) {
+			Log.d(TAG, "Assigning Filter Rule " + ruleAction.getName()
+					+ " with tag " + tagKey);
 
-		util.setDefaults(expensesTagId, expensesCatId, incomesTagId, incomesCatId, repId);
-		Log.d(TAG, "Added default values for Category and Tag");
+			ruleAction.setTagId(tagIds.get(tagKey));
 
-		FilterRule rule = util.getDefaultExpensesFilterRule(util
-				.getDefaultExpenseTag());
-		values = mapper.mapFilterRuleSql(rule);
-		values.remove(FilterRules.ID); // We do not want this when inserting
-		final long expensesRuleId = db.insert(FilterRules.TABLE, null, values);
+			final AnalyticsFilterRulesDbImpl rules = (AnalyticsFilterRulesDbImpl) rulesFacade;
 
-		rule = util.getDefaultIncomesFilterRule(util.getDefaultExpenseTag());
-		values = mapper.mapFilterRuleSql(rule);
-		values.remove(FilterRules.ID); // We do not want this when inserting
-		final long incomesRuleId = db.insert(FilterRules.TABLE, null, values);
+			rules.insertFilterRuleCore(ruleAction, db);
+		}
+	}
 
-		values = mapper.mapCategoryTagsSql(expensesCatId, expensesTagId);
-		db.insert(Joins.CATEGORIES_TAGS_TABLE, null, values);
+	/**
+	 * @param db
+	 * @param catId
+	 * @param tagAction
+	 * @return
+	 */
+	private long initAssignTagToCategory(final SQLiteDatabase db,
+			final long catId, final AddTagAction tagAction) {
+		final AnalyticsTagsDbImpl tags = (AnalyticsTagsDbImpl) tagsFacade;
 
-		values = mapper.mapCategoryTagsSql(incomesCatId, incomesTagId);
-		db.insert(Joins.CATEGORIES_TAGS_TABLE, null, values);
+		final long tagId = tags
+				.insertAssignTagCategoryCore(tagAction, catId, db);
+		return tagId;
+	}
 
-		values = mapper.mapReportCategoriesSql(repId, expensesCatId);
-		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
+	/**
+	 * @param db
+	 * @param repId
+	 * @param categoryAction
+	 * @return
+	 */
+	private long initAddCategoryToReport(final SQLiteDatabase db,
+			final long repId, final AddCategoryAction categoryAction) {
+		final AddCategoryReportAction action = new AddCategoryReportAction(
+				categoryAction, repId);
 
-		values = mapper.mapReportCategoriesSql(repId, incomesCatId);
-		db.insert(Joins.REPORTS_CATEGORIES_TABLE, null, values);
+		final AnalyticsCategoriesDbImpl categories = (AnalyticsCategoriesDbImpl) categoriesFacade;
 
-		values = mapper.mapFilterRuleTagSql(expensesRuleId, expensesTagId);
-		db.insert(Joins.FILTER_RULES_TAGS_TABLE, null, values);
-
-		values = mapper.mapFilterRuleTagSql(incomesRuleId, incomesTagId);
-		db.insert(Joins.FILTER_RULES_TAGS_TABLE, null, values);
-
+		final long catId = categories
+				.insertAssignCategoryReportCore(action, db);
+		return catId;
 	}
 
 	/** {@inheritDoc} */
