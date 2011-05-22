@@ -15,37 +15,38 @@
  */
 package se.ekonomipuls.database.analytics;
 
+import static se.ekonomipuls.LogTag.TAG;
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.ANALYTICS_DB_NAME;
+import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.ANALYTICS_DB_VERSION;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.ConfigurationException;
-
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
 import se.ekonomipuls.database.AnalyticsTagsDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDbHelper;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Reports;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
 import se.ekonomipuls.proxy.InitialConfiguratorProxy;
+import se.ekonomipuls.proxy.InitialConfiguratorProxy.ConfigurationError;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
@@ -202,7 +203,7 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			e.printStackTrace();
 		} catch (final IOException e) {
 			e.printStackTrace();
-		} catch (final ConfigurationException e) {
+		} catch (final ConfigurationError e) {
 			e.printStackTrace();
 		}
 	}

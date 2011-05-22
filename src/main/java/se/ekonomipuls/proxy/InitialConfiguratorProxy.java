@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.naming.ConfigurationException;
-
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
@@ -76,6 +74,36 @@ public class InitialConfiguratorProxy implements LogTag {
 	 */
 	public class ConfigurationError extends Error {
 		private static final long serialVersionUID = -6308790163815696760L;
+
+		/**
+		 * 
+		 */
+		public ConfigurationError() {
+			super();
+		}
+
+		/**
+		 * @param arg0
+		 * @param arg1
+		 */
+		public ConfigurationError(final String arg0, final Throwable arg1) {
+			super(arg0, arg1);
+		}
+
+		/**
+		 * @param arg0
+		 */
+		public ConfigurationError(final String arg0) {
+			super(arg0);
+		}
+
+		/**
+		 * @param arg0
+		 */
+		public ConfigurationError(final Throwable arg0) {
+			super(arg0);
+		}
+
 	}
 
 	@Inject
@@ -159,13 +187,13 @@ public class InitialConfiguratorProxy implements LogTag {
 			final Map<String, List<AddTagAction>> tagsActions,
 			final Map<String, List<AddFilterRuleAction>> filterRulesActions,
 			final String defaultExpensesTagName,
-			final String defaultIncomesTagName) throws ConfigurationException {
+			final String defaultIncomesTagName) throws ConfigurationError {
 
 		// **********************************************************************
 		// Validate: All Categories have at least one tag associated.
 		for (final AddCategoryAction categoryAction : categoryActions) {
 			if (!tagsActions.containsKey(categoryAction.getName())) {
-				throw new ConfigurationException(
+				throw new ConfigurationError(
 						"Category that does not have any tag associated. Category name: "
 								+ categoryAction.getName() + ".");
 			}
@@ -192,9 +220,8 @@ public class InitialConfiguratorProxy implements LogTag {
 		final int foundDefaultTags = containsTagName(sourceTagList, defaultTags);
 
 		if (foundDefaultTags != defaultTags.size()) {
-			throw new ConfigurationException("Default tags " + defaultTags
-					+ " not found in the tag list. Default tags: "
-					+ sourceTagList);
+			throw new ConfigurationError("Default tags " + defaultTags
+					+ " not found in the tag list. Tags list: " + sourceTagList);
 		}
 
 		// **********************************************************************
@@ -204,7 +231,9 @@ public class InitialConfiguratorProxy implements LogTag {
 
 		if (!ruleTagNames.contains(defaultIncomesTagName)
 				|| !ruleTagNames.contains(defaultExpensesTagName)) {
-			throw new ConfigurationException("");
+			throw new ConfigurationError("Default tags " + defaultTags
+					+ " not found in the filter rule list. Tags tags: "
+					+ ruleTagNames);
 		}
 
 		// **********************************************************************
@@ -218,7 +247,7 @@ public class InitialConfiguratorProxy implements LogTag {
 		final int foundRuleTags = containsTagName(sourceTagList, ruleTags);
 
 		if (foundRuleTags != ruleTags.size()) {
-			throw new ConfigurationException("Rule tag " + ruleTags
+			throw new ConfigurationError("Rule tag " + ruleTags
 					+ " does not exist in the tag list " + sourceTagList);
 		}
 
