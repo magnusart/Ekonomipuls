@@ -166,12 +166,15 @@ public class InitialConfiguratorProxy implements LogTag {
 	 * <strong>Validates the following criteria:</strong>
 	 * <ul>
 	 * <li>All Categories have at least one tag associated.</li>
+	 * <li>All Tags have a valid Category to associate with.</li>
 	 * <li>The two default tags exists in the tag list.</li>
 	 * <li>The two default tags exists have rules associated with them.</li>
 	 * <li>All filter rules have existing tags that can be associated</li>
 	 * </ul>
 	 * 
-	 * 
+	 * In a way, this is an inefficient method O(n³), however it is only
+	 * supposed to be run once per new install and the data set is usually quite
+	 * small.
 	 * 
 	 * @param categoryActions
 	 * @param tagsActions
@@ -182,12 +185,15 @@ public class InitialConfiguratorProxy implements LogTag {
 	 * @throws ConfigurationError
 	 *             Thrown when one or more errors in the configuration exists.
 	 */
+	// TODO: Move me if a validation package is ever created.
 	public boolean validateConfiguration(
 			final List<AddCategoryAction> categoryActions,
 			final Map<String, List<AddTagAction>> tagsActions,
 			final Map<String, List<AddFilterRuleAction>> filterRulesActions,
 			final String defaultExpensesTagName,
 			final String defaultIncomesTagName) throws ConfigurationError {
+
+		final Set<String> categoryNames = new TreeSet<String>();
 
 		// **********************************************************************
 		// Validate: All Categories have at least one tag associated.
@@ -196,6 +202,22 @@ public class InitialConfiguratorProxy implements LogTag {
 				throw new ConfigurationError(
 						"Category that does not have any tag associated. Category name: "
 								+ categoryAction.getName() + ".");
+			}
+			categoryNames.add(categoryAction.getName()); // Capture data for
+															// next validation.
+		}
+
+		// **********************************************************************
+		// Validate: All Tags have a valid Category to associate with.
+
+		for (final String categoryName : tagsActions.keySet()) {
+			if (!categoryNames.contains(categoryName)) {
+				throw new ConfigurationError(
+						"Tags "
+								+ tagsActions.get(categoryName)
+								+ "can not associated with any Category. Category not found: "
+								+ categoryName + ".");
+
 			}
 		}
 

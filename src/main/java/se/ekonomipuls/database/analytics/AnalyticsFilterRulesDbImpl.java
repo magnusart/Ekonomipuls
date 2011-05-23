@@ -62,7 +62,7 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		final String[] columns = FilterRules.COLUMNS;
 
 		final String view = Views.FILTER_RULES_TAGS_VIEW;
-		String viewSelection = Views.FILTER_RULE_TAGS_FILTER_ID;
+
 		final String[] viewColumns = Tags.COLUMNS;
 		final String viewSortOrder = null;
 
@@ -76,6 +76,8 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 			final int[] indices = mapper.getFilterRuleCursorIndices(cur);
 
 			while (cur.moveToNext()) {
+				String viewSelection = Views.FILTER_RULE_TAGS_FILTER_ID;
+
 				final FilterRule rule = mapper.mapFilterRuleModel(cur, indices);
 				viewSelection += " = " + rule.getId();
 

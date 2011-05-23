@@ -16,7 +16,7 @@
 		"description":"Lidl Mataffär",
 		"markFiltered":true,
 		"pattern":"LIDL",
-		"priority":10 
+		"priority":12 
 	     }],
      "Luncher":[{
        	"name":"Restaurang Varianten",

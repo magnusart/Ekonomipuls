@@ -177,18 +177,18 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 					final long tagId = initAssignTagToCategory(db, catId, tagAction);
 
+					// If there is any Filter Rules that is going to be
+					// associated with this tag, insert them.
+					if (filterRulesActions.containsKey(tagAction.getName())) {
+						final List<AddFilterRuleAction> ruleActions = filterRulesActions
+								.get(tagAction.getName());
+
+						initAddFilterRule(db, tagId, ruleActions);
+					}
+
 					// Construct temporary map with Tagname -> tagId for
 					// later use.
 					tagIds.put(tagAction.getName(), tagId);
-				}
-
-				// Add Filter Rules
-				for (final String tagKey : filterRulesActions.keySet()) {
-
-					final List<AddFilterRuleAction> ruleActions = filterRulesActions
-							.get(tagKey);
-
-					initAddFilterRule(db, tagIds, tagKey, ruleActions);
 
 				}
 			}
@@ -226,14 +226,13 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	 * @param tagKey
 	 * @param ruleActions
 	 */
-	private void initAddFilterRule(final SQLiteDatabase db,
-			final Map<String, Long> tagIds, final String tagKey,
+	private void initAddFilterRule(final SQLiteDatabase db, final long tagId,
 			final List<AddFilterRuleAction> ruleActions) {
 		for (final AddFilterRuleAction ruleAction : ruleActions) {
 			Log.d(TAG, "Assigning Filter Rule " + ruleAction.getName()
-					+ " with tag " + tagKey);
+					+ " with tag id " + tagId);
 
-			ruleAction.setTagId(tagIds.get(tagKey));
+			ruleAction.setTagId(tagId);
 
 			final AnalyticsFilterRulesDbImpl rules = (AnalyticsFilterRulesDbImpl) rulesFacade;
 
