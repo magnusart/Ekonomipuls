@@ -1,111 +1,111 @@
 [
 	{ 
-		"color":13260,
+		"color":"#FF0033CC",
 		"name":"Lön",
 		"type":"INCOME"	
 	},
 	{
-		"color":3342489,
+		"color":"#FF330099",
 		"name":"Sommarjobb",
 		"type":"INCOME"	
 	},
 	{
-		"color":668425,
+		"color":"#FF660099",
 		"name":"Gåva",
 		"type":"INCOME"	
 	},
 	{
-		"color":13369497,
+		"color":"#FFCC0099",
 		"name":"Övriga inkomster",
 		"type":"INCOME"	
 	},
 	{
-		"color":16711680,
+		"color":"#FFFF0000",
 		"name":"A-kassa",
 		"type":"INCOME"	
 	},
 	{
-		"color":16737792,
+		"color":"#FFFF6600",
 		"name":"Studiebidrag/Lån",
 		"type":"INCOME"	
 	},
 	{
-		"color":16750848,
+		"color":"#FFFF9900",
 		"name":"Bidrag",
 		"type":"INCOME"	
 	},
 	{
-		"color":16763904,
+		"color":"#FFFFCC00",
 		"name":"Föräldrapenning",
 		"type":"INCOME"	
 	},
 	{
-		"color":16776960,
+		"color":"#FFFFFF00",
 		"name":"Barnbidrag",
 		"type":"INCOME"	
 	},
 	{
-		"color":10092288,
+		"color":"#FF99FF00",
 		"name":"Skuld",
 		"type":"INCOME"	
 	},
 	{
-		"color":52224,
+		"color":"#FF00CC00",
 		"name":"Från sparande",
 		"type":"INCOME"	
 	},
 	{
-		"color":39321,
+		"color":"#FF009999",
 		"name":"Pension",
 		"type":"INCOME"	
 	},
 	{
-		"color":10027161,
+		"color":"#FF990099",
 		"name":"Återbäring",
 		"type":"INCOME"	
 	},
 	{
-		"color":16744448,
+		"color":"#FFFF8000",
 		"name":"Korrigering",
 		"type":"INCOME"	
 	},
 	{
-		"color":16770304,
+		"color":"#FFFFE500",
 		"name":"Kommunikation",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":13434624,
+		"color":"#FFCCFF00",
 		"name":"Mat & Dryck",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":45926,
+		"color":"#FF00B366",
 		"name":"Transport",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":4194457,
+		"color":"#FF400099",
 		"name":"Boende",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":26291,
+		"color":"#FF0066B3",
 		"name":"Försäkringar",
 		"type":"EXPENSE"	
-	},
+	},	
 	{
-		"color":12255487,
+		"color":"#FF0033CC",
 		"name":"Nöjen/Shopping",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":16711875,
+		"color":"#FF330099",
 		"name":"Lån",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":16711680,
+		"color":"#FF660099",
 		"name":"Övriga utgifter",
 		"type":"EXPENSE"	
 	}

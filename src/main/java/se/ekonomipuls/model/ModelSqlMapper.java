@@ -117,7 +117,7 @@ public class ModelSqlMapper {
 	 */
 	public Category mapCategoryModel(final Cursor cur, final int[] indices) {
 		final int id = cur.getInt(indices[0]);
-		final int color = cur.getInt(indices[1]);
+		final String color = cur.getString(indices[1]);
 		final String name = cur.getString(indices[2]);
 		final EntityType type = EntityType.valueOf(cur.getString(indices[3]));
 

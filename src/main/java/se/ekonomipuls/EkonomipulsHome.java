@@ -35,7 +35,6 @@ import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -137,8 +136,8 @@ public class EkonomipulsHome extends RoboActivity {
 	/** {@inheritDoc} */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		final MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.home_menu, menu);
+		// final MenuInflater inflater = getMenuInflater();
+		// inflater.inflate(R.menu.home_menu, menu);
 		return true;
 	}
 

@@ -31,7 +31,7 @@ public class AddCategoryReportAction {
 		 * @param color
 		 * @param name
 		 */
-		AddCategoryAction(final int color, final String name,
+		AddCategoryAction(final String color, final String name,
 				final EntityType type) {
 			super(0, color, name, type);
 		}
@@ -50,7 +50,7 @@ public class AddCategoryReportAction {
 	 * @param color
 	 * @param name
 	 */
-	public AddCategoryReportAction(final int color, final String name,
+	public AddCategoryReportAction(final String color, final String name,
 			final EntityType type, final long reportId) {
 		this.reportId = reportId;
 		category = new AddCategoryAction(color, name, type);

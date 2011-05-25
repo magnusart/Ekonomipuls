@@ -96,7 +96,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	private String reportTo;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
-	private static final float DARK_GRAD_BRIGHTNESS = 0.6f;
+	private static final float DARK_GRAD_BRIGHTNESS = 0.4f;
 
 	private static final float LIGHT_GRAD_SATURATION = 0.85f;
 	private static final float LIGHT_GRAD_BRIGHTNESS = 1.0f;

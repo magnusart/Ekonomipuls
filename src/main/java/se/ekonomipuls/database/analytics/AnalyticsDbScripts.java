@@ -45,7 +45,7 @@ public interface AnalyticsDbScripts {
 	String DB_CREATE_CATEGORIES_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Categories.TABLE + " ( " + Categories.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Categories.NAME
-			+ " TEXT NOT NULL, " + Categories.COLOR + " INTEGER NOT NULL, "
+			+ " TEXT NOT NULL, " + Categories.COLOR + " TEXT NOT NULL, "
 			+ Categories.TYPE + " TEXT NOT NULL, " + "UNIQUE( "
 			+ Categories.NAME + ", " + Categories.TYPE + " ) " + " )";
 

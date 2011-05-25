@@ -18,6 +18,8 @@ package se.ekonomipuls.views.charts;
 import java.math.BigDecimal;
 import java.util.List;
 
+import android.graphics.Color;
+
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.Transaction;
 
@@ -40,9 +42,14 @@ public class SeriesEntry {
 	 * @param baseColor
 	 */
 	public SeriesEntry(final Category category,
-						final List<Transaction> transactions) {
+			final List<Transaction> transactions) {
 		this.category = category;
-		this.baseColor = category.getColor(); // TODO Fix so that other Classes uses category to get the color.
+		this.baseColor = Color.parseColor(category.getColor()); // TODO Fix so
+																// that other
+																// Classes uses
+																// category to
+																// get the
+																// color.
 		this.selected = false;
 
 		this.sum = sumTranscations(transactions);

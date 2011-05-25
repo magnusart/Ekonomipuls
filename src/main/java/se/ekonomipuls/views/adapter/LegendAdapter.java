@@ -97,7 +97,7 @@ public class LegendAdapter extends IterableAdapter<SeriesEntry> {
 
 		final SeriesEntry entry = getItem(position);
 
-		holder.color.setColor(util.getDarkColor(entry.getBaseColor(), entry
+		holder.color.setColor(util.getLightColor(entry.getBaseColor(), entry
 				.isSelected()));
 
 		final Category cat = entry.getCategory();

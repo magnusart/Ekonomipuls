@@ -21,7 +21,6 @@ import se.ekonomipuls.actions.AddCategoryReportAction;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EntityType;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -62,7 +61,7 @@ public class AddEditCategory extends RoboActivity implements LogTag {
 
 		// FIXME Expense is hardcoded here!
 		final AddCategoryReportAction categoryReport = new AddCategoryReportAction(
-				Color.CYAN, name, EntityType.EXPENSE,
+				"#FF330099", name, EntityType.EXPENSE,
 				ekonomipulsUtil.getEconomicOverviewId());
 
 		analyticsCategoriesDbFacade.insertAssignCategoryReport(categoryReport);

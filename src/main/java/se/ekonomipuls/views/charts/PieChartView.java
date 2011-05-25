@@ -53,14 +53,14 @@ public class PieChartView extends AbstractChartView implements OnTouchListener {
 	private static final boolean SKEW_CHART = false;
 	private static final boolean DROP_SHADOW = true;
 
-	private static final int CHART_SHADOW_ALPHA = 100;
-	private static final int BLUR_RADIUS = 8;
+	private static final int CHART_SHADOW_ALPHA = 130;
+	private static final int BLUR_RADIUS = 10;
 	private static final int SHADOW_OFFSET = 6;
 
 	private static final boolean PAINT_PERCENTAGES = true;
-	private static final int TEXT_SHADOW_ALPHA = 110;
+	private static final int TEXT_SHADOW_ALPHA = 140;
 	private static final float TEXT_BLUR_RADIUS = 2.0f;
-	private static final float TEXT_SHADOW_OFFSET = 1.0f;
+	private static final float TEXT_SHADOW_OFFSET = 2.0f;
 
 	private static final int PERCENTAGE_LOWER_LIMIT = 6;
 

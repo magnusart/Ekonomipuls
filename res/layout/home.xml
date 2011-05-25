@@ -20,7 +20,7 @@
 	android:paddingLeft="10dp" 
 	android:paddingTop="4dp"
 	android:paddingBottom="4dp"
-	android:background="#10FFFFFF"
+	android:background="#44FFFFFF"
 	android:textColor="#FFFFFF"
 	android:textStyle="bold"
 	android:textSize="15sp"

@@ -22,16 +22,19 @@ package se.ekonomipuls.model;
 public class Category {
 
 	private final long id;
-	private final int color;
+	private final String color;
 	private final String name;
 	private final EntityType type;
 
 	/**
-	 * @param i
-	 * @param string
-	 * @param subList
+	 * 
+	 * @param id
+	 * @param color
+	 *            Color as a hex string in the format #AARRGGBB.
+	 * @param name
+	 * @param type
 	 */
-	protected Category(final long id, final int color, final String name,
+	protected Category(final long id, final String color, final String name,
 			final EntityType type) {
 		this.id = id;
 		this.color = color;
@@ -49,7 +52,7 @@ public class Category {
 	/**
 	 * @return the color
 	 */
-	public int getColor() {
+	public String getColor() {
 		return color;
 	}
 
@@ -72,7 +75,7 @@ public class Category {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + color;
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -92,7 +95,11 @@ public class Category {
 			return false;
 		}
 		final Category other = (Category) obj;
-		if (color != other.color) {
+		if (color == null) {
+			if (other.color != null) {
+				return false;
+			}
+		} else if (!color.equals(other.color)) {
 			return false;
 		}
 		if (id != other.id) {
