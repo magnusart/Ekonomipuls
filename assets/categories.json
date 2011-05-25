@@ -1,112 +1,112 @@
 [
 	{ 
-		"color":111111,
+		"color":13260,
 		"name":"Lön",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":3342489,
 		"name":"Sommarjobb",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":668425,
 		"name":"Gåva",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":13369497,
 		"name":"Övriga inkomster",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16711680,
 		"name":"A-kassa",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16737792,
 		"name":"Studiebidrag/Lån",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16750848,
 		"name":"Bidrag",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16763904,
 		"name":"Föräldrapenning",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16776960,
 		"name":"Barnbidrag",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":10092288,
 		"name":"Skuld",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":52224,
 		"name":"Från sparande",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":39321,
 		"name":"Pension",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":10027161,
 		"name":"Återbäring",
 		"type":"INCOME"	
 	},
 	{
-		"color":111111,
+		"color":16744448,
 		"name":"Korrigering",
 		"type":"INCOME"	
 	},
 	{
-		"color":555555,
+		"color":16770304,
 		"name":"Kommunikation",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":13434624,
 		"name":"Mat & Dryck",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":45926,
 		"name":"Transport",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":4194457,
 		"name":"Boende",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":26291,
 		"name":"Försäkringar",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":12255487,
 		"name":"Nöjen/Shopping",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
+		"color":16711875,
 		"name":"Lån",
 		"type":"EXPENSE"	
 	},
 	{
-		"color":555555,
-		"name":"Övrigt",
+		"color":16711680,
+		"name":"Övriga utgifter",
 		"type":"EXPENSE"	
 	}
 ]

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest package="se.ekonomipuls" android:versionName="0.1.Pre-Alpha-2" android:versionCode="2" xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="se.ekonomipuls" android:versionName="0.1.Pre-Alpha-3" android:versionCode="3" xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:name="se.ekonomipuls.EkonomipulsApplication"
 		android:label="@string/app_homescreen" android:icon="@drawable/ic_launcher_ekonomipuls"
-		android:debuggable="true">
+		android:debuggable="false">
 		<activity android:name="EkonomipulsHome" android:theme="@android:style/Theme.NoTitleBar">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,7 @@
 
 		<activity android:name="AddEditCategory" android:theme="@android:style/Theme.NoTitleBar"></activity>
 		<activity android:name="FilterRuleOverview" android:theme="@android:style/Theme.NoTitleBar"></activity>
-		<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar">
-			<!--Remove this after debugging -->
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
+		<activity android:name="VerifyTransactions" android:theme="@android:style/Theme.NoTitleBar"></activity>
 	</application>
 	<uses-sdk android:minSdkVersion="7" />
 	<uses-permission

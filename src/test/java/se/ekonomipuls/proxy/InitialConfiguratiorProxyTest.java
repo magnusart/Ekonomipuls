@@ -57,7 +57,7 @@ public class InitialConfiguratiorProxyTest {
 
 	private static final String ASSETS = "assets/";
 
-	private static final int FILTER_RULE_SIZE = 5;
+	private static final int FILTER_RULE_SIZE = 8;
 
 	private static final int CATEGORY_SIZE = 22;
 

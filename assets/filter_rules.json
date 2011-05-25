@@ -1,23 +1,67 @@
 {
 	"Lön":[{
-		"name":"FilterName",
-		"description":"Filter Desc",
+		"name":"Lön",
+		"description":"Lön från arbetsgivaren",
 		"markFiltered":true,
-		"pattern":"LIDL",
+		"pattern":"Lön",
 		"priority":-10
 		 }],
 	 "Livsmedel":[{
 	    "name":"ICA Butiker",
-		"description":"ICA Mataffär",
+		"description":"Mataffären ICA",
 		"markFiltered":true,
 		"pattern":"ICA",
-		"priority":10},
+		"priority":30},
 	    {"name":"Lidl Butiker",
-		"description":"Lidl Mataffär",
+		"description":"Mataffären Lidl",
 		"markFiltered":true,
 		"pattern":"LIDL",
-		"priority":12 
+		"priority":40 
+	     },
+	     {"name":"Hemköp-butiker",
+		"description":"Mataffären Hemköp",
+		"markFiltered":true,
+		"pattern":"Hemköp",
+		"priority":34 
+	     },
+	     {"name":"Netto-butiker",
+		"description":"Mataffären Netto",
+		"markFiltered":true,
+		"pattern":"Netto",
+		"priority":35 
+	     },
+	     {"name":"City Gross-butiker",
+		"description":"Mataffären City Gross",
+		"markFiltered":true,
+		"pattern":"City Gross",
+		"priority":41 
+	     },
+	     {"name":"Vi-butiker",
+		"description":"Mataffären Vi",
+		"markFiltered":true,
+		"pattern":"Vi",
+		"priority":42 
 	     }],
+	     "Middag":[{"name":"MAX-restauranger",
+		"description":"Hamburgerkedjan MAX",
+		"markFiltered":true,
+		"pattern":"MAX",
+		"priority":43
+	     }],
+	     "Bränsle":[{
+		"name":"OKQ8-butiker",
+		"description":"Bensinmacken OKQ8",
+		"markFiltered":true,
+		"pattern":"OKQ8",
+		"priority":44
+	     }],	     
+	 "Alkohol":[{
+	    "name":"Systembolaget",
+		"description":"Spritbolaget",
+		"markFiltered":true,
+		"pattern":"SYSTEMBOLAGET",
+		"priority":90	     
+	 }], 
      "Luncher":[{
        	"name":"Restaurang Varianten",
 		"description":"Restaurang Varianten, VCC VAK",

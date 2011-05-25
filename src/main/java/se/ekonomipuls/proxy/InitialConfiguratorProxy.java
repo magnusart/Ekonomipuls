@@ -170,6 +170,8 @@ public class InitialConfiguratorProxy implements LogTag {
 	 * <li>The two default tags exists in the tag list.</li>
 	 * <li>The two default tags exists have rules associated with them.</li>
 	 * <li>All filter rules have existing tags that can be associated</li>
+	 * <li>No duplicate priority exists among the filter rules
+	 * <li>
 	 * </ul>
 	 * 
 	 * In a way, this is an inefficient method O(n³), however it is only
@@ -271,6 +273,24 @@ public class InitialConfiguratorProxy implements LogTag {
 		if (foundRuleTags != ruleTags.size()) {
 			throw new ConfigurationError("Rule tag " + ruleTags
 					+ " does not exist in the tag list " + sourceTagList);
+		}
+
+		// **********************************************************************
+		// Validate: No duplicate priority exists among the filter rules
+		final Set<Integer> uniquePriorities = new TreeSet<Integer>();
+
+		for (final List<AddFilterRuleAction> filterRuleList : filterRulesActions
+				.values()) {
+			for (final AddFilterRuleAction filterRuleAction : filterRuleList) {
+				if (uniquePriorities.contains(filterRuleAction.getPriority())) {
+					throw new ConfigurationError("Priority "
+							+ filterRuleAction.getPriority() + "for "
+							+ filterRuleAction.getName()
+							+ " already exists. Must be unique");
+				}
+
+				uniquePriorities.add(filterRuleAction.getPriority());
+			}
 		}
 
 		return true;

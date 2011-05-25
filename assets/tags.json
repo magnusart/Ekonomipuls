@@ -1,5 +1,4 @@
-{
-	
+{	
 	"Lön":[{
 	    "color":773377,
 	 	"name":"Lön",
@@ -345,7 +344,7 @@
 	     "id":0,
 	     "type":"EXPENSE"
      }],
-    "Övrigt":[{
+    "Övriga utgifter":[{
 	     "name":"Hygien",
 	     "id":0,
 	     "type":"EXPENSE"
