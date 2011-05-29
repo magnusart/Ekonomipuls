@@ -122,6 +122,15 @@ public interface AnalyticsDbConstants {
 		public final static String TRANS_CAT_V_CAT_ID = "cat_id";
 
 		public final static String CATEGORIES_REPORT_VIEW = "categories_report_view";
+
+		public final static String CATEGORIES_REPORT_FROM_STMT = Reports.TABLE
+				+ " INNER JOIN " + Joins.REPORTS_CATEGORIES_TABLE + " ON "
+				+ Reports.TABLE + "." + Reports.ID + " = "
+				+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.REP_FK
+				+ " INNER JOIN " + Categories.TABLE + " ON "
+				+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.CAT_FK_2 + " = "
+				+ Categories.TABLE + "." + Categories.ID;
+
 		// Special columns for this view
 		public final static String REP_CAT_REP_ID = "rep_id";
 

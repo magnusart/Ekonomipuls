@@ -51,8 +51,8 @@ public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 	/** {@inheritDoc} */
 	@Override
 	public List<Category> getCategoriesByReport(final long reportId) {
-		return getCategories(Views.CATEGORIES_REPORT_VIEW, Views.REP_CAT_REP_ID
-				+ " = " + reportId);
+		return getCategories(Views.CATEGORIES_REPORT_FROM_STMT, Reports.TABLE
+				+ "." + Reports.ID + " = " + reportId);
 	}
 
 	/** {@inheritDoc} */
@@ -67,7 +67,7 @@ public class AnalyticsCategoriesDbImpl extends AbstractDb implements
 		final String[] selectionArgs = null;
 		final String having = null;
 		final String sortOrder = null;
-		final String[] columns = Categories.COLUMNS;
+		final String[] columns = prefixColumns(Categories.TABLE, Categories.COLUMNS);
 
 		final SQLiteDatabase db = helper.getReadableDatabase();
 

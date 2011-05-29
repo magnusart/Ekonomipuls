@@ -135,4 +135,20 @@ public abstract class AbstractDb {
 		return db.delete(table, whereClause, whereArgs);
 
 	}
+
+	/**
+	 * @param table
+	 * @param columns
+	 * @return
+	 */
+	protected String[] prefixColumns(final String table, final String[] columns) {
+		final String[] prefixedColumns = new String[columns.length];
+
+		for (int i = 0; i < columns.length; i++) {
+			prefixedColumns[i] = table + "." + columns[i];
+		}
+
+		return prefixedColumns;
+	}
+
 }

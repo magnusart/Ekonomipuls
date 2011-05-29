@@ -7,8 +7,11 @@
 	<string name="settings_item">Economic Overview Settings</string>
 	<string name="filter_rules_item">Manage Filter Rules</string>
 
-	<string name="default_expense_tag_name">Expenses</string>
-	<string name="default_incomes_tag_name">Incomes</string>
+	<!-- string name="default_expense_tag_name">Expenses</string>
+	<string name="default_incomes_tag_name">Incomes</string -->
+
+	<string name="default_expense_tag_name">Övriga utgifter</string>
+	<string name="default_incomes_tag_name">Övriga inkomster</string>
 
 	<string name="economic_overview_name">Economic overview</string>
 	<string name="economic_overview_desc">Economic overview is a report of your transactions for the current month.</string>
