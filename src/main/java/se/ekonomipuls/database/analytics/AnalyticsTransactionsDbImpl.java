@@ -15,6 +15,22 @@
  */
 package se.ekonomipuls.database.analytics;
 
+import static se.ekonomipuls.LogTag.TAG;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import se.ekonomipuls.actions.ApplyFilterTagAction;
+import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDb;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Categories;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Joins;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Transactions;
+import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Views;
+import se.ekonomipuls.model.Category;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.model.Tag;
+import se.ekonomipuls.model.Transaction;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,20 +39,6 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
-import se.ekonomipuls.database.abstr.AbstractDb;
-import se.ekonomipuls.model.Category;
-import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.model.Tag;
-import se.ekonomipuls.model.Transaction;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
 
 /**
  * 
@@ -71,8 +73,8 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 	/** {@inheritDoc} */
 	@Override
 	public List<Transaction> getTransactionsByCategory(final Category cat) {
-		return getTransactions(Views.TRANSACTIONS_CATEGORY_VIEW, Views.TRANS_CAT_V_CAT_ID
-				+ " = " + cat.getId());
+		return getTransactions(Views.TRANSACTIONS_CATEGORY_FROM_STMT,
+				Categories.TABLE + "." + Categories.ID + " = " + cat.getId());
 	}
 
 	/** {@inheritDoc} */
@@ -88,14 +90,17 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		final String having = null;
 		final String groupBy = null;
 		final String sortOrder = Transactions.DATE + " DESC";
-		final String[] columns = Transactions.COLUMNS;
+		final String[] columns = prefixColumns(Transactions.TABLE,
+				Transactions.COLUMNS);
+		;
 
 		final SQLiteDatabase db = helper.getReadableDatabase();
 
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
+			final Cursor cur = query(db, table, columns, selection,
+					selectionArgs, groupBy, having, sortOrder);
 
 			final int[] indices = mapper.getTransactionCursorIndices(cur);
 

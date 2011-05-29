@@ -117,11 +117,35 @@ public interface AnalyticsDbConstants {
 	}
 
 	static interface Views {
-		public final static String TRANSACTIONS_CATEGORY_VIEW = "transactions_category_view";
-		// Special columns for this view
-		public final static String TRANS_CAT_V_CAT_ID = "cat_id";
-
-		public final static String CATEGORIES_REPORT_VIEW = "categories_report_view";
+		public final static String TRANSACTIONS_CATEGORY_FROM_STMT = Categories.TABLE
+				+ " INNER JOIN "
+				+ Joins.CATEGORIES_TAGS_TABLE
+				+ " ON "
+				+ Categories.TABLE
+				+ "."
+				+ Categories.ID
+				+ " = "
+				+ Joins.CATEGORIES_TAGS_TABLE
+				+ "."
+				+ Joins.CAT_FK_1
+				+ " INNER JOIN "
+				+ Joins.TRANSACTIONS_TAGS_TABLE
+				+ " ON "
+				+ Joins.CATEGORIES_TAGS_TABLE
+				+ "."
+				+ Joins.TAG_FK_1
+				+ " = "
+				+ Joins.TRANSACTIONS_TAGS_TABLE
+				+ "."
+				+ Joins.TAG_FK_2
+				+ " INNER JOIN "
+				+ Transactions.TABLE
+				+ " ON "
+				+ Joins.TRANSACTIONS_TAGS_TABLE
+				+ "."
+				+ Joins.TRANS_FK
+				+ " = "
+				+ Transactions.TABLE + "." + Transactions.ID;;
 
 		public final static String CATEGORIES_REPORT_FROM_STMT = Reports.TABLE
 				+ " INNER JOIN " + Joins.REPORTS_CATEGORIES_TABLE + " ON "
@@ -131,11 +155,25 @@ public interface AnalyticsDbConstants {
 				+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.CAT_FK_2 + " = "
 				+ Categories.TABLE + "." + Categories.ID;
 
-		// Special columns for this view
-		public final static String REP_CAT_REP_ID = "rep_id";
+		public final static String FILTER_RULES_TAGS_FROM_STMT = FilterRules.TABLE
+				+ " INNER JOIN "
+				+ Joins.FILTER_RULES_TAGS_TABLE
+				+ " ON "
+				+ FilterRules.TABLE
+				+ "."
+				+ FilterRules.ID
+				+ " = "
+				+ Joins.FILTER_RULES_TAGS_TABLE
+				+ "."
+				+ Joins.FILTER_RULE_FK
+				+ " INNER JOIN "
+				+ Tags.TABLE
+				+ " ON "
+				+ Joins.FILTER_RULES_TAGS_TABLE
+				+ "."
+				+ Joins.TAG_FK_3
+				+ " = "
+				+ Tags.TABLE + "." + Tags.ID;
 
-		public final static String FILTER_RULES_TAGS_VIEW = "filter_rules_report_view";
-		// Special columns for this view
-		public final static String FILTER_RULE_TAGS_FILTER_ID = "filter_rule_id";
 	}
 }

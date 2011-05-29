@@ -21,7 +21,6 @@ import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Joins;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Reports;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Tags;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Transactions;
-import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Views;
 
 /**
  * @author Magnus Andersson
@@ -152,53 +151,4 @@ public interface AnalyticsDbScripts {
 			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "UNIQUE ( "
 			+ Joins.FILTER_RULE_FK + ", " + Joins.TAG_FK_3 + " )" + ")";
-
-	String DB_CREATE_TRANSACTIONS_CATEGORY_VIEW = "CREATE VIEW IF NOT EXISTS "
-			+ Views.TRANSACTIONS_CATEGORY_VIEW + " AS " + "SELECT "
-			+ Transactions.TABLE + "." + Transactions.ID + ", "
-			+ Transactions.TABLE + "." + Transactions.GLOBAL_ID + ", "
-			+ Transactions.TABLE + "." + Transactions.DATE + ", "
-			+ Transactions.TABLE + "." + Transactions.DESCRIPTION + ", "
-			+ Transactions.TABLE + "." + Transactions.COMMENT + ", "
-			+ Transactions.TABLE + "." + Transactions.AMOUNT + ", "
-			+ Transactions.TABLE + "." + Transactions.CURRENCY + ", "
-			+ Transactions.TABLE + "." + Transactions.BD_ACCOUNT + ", "
-			+ Transactions.TABLE + "." + Transactions.FILTERED + ", "
-			+ Transactions.VERIFIED + ", " + Categories.TABLE + "."
-			+ Categories.ID + " AS " + Views.TRANS_CAT_V_CAT_ID + " FROM "
-			+ Categories.TABLE + " INNER JOIN " + Joins.CATEGORIES_TAGS_TABLE
-			+ " ON " + Categories.TABLE + "." + Categories.ID + " = "
-			+ Joins.CATEGORIES_TAGS_TABLE + "." + Joins.CAT_FK_1
-			+ " INNER JOIN " + Joins.TRANSACTIONS_TAGS_TABLE + " ON "
-			+ Joins.CATEGORIES_TAGS_TABLE + "." + Joins.TAG_FK_1 + " = "
-			+ Joins.TRANSACTIONS_TAGS_TABLE + "." + Joins.TAG_FK_2
-			+ " INNER JOIN " + Transactions.TABLE + " ON "
-			+ Joins.TRANSACTIONS_TAGS_TABLE + "." + Joins.TRANS_FK + " = "
-			+ Transactions.TABLE + "." + Transactions.ID;
-
-	String DB_CREATE_CATEGORIES_REPORT_VIEW = "CREATE VIEW IF NOT EXISTS "
-			+ Views.CATEGORIES_REPORT_VIEW + " AS " + "SELECT "
-			+ Categories.TABLE + "." + Categories.ID + ", " + Categories.TABLE
-			+ "." + Categories.NAME + ", " + Categories.TABLE + "."
-			+ Categories.COLOR + ", " + Categories.TABLE + "."
-			+ Categories.TYPE + ", " + Reports.TABLE + "." + Reports.ID
-			+ " AS " + Views.REP_CAT_REP_ID + " FROM " + Reports.TABLE
-			+ " INNER JOIN " + Joins.REPORTS_CATEGORIES_TABLE + " ON "
-			+ Reports.TABLE + "." + Reports.ID + " = "
-			+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.REP_FK
-			+ " INNER JOIN " + Categories.TABLE + " ON "
-			+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.CAT_FK_2 + " = "
-			+ Categories.TABLE + "." + Categories.ID;
-
-	String DB_CREATE_FILTER_RULE_TAGS_VIEW = "CREATE VIEW IF NOT EXISTS "
-			+ Views.FILTER_RULES_TAGS_VIEW + " AS " + "SELECT " + Tags.TABLE
-			+ "." + Tags.ID + ", " + Tags.TABLE + "." + Tags.NAME + ", "
-			+ Tags.TABLE + "." + Tags.TYPE + ", " + FilterRules.TABLE + "."
-			+ FilterRules.ID + " AS " + Views.FILTER_RULE_TAGS_FILTER_ID
-			+ " FROM " + FilterRules.TABLE + " INNER JOIN "
-			+ Joins.FILTER_RULES_TAGS_TABLE + " ON " + FilterRules.TABLE + "."
-			+ FilterRules.ID + " = " + Joins.FILTER_RULES_TAGS_TABLE + "."
-			+ Joins.FILTER_RULE_FK + " INNER JOIN " + Tags.TABLE + " ON "
-			+ Joins.FILTER_RULES_TAGS_TABLE + "." + Joins.TAG_FK_3 + " = "
-			+ Tags.TABLE + "." + Tags.ID;
 }

@@ -121,19 +121,6 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 		Log.d(TAG, "Creating join table with "
 				+ DB_CREATE_FILTER_RULES_TAGS_JOIN_TABLE);
 		db.execSQL(DB_CREATE_FILTER_RULES_TAGS_JOIN_TABLE);
-
-		Log.d(TAG, "Creating Transactions by Category View with "
-				+ DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
-		db.execSQL(DB_CREATE_TRANSACTIONS_CATEGORY_VIEW);
-
-		Log.d(TAG, "Creating Categories by Report View with "
-				+ DB_CREATE_CATEGORIES_REPORT_VIEW);
-		db.execSQL(DB_CREATE_CATEGORIES_REPORT_VIEW);
-
-		Log.d(TAG, "Creating Categories by Report View with "
-				+ DB_CREATE_FILTER_RULE_TAGS_VIEW);
-		db.execSQL(DB_CREATE_FILTER_RULE_TAGS_VIEW);
-
 	}
 
 	/** {@inheritDoc} */
@@ -156,16 +143,17 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final Map<String, Long> tagIds = new HashMap<String, Long>();
 
 			// Throws error if not successful.
-			config.validateConfiguration(categoryActions, tagsActions, filterRulesActions, util
-					.getDefaultExpenseTag().getName(), util
-					.getDefaultIncomeTag().getName());
+			config.validateConfiguration(categoryActions, tagsActions,
+					filterRulesActions, util.getDefaultExpenseTag().getName(),
+					util.getDefaultIncomeTag().getName());
 
 			// Assign Categories to Report
 			for (final AddCategoryAction categoryAction : categoryActions) {
 				Log.d(TAG, "Assigning Category " + categoryAction.getName()
 						+ " to default report");
 
-				final long catId = initAddCategoryToReport(db, repId, categoryAction);
+				final long catId = initAddCategoryToReport(db, repId,
+						categoryAction);
 
 				final List<AddTagAction> tagActions = tagsActions
 						.get(categoryAction.getName());
@@ -175,7 +163,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 					Log.d(TAG, "Assigning Tag " + tagAction.getName()
 							+ " to Category " + categoryAction.getName());
 
-					final long tagId = initAssignTagToCategory(db, catId, tagAction);
+					final long tagId = initAssignTagToCategory(db, catId,
+							tagAction);
 
 					// If there is any Filter Rules that is going to be
 					// associated with this tag, insert them.
@@ -250,8 +239,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final long catId, final AddTagAction tagAction) {
 		final AnalyticsTagsDbImpl tags = (AnalyticsTagsDbImpl) tagsFacade;
 
-		final long tagId = tags
-				.insertAssignTagCategoryCore(tagAction, catId, db);
+		final long tagId = tags.insertAssignTagCategoryCore(tagAction, catId,
+				db);
 		return tagId;
 	}
 

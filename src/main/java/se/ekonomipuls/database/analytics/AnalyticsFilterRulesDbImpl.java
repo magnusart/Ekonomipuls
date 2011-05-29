@@ -18,12 +18,6 @@ package se.ekonomipuls.database.analytics;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDb;
@@ -34,6 +28,11 @@ import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Views;
 import se.ekonomipuls.model.FilterRule;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Tag;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
@@ -61,9 +60,9 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		final String sortOrder = FilterRules.PRIORITY + " DESC";
 		final String[] columns = FilterRules.COLUMNS;
 
-		final String view = Views.FILTER_RULES_TAGS_VIEW;
+		final String view = Views.FILTER_RULES_TAGS_FROM_STMT;
 
-		final String[] viewColumns = Tags.COLUMNS;
+		final String[] viewColumns = prefixColumns(Tags.TABLE, Tags.COLUMNS);
 		final String viewSortOrder = null;
 
 		final SQLiteDatabase db = helper.getReadableDatabase();
@@ -71,17 +70,20 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
+			final Cursor cur = query(db, table, columns, selection,
+					selectionArgs, groupBy, having, sortOrder);
 
 			final int[] indices = mapper.getFilterRuleCursorIndices(cur);
 
 			while (cur.moveToNext()) {
-				String viewSelection = Views.FILTER_RULE_TAGS_FILTER_ID;
-
 				final FilterRule rule = mapper.mapFilterRuleModel(cur, indices);
-				viewSelection += " = " + rule.getId();
 
-				final Cursor cur2 = query(db, view, viewColumns, viewSelection, selectionArgs, groupBy, having, viewSortOrder);
+				final String viewSelection = FilterRules.TABLE + "."
+						+ FilterRules.ID + " = " + rule.getId();
+				;
+
+				final Cursor cur2 = query(db, view, viewColumns, viewSelection,
+						selectionArgs, groupBy, having, viewSortOrder);
 
 				final int[] tagIndices = mapper.getTagsCursorIndices(cur2);
 
