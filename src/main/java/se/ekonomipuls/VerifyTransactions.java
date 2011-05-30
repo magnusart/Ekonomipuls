@@ -15,17 +15,18 @@
  */
 package se.ekonomipuls;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import com.google.inject.Inject;
+import java.util.List;
+
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.model.Transaction;
+import se.ekonomipuls.views.adapter.VerifyTransactionsAdapter;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
-import java.util.List;
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
@@ -33,13 +34,13 @@ import java.util.List;
  */
 public class VerifyTransactions extends RoboActivity {
 
-    @Inject
-    private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
+	@Inject
+	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
-    @InjectView(R.id.verification_list)
-    private ListView verifications;
+	@InjectView(R.id.verification_list)
+	private ListView verifications;
 
-	private ArrayAdapter<Transaction> tmpAdapter;
+	private VerifyTransactionsAdapter verifyAdapter;
 
 	/** {@inheritDoc} */
 	@Override
@@ -53,18 +54,20 @@ public class VerifyTransactions extends RoboActivity {
 	protected void onResume() {
 		super.onResume();
 		populateVerificationList();
-		tmpAdapter.notifyDataSetInvalidated();
+		verifyAdapter.notifyDataSetInvalidated();
 	}
 
 	/**
 	 * 
 	 */
 	private void populateVerificationList() {
-        List<Transaction> unverifiedTransactions = analyticsTransactionsDbFacade.getUnverifiedTransactions();
+		final List<Transaction> unverifiedTransactions = analyticsTransactionsDbFacade
+				.getUnverifiedTransactions(); // TODO Fetch tags as well.
 
-        tmpAdapter = new ArrayAdapter<Transaction>(this, R.layout.checkbox_verify_row, R.id.verificationNameText, unverifiedTransactions);
+		verifyAdapter = new VerifyTransactionsAdapter(this,
+				R.layout.checkbox_verify_row, unverifiedTransactions);
 
-		verifications.setAdapter(tmpAdapter);
+		verifications.setAdapter(verifyAdapter);
 	}
 
 	/**
