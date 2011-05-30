@@ -8,12 +8,11 @@
   android:paddingTop="4dp"
   android:paddingBottom="4dp">
 
-
 <View
 	 	android:id="@+id/colorShape"
 		android:layout_alignParentLeft="true"
-		android:layout_width="18sp"
-		android:layout_height="18sp"
+		android:layout_width="20sp"
+		android:layout_height="20sp"
 		android:background="@drawable/category_color_shape"
 		android:layout_alignTop="@+id/categoryNameText"
 />		
@@ -23,7 +22,7 @@
 		android:layout_marginLeft="6dp" 
 		android:layout_toRightOf="@+id/colorShape"
 		android:layout_width="wrap_content"
-		android:layout_height="21sp"
+		android:layout_height="24sp"
 		android:textColor="#FFFFFF"
 		android:textSize="20sp"
 		android:textStyle="bold"
