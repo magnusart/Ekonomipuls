@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:alphabeticShortcut="e" android:numericShortcut="1"
+		android:title="Backup Analytics Database to SD Card" android:id="@+id/debug_backup_db"
+		android:icon="@drawable/ic_menu_database" android:orderInCategory="1"/>
+</menu>

@@ -15,13 +15,17 @@
  */
 package se.ekonomipuls;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import roboguice.activity.RoboActivity;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
+import se.ekonomipuls.debug.BackupDatabaseUtil;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.Transaction;
@@ -35,6 +39,7 @@ import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -59,6 +64,9 @@ public class EkonomipulsHome extends RoboActivity {
 
 	@Inject
 	private ExtractTransformLoadService etlService;
+
+	@Inject
+	private BackupDatabaseUtil debugUtil;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
 
@@ -136,28 +144,39 @@ public class EkonomipulsHome extends RoboActivity {
 	/** {@inheritDoc} */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		// final MenuInflater inflater = getMenuInflater();
-		// inflater.inflate(R.menu.home_menu, menu);
+		final MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.debug_menu, menu);
 		return true;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
-		Intent intent = null;
+		// Intent intent = null;
 
 		switch (item.getItemId()) {
-		case (R.id.settings_item):
-			intent = new Intent(this, OverviewSettings.class);
+		case (R.id.debug_backup_db):
+			try {
+				debugUtil.doBackup();
+			} catch (final FileNotFoundException e) {
+				// FIXME Don't swallow stack traces.
+				e.printStackTrace();
+			} catch (final IOException e) {
+				// FIXME Don't swallow stack traces.
+				e.printStackTrace();
+			}
 			break;
-		case (R.id.filter_rules_item):
-			intent = new Intent(this, FilterRuleOverview.class);
-			break;
+		// case (R.id.settings_item):
+		// intent = new Intent(this, OverviewSettings.class);
+		// break;
+		// case (R.id.filter_rules_item):
+		// intent = new Intent(this, FilterRuleOverview.class);
+		// break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 
-		this.startActivity(intent);
+		// this.startActivity(intent);
 		return true;
 	}
 
@@ -165,7 +184,8 @@ public class EkonomipulsHome extends RoboActivity {
 
 		populateSeriesEntries(pieChart);
 
-		populateLegendList(legendList, pieChart.getSeries(), pieChart.getTotalAmt());
+		populateLegendList(legendList, pieChart.getSeries(),
+				pieChart.getTotalAmt());
 
 		// pieChart.requestLayout();
 
