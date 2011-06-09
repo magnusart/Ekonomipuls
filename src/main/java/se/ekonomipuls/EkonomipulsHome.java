@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectResource;
 import roboguice.inject.InjectView;
 import se.ekonomipuls.database.AnalyticsCategoriesDbFacade;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
@@ -38,6 +39,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,12 +48,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
+import com.liato.bankdroid.provider.IBankTransactionsProvider;
 
 /**
  * @author Magnus Andersson
  * @since 9 jan 2011
  */
-public class EkonomipulsHome extends RoboActivity {
+public class EkonomipulsHome extends RoboActivity implements LogTag {
+
+	private static final String INTENT_PAIR_APPLICATION_ACTION = "com.liato.bankroid.PAIR_APPLICATION_ACTION";
+
+	private static final String DEBUG_DB_BACKUP_ERROR_MESSAGE = "Got an error when trying to create a backup of database.";
 
 	@Inject
 	private EkonomipulsUtil util;
@@ -69,6 +76,8 @@ public class EkonomipulsHome extends RoboActivity {
 	private BackupDatabaseUtil debugUtil;
 
 	private static final int VERIFY_TRANSACTIONS = 0;
+	private static final int PAIR_APP = 0;
+	private static final String PAIR_APP_NAME = "com.liato.bankdroid.PAIR_APP_NAME";
 
 	private LegendAdapter legendAdapter;
 
@@ -80,6 +89,9 @@ public class EkonomipulsHome extends RoboActivity {
 	private ListView legendList;
 	@InjectView(R.id.noCategories)
 	private TextView noData;
+
+	@InjectResource(R.string.app_name)
+	private String appName;
 
 	public void refreshView() {
 		showNewTransactionsNotification();
@@ -128,8 +140,33 @@ public class EkonomipulsHome extends RoboActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		// If we are not paired with BankDroid, make sure we get paired and
+		// retrieve a API-key
+		if (!util.isPairedBankDroid()) {
+			pairWithBankDroid();
+			// TODO add so that all transactions are imported, need to add
+			// account id.
+		}
+
 		refreshView();
 
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void onActivityResult(final int requestCode,
+			final int resultCode, final Intent data) {
+		if (resultCode == RESULT_OK) {
+			final String apiKey = data
+					.getStringExtra(IBankTransactionsProvider.API_KEY);
+			Log.d(TAG, "User accepted pairing. Got an API key back: " + apiKey);
+
+			util.setApiKey(apiKey);
+			util.setPairedBankDroid(true);
+		} else if (resultCode == RESULT_CANCELED) {
+			Log.d(TAG, "User did not accept pairing.");
+		}
 	}
 
 	private void showNewTransactionsNotification() {
@@ -146,6 +183,13 @@ public class EkonomipulsHome extends RoboActivity {
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		final MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.debug_menu, menu);
+
+		// Check if BankDroid is even installed
+		if (!util.isIntentAvailable(this, INTENT_PAIR_APPLICATION_ACTION)) {
+			final MenuItem item = (MenuItem) findViewById(R.id.pair_with_bankdroid);
+			item.setEnabled(false);
+		}
+
 		return true;
 	}
 
@@ -159,12 +203,14 @@ public class EkonomipulsHome extends RoboActivity {
 			try {
 				debugUtil.doBackup();
 			} catch (final FileNotFoundException e) {
-				// FIXME Don't swallow stack traces.
-				e.printStackTrace();
+				// FIXME Throw typed Exceptions!
+				throw new RuntimeException(DEBUG_DB_BACKUP_ERROR_MESSAGE, e);
 			} catch (final IOException e) {
-				// FIXME Don't swallow stack traces.
-				e.printStackTrace();
+				throw new RuntimeException(DEBUG_DB_BACKUP_ERROR_MESSAGE, e);
 			}
+			break;
+		case (R.id.pair_with_bankdroid):
+			pairWithBankDroid();
 			break;
 		// case (R.id.settings_item):
 		// intent = new Intent(this, OverviewSettings.class);
@@ -180,12 +226,18 @@ public class EkonomipulsHome extends RoboActivity {
 		return true;
 	}
 
+	private void pairWithBankDroid() {
+		Log.d(TAG, "Attempting to pair with BankDroid");
+		final Intent intent = new Intent(INTENT_PAIR_APPLICATION_ACTION);
+		intent.putExtra(PAIR_APP_NAME, appName);
+		this.startActivityForResult(intent, PAIR_APP);
+	}
+
 	private void populateData() {
 
 		populateSeriesEntries(pieChart);
 
-		populateLegendList(legendList, pieChart.getSeries(),
-				pieChart.getTotalAmt());
+		populateLegendList(legendList, pieChart.getSeries(), pieChart.getTotalAmt());
 
 		// pieChart.requestLayout();
 

@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 
 import roboguice.inject.InjectResource;
@@ -29,7 +30,10 @@ import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.PixelFormat;
@@ -320,5 +324,63 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		} else {
 			return "";
 		}
+	}
+
+	/**
+	 * Indicates whether the specified action can be used as an intent. This
+	 * method queries the package manager for installed packages that can
+	 * respond to an intent with the specified action. If no suitable package is
+	 * found, this method returns false.
+	 * 
+	 * @param context
+	 *            The application's environment.
+	 * @param action
+	 *            The Intent action to check for availability.
+	 * 
+	 * @return True if an Intent with the specified action can be sent and
+	 *         responded to, false otherwise.
+	 */
+	public boolean isIntentAvailable(final Context context, final String action) {
+		final PackageManager packageManager = context.getPackageManager();
+		final Intent intent = new Intent(action);
+		final List<ResolveInfo> list = packageManager
+				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
+	}
+
+	/**
+	 * @param apiKey
+	 */
+	public void setApiKey(final String apiKey) {
+		final SharedPreferences.Editor editor = preferences.edit();
+
+		// Commit to preferences
+		editor.putString(CONF_API_KEY, apiKey);
+		editor.commit();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getApiKey() {
+		return preferences.getString(CONF_API_KEY, "");
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isPairedBankDroid() {
+		return preferences.getBoolean(CONF_IS_PAIRED, false);
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setPairedBankDroid(final boolean paired) {
+		final SharedPreferences.Editor editor = preferences.edit();
+
+		// Commit to preferences
+		editor.putBoolean(CONF_IS_PAIRED, paired);
+		editor.commit();
 	}
 }

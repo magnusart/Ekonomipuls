@@ -24,6 +24,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 /**
@@ -38,6 +39,7 @@ public class VerifyTransactionsAdapter extends IterableAdapter<Transaction> {
 	 */
 	public class ViewHolder {
 
+		public CheckBox verifyCheckBox;
 		public TextView transactionName;
 		public TextView tagsText;
 
@@ -69,6 +71,8 @@ public class VerifyTransactionsAdapter extends IterableAdapter<Transaction> {
 			convertView = inflater.inflate(layoutViewResourceId, parent, false);
 			holder = new ViewHolder();
 
+			holder.verifyCheckBox = (CheckBox) convertView
+					.findViewById(R.id.verifyCheckBox);
 			holder.transactionName = (TextView) convertView
 					.findViewById(R.id.verificationNameText);
 			holder.tagsText = (TextView) convertView
@@ -81,8 +85,8 @@ public class VerifyTransactionsAdapter extends IterableAdapter<Transaction> {
 
 		final Transaction transaction = getItem(position);
 
+		holder.verifyCheckBox.setChecked(true);
 		holder.transactionName.setText(transaction.getDescription());
-
 		holder.tagsText.setText(transaction.getGlobalId());
 
 		return convertView;

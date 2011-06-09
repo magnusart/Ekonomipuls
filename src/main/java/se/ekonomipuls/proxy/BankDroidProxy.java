@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.ekonomipuls.model.EkonomipulsUtil;
+
 import static se.ekonomipuls.LogTag.TAG;
 
 /**
@@ -36,6 +38,9 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 
 	@Inject
 	private Context context;
+
+	@Inject
+	EkonomipulsUtil util;
 
 	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
 
@@ -91,7 +96,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	Cursor getUnmanagedBankAccountsCursor(final Context ctx)
 			throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + getApiKey());
+				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + util.getApiKey());
 
 		final Cursor cur = ctx
 				.getContentResolver()
@@ -108,7 +113,7 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	private Cursor getUnmanagedTransactionsCursor(final String accountId)
 			throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
-				+ TRANSACTIONS_CAT + "/" + API_KEY + getApiKey());
+				+ TRANSACTIONS_CAT + "/" + API_KEY + util.getApiKey());
 
 		Log.d(TAG, "Picked Account with id " + accountId);
 
@@ -122,18 +127,5 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		}
 
 		return cur;
-	}
-
-	private String getApiKey() {
-		// FIXME: Implement API-key functionality
-
-		// final SharedPreferences prefs =
-		// PreferenceManager.getDefaultSharedPreferences(ctx);
-
-		// final String apiKey = prefs.getString(CONTENT_PROVIDER_API_KEY, "");
-
-		// return apiKey;
-
-		return "3FEBC";
 	}
 }

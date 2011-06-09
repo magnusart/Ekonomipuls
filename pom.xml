@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.ekonomipuls</groupId>
 	<artifactId>Ekonomipuls</artifactId>
-	<version>0.1.Pre-Alpha-6</version>
+	<version>0.1.Pre-Alpha-7</version>
 	<packaging>apk</packaging>
 	<name>Ekonomipuls</name>
 

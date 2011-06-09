@@ -21,8 +21,11 @@ package se.ekonomipuls;
  */
 public interface PropertiesConstants {
 
-	public final static String CONF_EXPENSES_DEF_TAG = "default.expenses.tag";
-	public final static String CONF_INCOMES_DEF_TAG = "default.incomes.tag";
+	public final static String CONF_EXPENSES_DEF_TAG = "se.ekonomipuls.DEFAULT_EXPENSES_TAG";
+	public final static String CONF_INCOMES_DEF_TAG = "se.ekonomipuls.DEFAULT_INCOMES_TAG";
 
-	public final static String ECONOMIC_OVERVIEW_REPORT_ID = "cashjournal.report_id";
+	public final static String ECONOMIC_OVERVIEW_REPORT_ID = "se.ekonomipuls.REPORT_ID";
+
+	public final static String CONF_API_KEY = "se.ekonomipuls.API_KEY";
+	public static final String CONF_IS_PAIRED = "se.ekonomipuls.IS_PAIRED";
 }

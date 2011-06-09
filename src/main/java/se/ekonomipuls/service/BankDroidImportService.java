@@ -42,7 +42,7 @@ public class BankDroidImportService extends RoboIntentService {
 	@Inject
 	private StagingDbFacade stagingDbFacade;
 	@Inject
-	private EkonomipulsUtil ekonomipulsUtil;
+	private EkonomipulsUtil util;
 	@Inject
 	private BankDroidProxy bankDroidProxy;
 
@@ -68,14 +68,15 @@ public class BankDroidImportService extends RoboIntentService {
 				stagingDbFacade.bulkInsertBdTransactions(transactions);
 
 				// Make sure we see that there are new transactions in the GUI.
-				ekonomipulsUtil.setNewTransactionStatus(true);
+				util.setNewTransactionStatus(true);
 			} else {
 				Log.d(TAG, "No transactions for the account " + accountId
 						+ ", skipping");
 			}
 
 		} catch (final IllegalAccessException e) {
-			Log.e(TAG, "Unable to access the content provider.", e);
+			Log.e(TAG, "Unable to access the content provider. Resetting paired status to false.", e);
+			util.setPairedBankDroid(false);
 		}
 	}
 
