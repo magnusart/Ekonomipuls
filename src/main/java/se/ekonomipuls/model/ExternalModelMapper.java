@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 
 /**
  * This utility class is responsible for mapping between external model objects
@@ -34,7 +34,8 @@ public class ExternalModelMapper {
 	 * @param bdTransactions
 	 * @return
 	 */
-	public List<Transaction> fromBdTransactionsToTransactions(final List<BankDroidTransaction> bdTransactions) {
+	public List<Transaction> fromBdTransactionsToTransactions(
+			final List<BankDroidTransaction> bdTransactions) {
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		for (final BankDroidTransaction bdTransaction : bdTransactions) {
@@ -49,7 +50,8 @@ public class ExternalModelMapper {
 	 * @param bdTransaction
 	 * @return
 	 */
-	private Transaction fromBdTransactionToTransaction(final BankDroidTransaction bdTransaction) {
+	private Transaction fromBdTransactionToTransaction(
+			final BankDroidTransaction bdTransaction) {
 
 		final String accId = bdTransaction.getAccountId();
 		final String date = bdTransaction.getDate();

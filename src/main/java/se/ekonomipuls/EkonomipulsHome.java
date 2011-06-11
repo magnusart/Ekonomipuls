@@ -30,12 +30,16 @@ import se.ekonomipuls.debug.BackupDatabaseUtil;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.Transaction;
+import se.ekonomipuls.service.BankDroidImportService;
 import se.ekonomipuls.service.ExtractTransformLoadService;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
 import se.ekonomipuls.views.charts.SeriesEntry;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
@@ -55,10 +59,7 @@ import com.liato.bankdroid.provider.IBankTransactionsProvider;
  * @since 9 jan 2011
  */
 public class EkonomipulsHome extends RoboActivity implements LogTag {
-
-	private static final String INTENT_PAIR_APPLICATION_ACTION = "com.liato.bankroid.PAIR_APPLICATION_ACTION";
-
-	private static final String DEBUG_DB_BACKUP_ERROR_MESSAGE = "Got an error when trying to create a backup of database.";
+	String DEBUG_DB_BACKUP_ERROR_MESSAGE = "Got an error when trying to create a backup of database.";
 
 	@Inject
 	private EkonomipulsUtil util;
@@ -75,10 +76,6 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	@Inject
 	private BackupDatabaseUtil debugUtil;
 
-	private static final int VERIFY_TRANSACTIONS = 0;
-	private static final int PAIR_APP = 0;
-	private static final String PAIR_APP_NAME = "com.liato.bankdroid.PAIR_APP_NAME";
-
 	private LegendAdapter legendAdapter;
 
 	@InjectView(R.id.newTransactions)
@@ -92,6 +89,37 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 	@InjectResource(R.string.app_name)
 	private String appName;
+
+	@InjectResource(R.string.action_pair_application)
+	private String pairApplicationAction;
+	@InjectResource(R.string.extras_key_pair_app_name)
+	private String pairApplicationNameKey;
+
+	@InjectResource(R.string.action_notify_home_screen)
+	private String notifyHomeScreenAction;
+	@InjectResource(R.string.extras_key_home_screen_task)
+	private String homeScreenTaskKey;
+
+	@InjectResource(R.integer.request_code_default)
+	private int defaultRequestCode;
+
+	private IntentFilter filter = null;;
+
+	private final BroadcastReceiver homeScreenTaskListener = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(final Context context, final Intent intent) {
+
+			final String task = intent.getStringExtra(homeScreenTaskKey);
+			final HomeScreenTask action = HomeScreenTask.valueOf(task);
+
+			switch (action) {
+			case UPDATE_TRANSACTIONS_NOTIFICATION:
+				showNewTransactionsNotification();
+				break;
+			}
+		}
+	};
 
 	public void refreshView() {
 		showNewTransactionsNotification();
@@ -125,7 +153,7 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 	public void verifyTransactions() {
 		final Intent intent = new Intent(this, VerifyTransactions.class);
-		this.startActivityForResult(intent, VERIFY_TRANSACTIONS);
+		this.startActivityForResult(intent, defaultRequestCode);
 	}
 
 	@Override
@@ -141,16 +169,58 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	protected void onResume() {
 		super.onResume();
 
-		// If we are not paired with BankDroid, make sure we get paired and
-		// retrieve a API-key
-		if (!util.isPairedBankDroid()) {
-			pairWithBankDroid();
-			// TODO add so that all transactions are imported, need to add
-			// account id.
+		registerTaskRecievier();
+
+		// Make sure BankDroi is available and installed
+		if (util.isIntentAvailable(this, pairApplicationAction)) {
+			// If we are not paired with BankDroid, make sure we get paired and
+			// retrieve a API-key, also make sure that BankDroid is installed!
+			if (!util.isPairedBankDroid()) {
+				pairWithBankDroid();
+			}
+		} else {
+			// Otherwise prompt the user with this information.
+			// FIXME Implement info screen
 		}
 
 		refreshView();
 
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		unregisterTaskReciver();
+	}
+
+	private void registerTaskRecievier() {
+		if (filter == null) {
+			filter = new IntentFilter(notifyHomeScreenAction);
+		}
+		registerReceiver(homeScreenTaskListener, filter);
+	}
+
+	private void unregisterTaskReciver() {
+		unregisterReceiver(homeScreenTaskListener);
+	};
+
+	private void fullBankDroidImport() {
+		Log.v(TAG, "Setting up import service");
+
+		final Intent importService = new Intent(this,
+				BankDroidImportService.class);
+
+		importService
+				.putExtra(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.ALL_AVAILABLE_ACCOUNTS
+						.toString());
+
+		Log.v(TAG, "Handing over to import service");
+		// Hand over to service queue since broadcast receivers have a very
+		// short timeout.
+		startService(importService);
+
+		Log.v(TAG, "Handed over to import service");
 	}
 
 	/** {@inheritDoc} */
@@ -164,6 +234,9 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 			util.setApiKey(apiKey);
 			util.setPairedBankDroid(true);
+
+			fullBankDroidImport();
+
 		} else if (resultCode == RESULT_CANCELED) {
 			Log.d(TAG, "User did not accept pairing.");
 		}
@@ -184,12 +257,6 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 		final MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.debug_menu, menu);
 
-		// Check if BankDroid is even installed
-		if (!util.isIntentAvailable(this, INTENT_PAIR_APPLICATION_ACTION)) {
-			final MenuItem item = (MenuItem) findViewById(R.id.pair_with_bankdroid);
-			item.setEnabled(false);
-		}
-
 		return true;
 	}
 
@@ -209,15 +276,6 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 				throw new RuntimeException(DEBUG_DB_BACKUP_ERROR_MESSAGE, e);
 			}
 			break;
-		case (R.id.pair_with_bankdroid):
-			pairWithBankDroid();
-			break;
-		// case (R.id.settings_item):
-		// intent = new Intent(this, OverviewSettings.class);
-		// break;
-		// case (R.id.filter_rules_item):
-		// intent = new Intent(this, FilterRuleOverview.class);
-		// break;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -227,10 +285,11 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	}
 
 	private void pairWithBankDroid() {
+
 		Log.d(TAG, "Attempting to pair with BankDroid");
-		final Intent intent = new Intent(INTENT_PAIR_APPLICATION_ACTION);
-		intent.putExtra(PAIR_APP_NAME, appName);
-		this.startActivityForResult(intent, PAIR_APP);
+		final Intent intent = new Intent(pairApplicationAction);
+		intent.putExtra(pairApplicationNameKey, appName);
+		this.startActivityForResult(intent, defaultRequestCode);
 	}
 
 	private void populateData() {

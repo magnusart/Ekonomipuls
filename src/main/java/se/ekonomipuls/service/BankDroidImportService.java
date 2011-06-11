@@ -17,14 +17,21 @@ package se.ekonomipuls.service;
 
 import static se.ekonomipuls.LogTag.TAG;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import roboguice.service.RoboIntentService;
+import se.ekonomipuls.HomeScreenTask;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
-import se.ekonomipuls.proxy.BankDroidProxy;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidAccount;
+import se.ekonomipuls.proxy.bankdroid.BankDroidBank;
+import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -39,12 +46,23 @@ import com.google.inject.Inject;
  */
 public class BankDroidImportService extends RoboIntentService {
 
+	public static enum ImportAction {
+		ALL_AVAILABLE_ACCOUNTS, SINGLE_ACCOUNT;
+	}
+
+	public static final String IMPORT_ACTION = "se.ekonomipuls.service.action.IMPORT_ACTION";
+
 	@Inject
 	private StagingDbFacade stagingDbFacade;
+
 	@Inject
 	private EkonomipulsUtil util;
+
 	@Inject
 	private BankDroidProxy bankDroidProxy;
+
+	@Inject
+	public Context context;
 
 	private static final String ACCOUNT_ID = "accountId";
 
@@ -55,29 +73,66 @@ public class BankDroidImportService extends RoboIntentService {
 	/** {@inheritDoc} */
 	@Override
 	protected void onHandleIntent(final Intent intent) {
-		Log.v(TAG, "Starting to import transactions");
 
-		final String accountId = intent.getExtras().getString(ACCOUNT_ID);
+		Log.v(TAG, "Starting Import Service");
+
+		final Bundle bundle = intent.getExtras();
+
+		final ImportAction action = ImportAction.valueOf(bundle
+				.getString(IMPORT_ACTION));
+
 		try {
-			Log.v(TAG, "Fetching transactions from BankDroid content provider");
-			final List<BankDroidTransaction> transactions = bankDroidProxy
-					.getBankDroidTransactions(accountId);
-
-			if (transactions.size() > 0) {
-				Log.v(TAG, "Bulk inserting transactions");
-				stagingDbFacade.bulkInsertBdTransactions(transactions);
-
-				// Make sure we see that there are new transactions in the GUI.
-				util.setNewTransactionStatus(true);
-			} else {
-				Log.d(TAG, "No transactions for the account " + accountId
-						+ ", skipping");
+			switch (action) {
+			case ALL_AVAILABLE_ACCOUNTS:
+				Log.v(TAG, "Commencing full import.");
+				importAllAccounts();
+				break;
+			case SINGLE_ACCOUNT:
+				Log.v(TAG, "Importing from a single account.");
+				final String accountId = bundle.getString(ACCOUNT_ID);
+				importSingleAccount(accountId);
+				break;
 			}
-
 		} catch (final IllegalAccessException e) {
 			Log.e(TAG, "Unable to access the content provider. Resetting paired status to false.", e);
 			util.setPairedBankDroid(false);
 		}
+
+		util.notifyHomeScreen(HomeScreenTask.UPDATE_TRANSACTIONS_NOTIFICATION);
 	}
 
+	private void importAllAccounts() throws IllegalAccessException {
+		Log.v(TAG, "Fetching transactions from BankDroid content provider");
+		final Map<Long, BankDroidBank> bankMap = bankDroidProxy
+				.getBankDroidBanks();
+
+		final Collection<BankDroidBank> banks = bankMap.values();
+
+		for (final BankDroidBank bank : banks) {
+			for (final BankDroidAccount account : bank.getAccounts()) {
+				importSingleAccount(account.getId());
+			}
+		}
+
+	}
+
+	private void importSingleAccount(final String accountId)
+			throws IllegalAccessException {
+
+		Log.v(TAG, "Fetching transactions from BankDroid content provider");
+		final List<BankDroidTransaction> transactions = bankDroidProxy
+				.getBankDroidTransactions(accountId);
+
+		if (transactions.size() > 0) {
+			Log.v(TAG, "Bulk inserting transactions");
+			stagingDbFacade.bulkInsertBdTransactions(transactions);
+
+			// Make sure we see that there are new transactions in the GUI.
+			util.setNewTransactionStatus(true);
+		} else {
+			Log.d(TAG, "No transactions for the account " + accountId
+					+ ", skipping");
+		}
+
+	}
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_pair_application">com.liato.bankroid.PAIR_APPLICATION_ACTION</string>
+    <string name="extras_key_pair_app_name">com.liato.bankdroid.PAIR_APP_NAME</string>
+    <item format="integer" type="integer" name="request_code_default">0</item>
+    <string name="action_notify_home_screen">se.ekonomipuls.NOTIFY_HOME_SCREEN</string>
+    <string name="extras_key_home_screen_task">se.ekonomipuls.HOME_SCREEN_TASK</string>
+    
+</resources>

@@ -41,7 +41,7 @@ import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.ModelResources;
 import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 import se.ekonomipuls.service.ExtractTransformLoadService;
 
 import android.os.Handler.Callback;

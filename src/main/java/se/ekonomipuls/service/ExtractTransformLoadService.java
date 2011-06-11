@@ -27,7 +27,7 @@ import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 import android.app.ProgressDialog;
 import android.os.Handler.Callback;
 import android.util.Log;

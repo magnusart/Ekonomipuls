@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import roboguice.inject.InjectResource;
+import se.ekonomipuls.HomeScreenTask;
 import se.ekonomipuls.PropertiesConstants;
 import se.ekonomipuls.R;
 import se.ekonomipuls.views.charts.SeriesEntry;
@@ -98,6 +99,12 @@ public class EkonomipulsUtil implements PropertiesConstants {
 
 	@InjectResource(R.string.economic_overview_date_to)
 	private String reportTo;
+
+	@InjectResource(R.string.action_notify_home_screen)
+	private String notifyHomeScreenAction;
+
+	@InjectResource(R.string.extras_key_home_screen_task)
+	private String homeScreenTaskKey;
 
 	private static final float DARK_GRAD_SATURATION = 1.0f;
 	private static final float DARK_GRAD_BRIGHTNESS = 0.4f;
@@ -383,4 +390,12 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		editor.putBoolean(CONF_IS_PAIRED, paired);
 		editor.commit();
 	}
+
+	public void notifyHomeScreen(final HomeScreenTask task) {
+		final Intent intent = new Intent(notifyHomeScreenAction);
+		intent.putExtra(homeScreenTaskKey, task.toString());
+
+		context.sendOrderedBroadcast(intent, null);
+	}
+
 }

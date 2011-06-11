@@ -12,7 +12,7 @@ import se.ekonomipuls.database.analytics.AnalyticsFilterRulesDbImpl;
 import se.ekonomipuls.database.analytics.AnalyticsTagsDbImpl;
 import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
 import se.ekonomipuls.database.staging.StagingDbImpl;
-import se.ekonomipuls.proxy.BankDroidProxy;
+import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 
 /**
  * Serves the purpose of telling Guice how to satisfy dependencies

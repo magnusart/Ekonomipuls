@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.proxy;
+package se.ekonomipuls.proxy.bankdroid;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -22,10 +22,10 @@ import android.util.Log;
 import com.google.inject.Inject;
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import se.ekonomipuls.model.EkonomipulsUtil;
 
 import static se.ekonomipuls.LogTag.TAG;
@@ -41,6 +41,9 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 
 	@Inject
 	EkonomipulsUtil util;
+
+	@Inject
+	BankDroidModelSqlMapper mapper;
 
 	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
 
@@ -61,28 +64,13 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		try {
 			cur = getUnmanagedTransactionsCursor(accountId);
 
-			final int tId = cur.getColumnIndexOrThrow(TRANS_ID);
-			final int tDate = cur.getColumnIndexOrThrow(TRANS_DATE);
-			final int tDesc = cur.getColumnIndexOrThrow(TRANS_DESC);
-			final int tAmt = cur.getColumnIndexOrThrow(TRANS_AMT);
-			final int tCur = cur.getColumnIndexOrThrow(TRANS_CUR);
-			final int tAcc = cur.getColumnIndexOrThrow(TRANS_ACCNT);
-
 			Log.d(TAG, "Aquired transactions cursor with " + cur.getCount()
 					+ " rows");
 
+			final int[] indices = mapper.getBdTransactionIndices(cur);
+
 			while (cur.moveToNext()) {
-				final String id = cur.getString(tId);
-				final String date = cur.getString(tDate);
-				final String desc = cur.getString(tDesc);
-				final BigDecimal amt = new BigDecimal(cur.getString(tAmt));
-				final String curr = cur.getString(tCur);
-				final String acc = cur.getString(tAcc);
-
-				final BankDroidTransaction trans = new BankDroidTransaction(id,
-						date, desc, amt, curr, acc);
-
-				transactions.add(trans);
+				transactions.add(mapper.mapBdTransactionModel(cur, indices));
 			}
 		} finally {
 			if (cur != null) {
@@ -93,14 +81,58 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 		return transactions;
 	}
 
-	Cursor getUnmanagedBankAccountsCursor(final Context ctx)
+	/**
+	 * Get a list of BankDroidTransactions.
+	 * 
+	 * @param accountId
+	 *            The Account Id.
+	 * @return List of Transactions
+	 * @throws IllegalAccessException
+	 */
+	public Map<Long, BankDroidBank> getBankDroidBanks()
 			throws IllegalAccessException {
+
+		final Map<Long, BankDroidBank> banks = new HashMap<Long, BankDroidBank>();
+		Cursor cur = null;
+
+		try {
+			cur = getUnmanagedBankAccountsCursor();
+
+			final int[] indices = mapper.getBdBankAccountIndices(cur);
+
+			Log.d(TAG, "Aquired BankAccount cursor with " + cur.getCount()
+					+ " rows");
+
+			while (cur.moveToNext()) {
+
+				BankDroidBank bank = mapper.mapBdBankModel(cur, indices);
+
+				if (!banks.containsKey(bank.getId())) {
+					banks.put(bank.getId(), bank);
+				} else {
+					bank = banks.get(bank.getId());
+				}
+
+				bank.getAccounts().add(mapper.mapBdAccountModel(cur, indices));
+
+				Log.d(TAG, "Added following BankAccount " + bank);
+			}
+		} finally {
+			if (cur != null) {
+				cur.close(); // Clean up.
+			}
+		}
+
+		return banks;
+	}
+
+	Cursor getUnmanagedBankAccountsCursor() throws IllegalAccessException {
 		final Uri uri = Uri.parse("content://" + AUTHORITY + "/"
 				+ BANK_ACCOUNTS_CAT + "/" + API_KEY + util.getApiKey());
 
-		final Cursor cur = ctx
+		final Cursor cur = context
 				.getContentResolver()
-				.query(uri, BANK_ACCOUNT_PROJECTION, NO_HIDDEN_ACCOUNTS_FILTER, null, null);
+				.query(uri, BANK_ACCOUNT_PROJECTION, NO_HIDDEN_ACCOUNTS_FILTER, null, ORDER_BY_BANK_ACCOUNT);
 
 		if (cur == null) {
 			throw new IllegalAccessException(

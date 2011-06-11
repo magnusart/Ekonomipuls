@@ -31,10 +31,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import se.ekonomipuls.HomeScreenTask;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
-import se.ekonomipuls.proxy.BankDroidProxy;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 import se.ekonomipuls.service.BankDroidImportService;
 import android.content.Intent;
 
@@ -70,6 +71,8 @@ public class BankDroidImportTest {
 
 		final Intent intent = new Intent();
 		intent.putExtra("accountId", ACC_ID);
+		intent.putExtra(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.SINGLE_ACCOUNT
+				.toString());
 
 		final List<BankDroidTransaction> mockedTransactions = setupMockedList();
 		when(bankDroidProxy.getBankDroidTransactions(isA(String.class)))
@@ -84,7 +87,13 @@ public class BankDroidImportTest {
 		verify(stagingDbFacade)
 				.bulkInsertBdTransactions(eq(mockedTransactions));
 
+		// Now we should have new transactions
 		verify(ekonomipulsUtil).setNewTransactionStatus(eq(true));
+
+		// And if there is a home screen active, it should be updated.
+		verify(ekonomipulsUtil)
+				.notifyHomeScreen(eq(HomeScreenTask.UPDATE_TRANSACTIONS_NOTIFICATION));
+
 	}
 
 	private List<BankDroidTransaction> setupMockedList() {

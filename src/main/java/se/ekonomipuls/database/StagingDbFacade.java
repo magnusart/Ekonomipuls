@@ -1,6 +1,6 @@
 package se.ekonomipuls.database;
 
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 
 import java.util.List;
 

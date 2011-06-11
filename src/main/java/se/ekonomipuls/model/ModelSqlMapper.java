@@ -18,8 +18,10 @@ package se.ekonomipuls.model;
 import android.content.ContentValues;
 import android.database.Cursor;
 import se.ekonomipuls.actions.AddCategoryReportAction;
+import se.ekonomipuls.database.abstr.AbstractMapper;
 import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Joins;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.database.staging.StagingDbConstants.Staging;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,7 +29,6 @@ import java.util.List;
 import com.google.inject.Singleton;
 
 import static se.ekonomipuls.database.analytics.AnalyticsDbConstants.*;
-import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
 
 /**
  * This utility class is responsible for mapping between model objects and SQL.
@@ -36,7 +37,7 @@ import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
  * @since 13 mar 2011
  */
 @Singleton
-public class ModelSqlMapper {
+public class ModelSqlMapper extends AbstractMapper {
 
 	public ContentValues[] mapBankDroidTransactionSql(
 			final List<BankDroidTransaction> transactions) {
@@ -243,6 +244,23 @@ public class ModelSqlMapper {
 	}
 
 	/**
+	 * @param cur
+	 * @param indices
+	 * @return
+	 */
+	public BankDroidTransaction mapStagedTransactionModel(final Cursor cur,
+			final int[] indices) {
+		final String glob = cur.getString(indices[1]);
+		final String date = cur.getString(indices[2]);
+		final String desc = cur.getString(indices[3]);
+		final BigDecimal amt = new BigDecimal(cur.getString(indices[4]));
+		final String curr = cur.getString(indices[5]);
+		final String bdAcc = cur.getString(indices[6]);
+
+		return new BankDroidTransaction(glob, date, desc, amt, curr, bdAcc);
+	}
+
+	/**
 	 * @param catId
 	 * @param tagId
 	 * @return
@@ -285,16 +303,6 @@ public class ModelSqlMapper {
 		return values;
 	}
 
-	private int[] getIndices(final Cursor cur, final String[] columns) {
-		final int[] indices = new int[columns.length];
-
-		for (int i = 0; i < indices.length; i++) {
-			indices[i] = cur.getColumnIndexOrThrow(columns[i]);
-		}
-
-		return indices;
-	}
-
 	/**
 	 * @param cur
 	 * @return
@@ -326,4 +334,13 @@ public class ModelSqlMapper {
 	public int[] getFilterRuleCursorIndices(final Cursor cur) {
 		return getIndices(cur, FilterRules.COLUMNS);
 	}
+
+	/**
+	 * @param cur
+	 * @return
+	 */
+	public int[] getStagedTransactionCursorIndices(final Cursor cur) {
+		return getIndices(cur, Staging.COLUMNS);
+	}
+
 }

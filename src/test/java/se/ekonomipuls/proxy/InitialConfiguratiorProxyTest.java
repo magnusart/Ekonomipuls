@@ -45,6 +45,7 @@ import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import se.ekonomipuls.model.EntityType;
+import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy;
 
 import com.google.inject.Inject;
 

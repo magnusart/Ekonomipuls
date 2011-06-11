@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 
 /**
  * @author Magnus Andersson

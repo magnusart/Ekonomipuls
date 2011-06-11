@@ -45,6 +45,10 @@ public class BankDroidTransactionsReceiver extends RoboBroadcastReceiver {
 
 			final Bundle bundle = intent.getExtras();
 
+			// Define the action
+			bundle.putString(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.SINGLE_ACCOUNT
+					.toString());
+
 			final Intent importService = new Intent(context,
 					BankDroidImportService.class);
 

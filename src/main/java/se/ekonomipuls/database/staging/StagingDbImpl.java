@@ -24,9 +24,10 @@ import com.google.inject.Singleton;
 
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.database.abstr.AbstractDb;
+import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.proxy.BankDroidModelSqlMapper;
-import se.ekonomipuls.proxy.BankDroidTransaction;
+import se.ekonomipuls.proxy.bankdroid.BankDroidModelSqlMapper;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,12 +93,11 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 		try {
 			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
-			final int[] indices = BankDroidModelSqlMapper
-					.getStagedTransactionCursorIndices(cur);
+			final int[] indices = mapper.getStagedTransactionCursorIndices(cur);
 
 			while (cur.moveToNext()) {
 
-				final BankDroidTransaction transaction = BankDroidModelSqlMapper
+				final BankDroidTransaction transaction = mapper
 						.mapStagedTransactionModel(cur, indices);
 
 				Log.d(TAG, "Fetching staged transaction " + transaction);
