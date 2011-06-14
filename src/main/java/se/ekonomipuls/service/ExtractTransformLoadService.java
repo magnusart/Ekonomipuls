@@ -16,11 +16,11 @@
 package se.ekonomipuls.service;
 
 import static se.ekonomipuls.LogTag.TAG;
+
 import java.util.List;
 
-import roboguice.inject.InjectResource;
-import roboguice.util.RoboAsyncTask;
-import se.ekonomipuls.R;
+import com.google.inject.Inject;
+
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
@@ -28,21 +28,13 @@ import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
-import android.app.ProgressDialog;
-import android.os.Handler.Callback;
 import android.util.Log;
-
-import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
- * @author Michael Svensson
- * @since 15 mar 2011
+ * @since 14 jun 2011
  */
-public class ExtractTransformLoadService extends RoboAsyncTask<Boolean> {
-
-	@InjectResource(R.string.dialog_stage_import_message)
-	protected String importMessage;
+public class ExtractTransformLoadService {
 
 	@Inject
 	private EkonomipulsUtil util;
@@ -62,32 +54,7 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Boolean> {
 	@Inject
 	private FilterRuleService filterService;
 
-	private ProgressDialog dialog;
-
-	private Callback callback;
-
-	/** {@inheritDoc} */
-	@Override
-	protected void onPreExecute() {
-		if (dialog instanceof ProgressDialog) {
-			dialog.setMessage(importMessage);
-			dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			dialog.setCancelable(false);
-			dialog.show();
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void onFinally() throws RuntimeException {
-		if ((dialog instanceof ProgressDialog) && dialog.isShowing()) {
-			dialog.dismiss();
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Boolean call() {
+	public boolean performETL() {
 
 		// Get staged transactions with external model
 		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade
@@ -119,27 +86,4 @@ public class ExtractTransformLoadService extends RoboAsyncTask<Boolean> {
 
 		return true;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void onSuccess(final Boolean t) throws Exception {
-		if (callback instanceof Callback) {
-			callback.handleMessage(null);
-		}
-	}
-
-	/**
-	 * @param callback
-	 */
-	public void setCallback(final Callback callback) {
-		this.callback = callback;
-	}
-
-	/**
-	 * @param dialog
-	 */
-	public void setDialog(final ProgressDialog dialog) {
-		this.dialog = dialog;
-	}
-
 }

@@ -42,11 +42,6 @@ import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.ModelResources;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
-import se.ekonomipuls.service.ExtractTransformLoadService;
-
-import android.os.Handler.Callback;
-import android.os.Message;
-
 import com.google.inject.Inject;
 
 /**
@@ -121,17 +116,7 @@ public class ExtractTransformLoadTest {
 
 		final CountDownLatch latch = new CountDownLatch(1);
 
-		service.setCallback(new Callback() {
-			@Override
-			public boolean handleMessage(final Message msg) {
-				latch.countDown();
-				return false;
-			}
-		});
-
-		service.execute();
-
-		latch.await();
+		service.performETL();
 
 		verify(stagingDbFacade).getStagedTransactions();
 

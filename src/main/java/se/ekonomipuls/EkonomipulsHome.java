@@ -30,8 +30,8 @@ import se.ekonomipuls.debug.BackupDatabaseUtil;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.service.ExtractTransformLoadService;
 import se.ekonomipuls.service.async.BankDroidImportIntentService;
+import se.ekonomipuls.service.async.ExtractTransformLoadAsyncTask;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
 import se.ekonomipuls.views.charts.SeriesEntry;
@@ -71,7 +71,7 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
 	@Inject
-	private ExtractTransformLoadService etlService;
+	private ExtractTransformLoadAsyncTask etlService;
 
 	@Inject
 	private BackupDatabaseUtil debugUtil;
