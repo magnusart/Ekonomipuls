@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import roboguice.receiver.RoboBroadcastReceiver;
-import se.ekonomipuls.service.BankDroidImportService;
+import se.ekonomipuls.service.async.BankDroidImportIntentService;
 
 import static se.ekonomipuls.LogTag.TAG;
 
@@ -46,11 +46,11 @@ public class BankDroidTransactionsReceiver extends RoboBroadcastReceiver {
 			final Bundle bundle = intent.getExtras();
 
 			// Define the action
-			bundle.putString(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.SINGLE_ACCOUNT
+			bundle.putString(BankDroidImportIntentService.IMPORT_ACTION, BankDroidImportIntentService.ImportAction.SINGLE_ACCOUNT
 					.toString());
 
 			final Intent importService = new Intent(context,
-					BankDroidImportService.class);
+					BankDroidImportIntentService.class);
 
 			importService.putExtras(bundle);
 

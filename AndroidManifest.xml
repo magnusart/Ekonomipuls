@@ -14,7 +14,7 @@
 				<action android:name="com.liato.bankdroid.action.TRANSACTIONS"></action>
 			</intent-filter>
 		</receiver>
-		<service android:enabled="true" android:name=".service.BankDroidImportService"></service>
+		<service android:enabled="true" android:name="service.BankDroidImportIntentService"></service>
 
 		<activity android:theme="@android:style/Theme.NoTitleBar" android:name="OverviewSettings"></activity>
 

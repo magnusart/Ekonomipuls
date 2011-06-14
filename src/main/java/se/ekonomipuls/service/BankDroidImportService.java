@@ -21,36 +21,23 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import roboguice.service.RoboIntentService;
-import se.ekonomipuls.HomeScreenTask;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.proxy.bankdroid.BankDroidAccount;
 import se.ekonomipuls.proxy.bankdroid.BankDroidBank;
 import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.google.inject.Inject;
-
 /**
- * This service is responsible for inserting BankDroid Transactions into the
- * Staging area.
- * 
  * @author Magnus Andersson
- * @author Michael Svensson
- * @since 25 jan 2011
+ * @since 14 jun 2011
  */
-public class BankDroidImportService extends RoboIntentService {
-
-	public static enum ImportAction {
-		ALL_AVAILABLE_ACCOUNTS, SINGLE_ACCOUNT;
-	}
-
-	public static final String IMPORT_ACTION = "se.ekonomipuls.service.action.IMPORT_ACTION";
+@Singleton
+public class BankDroidImportService {
 
 	@Inject
 	private StagingDbFacade stagingDbFacade;
@@ -61,47 +48,7 @@ public class BankDroidImportService extends RoboIntentService {
 	@Inject
 	private BankDroidProxy bankDroidProxy;
 
-	@Inject
-	public Context context;
-
-	private static final String ACCOUNT_ID = "accountId";
-
-	public BankDroidImportService() {
-		super(BankDroidImportService.class.getClass().getName());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void onHandleIntent(final Intent intent) {
-
-		Log.v(TAG, "Starting Import Service");
-
-		final Bundle bundle = intent.getExtras();
-
-		final ImportAction action = ImportAction.valueOf(bundle
-				.getString(IMPORT_ACTION));
-
-		try {
-			switch (action) {
-			case ALL_AVAILABLE_ACCOUNTS:
-				Log.v(TAG, "Commencing full import.");
-				importAllAccounts();
-				break;
-			case SINGLE_ACCOUNT:
-				Log.v(TAG, "Importing from a single account.");
-				final String accountId = bundle.getString(ACCOUNT_ID);
-				importSingleAccount(accountId);
-				break;
-			}
-		} catch (final IllegalAccessException e) {
-			Log.e(TAG, "Unable to access the content provider. Resetting paired status to false.", e);
-			util.setPairedBankDroid(false);
-		}
-
-		util.notifyHomeScreen(HomeScreenTask.UPDATE_TRANSACTIONS_NOTIFICATION);
-	}
-
-	private void importAllAccounts() throws IllegalAccessException {
+	public void importAllAccounts() throws IllegalAccessException {
 		Log.v(TAG, "Fetching transactions from BankDroid content provider");
 		final Map<Long, BankDroidBank> bankMap = bankDroidProxy
 				.getBankDroidBanks();
@@ -110,15 +57,29 @@ public class BankDroidImportService extends RoboIntentService {
 
 		for (final BankDroidBank bank : banks) {
 			for (final BankDroidAccount account : bank.getAccounts()) {
-				importSingleAccount(account.getId());
+				importAccount(account.getId());
 			}
 		}
 
+		// Make sure we see that there are new transactions in the GUI.
+		util.setNewTransactionStatus(true);
 	}
 
-	private void importSingleAccount(final String accountId)
+	public void importSingleAccount(final String accountId)
 			throws IllegalAccessException {
 
+		importAccount(accountId);
+
+		// Make sure we see that there are new transactions in the GUI.
+		util.setNewTransactionStatus(true);
+	}
+
+	/**
+	 * @param accountId
+	 * @throws IllegalAccessException
+	 */
+	private void importAccount(final String accountId)
+			throws IllegalAccessException {
 		Log.v(TAG, "Fetching transactions from BankDroid content provider");
 		final List<BankDroidTransaction> transactions = bankDroidProxy
 				.getBankDroidTransactions(accountId);
@@ -126,9 +87,6 @@ public class BankDroidImportService extends RoboIntentService {
 		if (transactions.size() > 0) {
 			Log.v(TAG, "Bulk inserting transactions");
 			stagingDbFacade.bulkInsertBdTransactions(transactions);
-
-			// Make sure we see that there are new transactions in the GUI.
-			util.setNewTransactionStatus(true);
 		} else {
 			Log.d(TAG, "No transactions for the account " + accountId
 					+ ", skipping");

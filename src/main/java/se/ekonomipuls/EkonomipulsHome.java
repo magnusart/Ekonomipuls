@@ -30,8 +30,8 @@ import se.ekonomipuls.debug.BackupDatabaseUtil;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.Transaction;
-import se.ekonomipuls.service.BankDroidImportService;
 import se.ekonomipuls.service.ExtractTransformLoadService;
+import se.ekonomipuls.service.async.BankDroidImportIntentService;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
 import se.ekonomipuls.views.charts.SeriesEntry;
@@ -209,10 +209,10 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 		Log.v(TAG, "Setting up import service");
 
 		final Intent importService = new Intent(this,
-				BankDroidImportService.class);
+				BankDroidImportIntentService.class);
 
 		importService
-				.putExtra(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.ALL_AVAILABLE_ACCOUNTS
+				.putExtra(BankDroidImportIntentService.IMPORT_ACTION, BankDroidImportIntentService.ImportAction.ALL_AVAILABLE_ACCOUNTS
 						.toString());
 
 		Log.v(TAG, "Handing over to import service");

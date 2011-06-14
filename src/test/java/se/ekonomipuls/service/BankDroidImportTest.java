@@ -19,26 +19,31 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.inOrder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import se.ekonomipuls.HomeScreenTask;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.proxy.bankdroid.BankDroidAccount;
+import se.ekonomipuls.proxy.bankdroid.BankDroidBank;
 import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
-import se.ekonomipuls.service.BankDroidImportService;
-import android.content.Intent;
 
+import com.liato.bankdroid.provider.IAccountTypes;
+import com.liato.bankdroid.provider.IBankTypes;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
@@ -50,6 +55,16 @@ import com.xtremelabs.robolectric.RobolectricTestRunner;
 public class BankDroidImportTest {
 
 	private static final String ACC_ID = "1_1";
+
+	private static final String BANK_NAME = "BankDroidBank";
+
+	private static final String LAST_UPDATED = "DummyDate";
+
+	private static final String ACC_NAME = null;
+
+	private static final long BANK_ID = 2L;
+
+	private static final BigDecimal ACCOUNT_BALANCE = new BigDecimal(1000.0);
 
 	@InjectMocks
 	private final BankDroidImportService bankDroidImportService = new BankDroidImportService();
@@ -67,18 +82,14 @@ public class BankDroidImportTest {
 	}
 
 	@Test
-	public void transactionsInsertedInStaging() throws IllegalAccessException {
+	public void importTransactionsFromSingleAccount()
+			throws IllegalAccessException {
 
-		final Intent intent = new Intent();
-		intent.putExtra("accountId", ACC_ID);
-		intent.putExtra(BankDroidImportService.IMPORT_ACTION, BankDroidImportService.ImportAction.SINGLE_ACCOUNT
-				.toString());
-
-		final List<BankDroidTransaction> mockedTransactions = setupMockedList();
+		final List<BankDroidTransaction> mockedTransactions = setupMockedTranscationsList();
 		when(bankDroidProxy.getBankDroidTransactions(isA(String.class)))
 				.thenReturn(mockedTransactions);
 
-		bankDroidImportService.onHandleIntent(intent);
+		bankDroidImportService.importSingleAccount(ACC_ID);
 
 		// verify that transactions are loaded from provider
 		verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID));
@@ -90,13 +101,63 @@ public class BankDroidImportTest {
 		// Now we should have new transactions
 		verify(ekonomipulsUtil).setNewTransactionStatus(eq(true));
 
-		// And if there is a home screen active, it should be updated.
-		verify(ekonomipulsUtil)
-				.notifyHomeScreen(eq(HomeScreenTask.UPDATE_TRANSACTIONS_NOTIFICATION));
+	}
+
+	@Test
+	public void importTransactionsFromAllAccounts()
+			throws IllegalAccessException {
+
+		final Map<Long, BankDroidBank> mockedBankAccounts = setupMockedBanksMap();
+		when(bankDroidProxy.getBankDroidBanks()).thenReturn(mockedBankAccounts);
+
+		final List<BankDroidTransaction> mockedTransactions = setupMockedTranscationsList();
+		when(bankDroidProxy.getBankDroidTransactions(isA(String.class)))
+				.thenReturn(mockedTransactions);
+
+		bankDroidImportService.importAllAccounts();
+
+		final InOrder inOrder = inOrder(bankDroidProxy, stagingDbFacade);
+
+		inOrder.verify(bankDroidProxy).getBankDroidBanks();
+
+		for (int i = 0; i < 3; i++) {
+			// verify that transactions are loaded from provider
+			inOrder.verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID
+					+ "_0"));
+			inOrder.verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID
+					+ "_1"));
+			inOrder.verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID
+					+ "_2"));
+
+			// verify entries are put in staging
+			inOrder.verify(stagingDbFacade)
+					.bulkInsertBdTransactions(eq(mockedTransactions));
+		}
+
+		// Now we should have new transactions
+		verify(ekonomipulsUtil).setNewTransactionStatus(eq(true));
 
 	}
 
-	private List<BankDroidTransaction> setupMockedList() {
+	private Map<Long, BankDroidBank> setupMockedBanksMap() {
+		final Map<Long, BankDroidBank> bankDroidBanks = new LinkedHashMap<Long, BankDroidBank>();
+
+		for (int i = 0; i < 3; i++) {
+			final BankDroidBank bank = new BankDroidBank(BANK_ID + i, BANK_NAME
+					+ i, IBankTypes.TESTBANK, LAST_UPDATED);
+			for (int j = 0; j < 3; j++) {
+				final BankDroidAccount acc = new BankDroidAccount(ACC_ID + "_"
+						+ j, ACCOUNT_BALANCE, ACC_NAME + j,
+						IAccountTypes.REGULAR);
+				bank.getAccounts().add(acc);
+			}
+			bankDroidBanks.put(bank.getId(), bank);
+		}
+
+		return bankDroidBanks;
+	}
+
+	private List<BankDroidTransaction> setupMockedTranscationsList() {
 		final ArrayList<BankDroidTransaction> bankDroidTransactions = new ArrayList<BankDroidTransaction>();
 		final BankDroidTransaction transaction = new BankDroidTransaction(
 				"478", "2011-03-21", "Res. köp", new BigDecimal("-1103.00"),
