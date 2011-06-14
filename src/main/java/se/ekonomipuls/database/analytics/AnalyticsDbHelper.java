@@ -36,8 +36,9 @@ import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Reports;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
+import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
+import se.ekonomipuls.proxy.configuration.ConfigurationValidator.ConfigurationError;
 import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy;
-import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy.ConfigurationError;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -66,6 +67,9 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 	@Inject
 	InitialConfiguratorProxy config;
+
+	@Inject
+	ConfigurationValidator validator;
 
 	@Inject
 	AnalyticsCategoriesDbFacade categoriesFacade;
@@ -143,17 +147,17 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final Map<String, Long> tagIds = new HashMap<String, Long>();
 
 			// Throws error if not successful.
-			config.validateConfiguration(categoryActions, tagsActions,
-					filterRulesActions, util.getDefaultExpenseTag().getName(),
-					util.getDefaultIncomeTag().getName());
+			validator
+					.validateConfiguration(categoryActions, tagsActions, filterRulesActions, util
+							.getDefaultExpenseTag().getName(), util
+							.getDefaultIncomeTag().getName());
 
 			// Assign Categories to Report
 			for (final AddCategoryAction categoryAction : categoryActions) {
 				Log.d(TAG, "Assigning Category " + categoryAction.getName()
 						+ " to default report");
 
-				final long catId = initAddCategoryToReport(db, repId,
-						categoryAction);
+				final long catId = initAddCategoryToReport(db, repId, categoryAction);
 
 				final List<AddTagAction> tagActions = tagsActions
 						.get(categoryAction.getName());
@@ -163,8 +167,7 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 					Log.d(TAG, "Assigning Tag " + tagAction.getName()
 							+ " to Category " + categoryAction.getName());
 
-					final long tagId = initAssignTagToCategory(db, catId,
-							tagAction);
+					final long tagId = initAssignTagToCategory(db, catId, tagAction);
 
 					// If there is any Filter Rules that is going to be
 					// associated with this tag, insert them.
@@ -239,8 +242,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 			final long catId, final AddTagAction tagAction) {
 		final AnalyticsTagsDbImpl tags = (AnalyticsTagsDbImpl) tagsFacade;
 
-		final long tagId = tags.insertAssignTagCategoryCore(tagAction, catId,
-				db);
+		final long tagId = tags
+				.insertAssignTagCategoryCore(tagAction, catId, db);
 		return tagId;
 	}
 

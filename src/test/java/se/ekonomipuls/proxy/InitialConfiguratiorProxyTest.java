@@ -45,6 +45,7 @@ import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import se.ekonomipuls.model.EntityType;
+import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
 import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy;
 
 import com.google.inject.Inject;
@@ -69,6 +70,9 @@ public class InitialConfiguratiorProxyTest {
 	@Inject
 	@InjectMocks
 	private InitialConfiguratorProxy config;
+
+	@Inject
+	private ConfigurationValidator validator;
 
 	@Mock
 	private EkonomipulsUtil util;
@@ -130,7 +134,8 @@ public class InitialConfiguratiorProxyTest {
 		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
 		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
 
-		config.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
+		validator
+				.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
 	}
 
 	/**
