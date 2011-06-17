@@ -305,7 +305,7 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		return convertStreamToString(is);
 	}
 
-	private String convertStreamToString(final InputStream is)
+	public String convertStreamToString(final InputStream is)
 			throws IOException {
 		/*
 		 * To convert the InputStream to String we use the Reader.read(char[]

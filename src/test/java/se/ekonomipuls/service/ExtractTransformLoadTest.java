@@ -22,7 +22,6 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -113,8 +112,6 @@ public class ExtractTransformLoadTest {
 		mockedActions.remove(0);
 		when(filterService.applyFilters(eq(dedupTransactions)))
 				.thenReturn(mockedActions);
-
-		final CountDownLatch latch = new CountDownLatch(1);
 
 		service.performETL();
 
