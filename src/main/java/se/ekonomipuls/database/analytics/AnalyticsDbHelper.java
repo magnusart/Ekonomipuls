@@ -38,7 +38,7 @@ import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator.ConfigurationError;
-import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -66,7 +66,7 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	ModelSqlMapper mapper;
 
 	@Inject
-	InitialConfiguratorProxy config;
+	ConfiguratorProxy config;
 
 	@Inject
 	ConfigurationValidator validator;

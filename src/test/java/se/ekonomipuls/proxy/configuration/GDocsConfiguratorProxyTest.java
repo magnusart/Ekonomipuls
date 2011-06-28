@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.service;
+package se.ekonomipuls.proxy.configuration;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -27,39 +29,41 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
-import com.google.inject.Inject;
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.model.EkonomipulsUtil;
-import se.ekonomipuls.proxy.configuration.GDocsConfiguratorProxy;
+import android.content.Context;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
  * @since 15 jun 2011
  */
 @RunWith(InjectedTestRunner.class)
-public class ConfigurationServiceTest implements LogTag {
+public class GDocsConfiguratorProxyTest implements LogTag {
 
 	private static final String GDOC_FILE = "src/test/resources/filter_rules_gdoc.json";
 
 	@Inject
 	EkonomipulsUtil util;
 
-	@Mock
-	GDocsConfiguratorProxy proxy;
-
 	@Inject
 	@InjectMocks
-	ConfigurationService config;
+	@Spy
+	GDocsConfiguratorProxy proxy;
 
 	@InjectResource(R.string.gdocs_filter_rules_document_url)
 	private String url;
+
+	@Inject
+	Context context;
 
 	@Before
 	public void setUp() {
@@ -74,11 +78,9 @@ public class ConfigurationServiceTest implements LogTag {
 
 		final String mockedRespose = util.convertStreamToString(is);
 
-		proxy.setUrl(url);
-
 		when(proxy.queryRESTurl(eq(url))).thenReturn(mockedRespose);
 
-		final Map<String, List<AddFilterRuleAction>> rule = config
+		final Map<String, List<AddFilterRuleAction>> rule = proxy
 				.getFilterRules();
 
 		verify(proxy).queryRESTurl(eq(url));

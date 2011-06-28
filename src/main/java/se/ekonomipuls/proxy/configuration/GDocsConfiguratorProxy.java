@@ -26,18 +26,22 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.util.Log;
-
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.R;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
+import se.ekonomipuls.actions.AddTagAction;
+import android.util.Log;
+
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * @author Magnus Andersson
  * @since 15 jun 2011
  */
-public class GDocsConfiguratorProxy implements LogTag {
+public class GDocsConfiguratorProxy implements LogTag, ConfiguratorProxy {
 	@InjectResource(R.string.gdocs_filter_rules_document_url)
 	private String url;
 
@@ -46,7 +50,23 @@ public class GDocsConfiguratorProxy implements LogTag {
 		return null;
 	}
 
-	public String queryRESTurl(final String url) {
+	/** {@inheritDoc} */
+	@Override
+	public List<AddCategoryAction> getCategories() throws JsonIOException,
+			JsonSyntaxException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Map<String, List<AddTagAction>> getTags() throws JsonIOException,
+			JsonSyntaxException, IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	String queryRESTurl(final String url) {
 		final HttpClient httpclient = new DefaultHttpClient();
 		final HttpGet httpget = new HttpGet(url);
 		String response = null;
@@ -62,14 +82,6 @@ public class GDocsConfiguratorProxy implements LogTag {
 			Log.e(TAG, "There was an IO Stream related error", e);
 		}
 		return response;
-	}
-
-	/**
-	 * @param url
-	 *            the url to set
-	 */
-	public void setUrl(final String url) {
-		this.url = url;
 	}
 
 }

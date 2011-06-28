@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.ekonomipuls.proxy;
+package se.ekonomipuls.proxy.configuration;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +41,7 @@ import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import se.ekonomipuls.model.EntityType;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
-import se.ekonomipuls.proxy.configuration.InitialConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.FileConfiguratorProxy;
 
 import com.google.inject.Inject;
 
@@ -50,7 +50,7 @@ import com.google.inject.Inject;
  * @since 16 maj 2011
  */
 @RunWith(InjectedTestRunner.class)
-public class InitialConfiguratorProxyTest {
+public class FileConfiguratorProxyTest {
 
 	private static final String ASSETS = "assets/";
 
@@ -64,7 +64,7 @@ public class InitialConfiguratorProxyTest {
 
 	@Inject
 	@InjectMocks
-	private InitialConfiguratorProxy config;
+	private FileConfiguratorProxy config;
 
 	@Inject
 	private ConfigurationValidator validator;
@@ -84,7 +84,8 @@ public class InitialConfiguratorProxyTest {
 
 		assertNotNull("Category list should not be null", categories);
 		assertTrue("Category list should be exactly " + CATEGORY_SIZE
-				+ " entries, found " + categories.size() + ".", categories.size() == CATEGORY_SIZE);
+				+ " entries, found " + categories.size() + ".",
+				categories.size() == CATEGORY_SIZE);
 
 		int i = 0;
 		for (final AddCategoryAction cat : categories) {
@@ -117,7 +118,8 @@ public class InitialConfiguratorProxyTest {
 
 		assertNotNull("Filter Rules list should no be null", rules);
 		assertTrue("Filter rule list should be exactly " + FILTER_RULE_SIZE
-				+ " entries, found " + rules.size() + ".", rules.size() == FILTER_RULE_SIZE);
+				+ " entries, found " + rules.size() + ".",
+				rules.size() == FILTER_RULE_SIZE);
 
 		assertTrue(rules.containsKey("Lön"));
 		assertTrue(rules.containsKey("Luncher"));
@@ -129,8 +131,8 @@ public class InitialConfiguratorProxyTest {
 		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
 		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
 
-		validator
-				.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
+		validator.validateConfiguration(categories, tags, rules,
+				EXPENSES_TAG_NAME, INCOME_TAG_NAME);
 	}
 
 	/**
@@ -155,8 +157,8 @@ public class InitialConfiguratorProxyTest {
 		final InputStream is = new BufferedInputStream(new FileInputStream(
 				ASSETS + ConfigurationFileType.TAGS.getFileName()));
 
-		when(util.getConfigurationFile(ConfigurationFileType.TAGS))
-				.thenReturn(util.convertStreamToString(is));
+		when(util.getConfigurationFile(ConfigurationFileType.TAGS)).thenReturn(
+				util.convertStreamToString(is));
 
 		return config.getTags();
 	}

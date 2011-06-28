@@ -38,7 +38,7 @@ import com.google.inject.Inject;
  * @author Magnus Andersson
  * @since 16 maj 2011
  */
-public class InitialConfiguratorProxy implements LogTag {
+public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 
 	@Inject
 	EkonomipulsUtil util;
@@ -46,6 +46,8 @@ public class InitialConfiguratorProxy implements LogTag {
 	@Inject
 	Gson gson;
 
+	/** {@inheritDoc} */
+	@Override
 	public List<AddCategoryAction> getCategories() throws JsonIOException,
 			JsonSyntaxException, IOException {
 
@@ -61,9 +63,8 @@ public class InitialConfiguratorProxy implements LogTag {
 		return categories;
 	}
 
-	/**
-	 * @return
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public Map<String, List<AddTagAction>> getTags() throws JsonIOException,
 			JsonSyntaxException, IOException {
 
@@ -79,9 +80,8 @@ public class InitialConfiguratorProxy implements LogTag {
 		return tags;
 	}
 
-	/**
-	 * @return
-	 */
+	/** {@inheritDoc} */
+	@Override
 	public Map<String, List<AddFilterRuleAction>> getFilterRules()
 			throws JsonIOException, JsonSyntaxException, IOException {
 		final Type mapType = new TypeToken<Map<String, List<AddFilterRuleAction>>>() {
