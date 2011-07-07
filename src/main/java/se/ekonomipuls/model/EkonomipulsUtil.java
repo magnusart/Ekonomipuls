@@ -15,13 +15,6 @@
  */
 package se.ekonomipuls.model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +35,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.view.Window;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -248,8 +242,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return True if new transactions exists.
 	 */
 	public boolean getNewTransactionsStatus() {
-		return preferences.getBoolean(context
-				.getString(R.string.setting_staging_contains_updates), false);
+		return preferences.getBoolean(
+				context.getString(R.string.setting_staging_contains_updates),
+				false);
 	}
 
 	/**
@@ -292,45 +287,11 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		final SharedPreferences.Editor editor = preferences.edit();
 
 		// Commit to preferences
-		editor.putLong(CONF_EXPENSES_DEF_TAG, tagIds
-				.get(defaultExpensesTagName));
+		editor.putLong(CONF_EXPENSES_DEF_TAG,
+				tagIds.get(defaultExpensesTagName));
 		editor.putLong(CONF_INCOMES_DEF_TAG, tagIds.get(defaultIncomesTagName));
 		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
 		editor.commit();
-	}
-
-	public String getConfigurationFile(final ConfigurationFileType type)
-			throws IOException {
-		final InputStream is = context.getAssets().open(type.getFileName());
-		return convertStreamToString(is);
-	}
-
-	public String convertStreamToString(final InputStream is)
-			throws IOException {
-		/*
-		 * To convert the InputStream to String we use the Reader.read(char[]
-		 * buffer) method. We iterate until the Reader return -1 which means
-		 * there's no more data to read. We use the StringWriter class to
-		 * produce the string.
-		 */
-		if (is != null) {
-			final Writer writer = new StringWriter();
-
-			final char[] buffer = new char[1024];
-			try {
-				final Reader reader = new BufferedReader(new InputStreamReader(
-						is, "UTF-8"));
-				int n;
-				while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
-				}
-			} finally {
-				is.close();
-			}
-			return writer.toString();
-		} else {
-			return "";
-		}
 	}
 
 	/**
@@ -350,8 +311,8 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	public boolean isIntentAvailable(final Context context, final String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
-		final List<ResolveInfo> list = packageManager
-				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		final List<ResolveInfo> list = packageManager.queryIntentActivities(
+				intent, PackageManager.MATCH_DEFAULT_ONLY);
 		return list.size() > 0;
 	}
 

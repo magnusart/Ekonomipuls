@@ -37,11 +37,9 @@ import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
 import se.ekonomipuls.model.EntityType;
-import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
-import se.ekonomipuls.proxy.configuration.FileConfiguratorProxy;
+import se.ekonomipuls.service.AndroidApiUtil;
 
 import com.google.inject.Inject;
 
@@ -70,7 +68,7 @@ public class FileConfiguratorProxyTest {
 	private ConfigurationValidator validator;
 
 	@Mock
-	private EkonomipulsUtil util;
+	private AndroidApiUtil util;
 
 	@Before
 	public void setUp() {

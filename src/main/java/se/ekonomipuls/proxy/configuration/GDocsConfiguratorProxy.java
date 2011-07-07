@@ -19,69 +19,98 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import android.util.Log;
+import se.ekonomipuls.service.AndroidApiUtil;
 
+import com.google.api.client.extensions.android2.AndroidHttp;
+import com.google.api.client.googleapis.GoogleHeaders;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.xml.atom.AtomParser;
+import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
  * @since 15 jun 2011
  */
 public class GDocsConfiguratorProxy implements LogTag, ConfiguratorProxy {
+	@Inject
+	private AndroidApiUtil util;
+
+	// FIXME: Temporary implementation, create a more robust API (not hard coded
+	// delegates).
+	@Inject
+	private FileConfiguratorProxy delegate;
+
+	@Inject
+	private Gson gson;
+
 	@InjectResource(R.string.gdocs_filter_rules_document_url)
 	private String url;
 
-	public final Map<String, List<AddFilterRuleAction>> getFilterRules() {
-		final String jsonResult = queryRESTurl(url);
-		return null;
+	@InjectResource(R.string.app_name)
+	private String appName;
+
+	@SuppressWarnings({ "deprecation", "deprecation" })
+	public final Map<String, List<AddFilterRuleAction>> getFilterRules()
+			throws JsonIOException, JsonSyntaxException, IOException {
+		final String response = util.queryRestUrl(url);
+		// final GdocFilterRules rules = gson.fromJson(response,
+		// GdocFilterRules.class);
+		final HttpTransport transport = AndroidHttp.newCompatibleTransport();
+		final GoogleHeaders headers = (GoogleHeaders) transport.defaultHeaders;
+		headers.setApplicationName(appName + "/0.1");
+		headers.gdataVersion = "3";
+		final AtomParser parser = new AtomParser();
+		parser.namespaceDictionary = Namespace.DICTIONARY;
+		transport.addParser(parser);
+
+		// Log.d(TAG, "Converting to GdocFilterRules: " + rules);
+		// if (response != null) {
+		// Log.d(TAG, "Got json response: " + response);
+		//
+		// } else {
+		return delegate.getFilterRules();
+		// }
+		//
+		// return null;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<AddCategoryAction> getCategories() throws JsonIOException,
 			JsonSyntaxException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getCategories();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<String, List<AddTagAction>> getTags() throws JsonIOException,
 			JsonSyntaxException, IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getTags();
 	}
 
-	String queryRESTurl(final String url) {
-		final HttpClient httpclient = new DefaultHttpClient();
-		final HttpGet httpget = new HttpGet(url);
-		String response = null;
-		final ResponseHandler<String> handler = new BasicResponseHandler();
+	/**
+	 * @author Magnus Andersson
+	 * @since 2 jul 2011
+	 */
+	static class GdocType {
+		String type;
+		String $t;
 
-		try {
-			response = httpclient.execute(httpget, handler);
-			Log.i(TAG, "Status:[" + response + "]");
-
-		} catch (final ClientProtocolException e) {
-			Log.e(TAG, "There was a protocol based error", e);
-		} catch (final IOException e) {
-			Log.e(TAG, "There was an IO Stream related error", e);
+		/** {@inheritDoc} */
+		@Override
+		public String toString() {
+			return "Content [$t=" + $t + "]";
 		}
-		return response;
+
 	}
 
 }

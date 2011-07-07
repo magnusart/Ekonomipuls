@@ -18,6 +18,7 @@ package se.ekonomipuls.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 

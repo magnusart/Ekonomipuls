@@ -15,6 +15,7 @@
  */
 package se.ekonomipuls.proxy.configuration;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,15 +30,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import roboguice.inject.InjectResource;
 import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.R;
 import se.ekonomipuls.actions.AddFilterRuleAction;
-import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.service.AndroidApiUtil;
 import android.content.Context;
 
 import com.google.inject.Inject;
@@ -51,12 +52,11 @@ public class GDocsConfiguratorProxyTest implements LogTag {
 
 	private static final String GDOC_FILE = "src/test/resources/filter_rules_gdoc.json";
 
-	@Inject
-	EkonomipulsUtil util;
+	@Mock
+	AndroidApiUtil util;
 
 	@Inject
 	@InjectMocks
-	@Spy
 	GDocsConfiguratorProxy proxy;
 
 	@InjectResource(R.string.gdocs_filter_rules_document_url)
@@ -78,11 +78,11 @@ public class GDocsConfiguratorProxyTest implements LogTag {
 
 		final String mockedRespose = util.convertStreamToString(is);
 
-		when(proxy.queryRESTurl(eq(url))).thenReturn(mockedRespose);
+		when(util.queryRestUrl(anyString())).thenReturn(mockedRespose);
 
 		final Map<String, List<AddFilterRuleAction>> rule = proxy
 				.getFilterRules();
 
-		verify(proxy).queryRESTurl(eq(url));
+		verify(util).queryRestUrl(eq(url));
 	}
 }

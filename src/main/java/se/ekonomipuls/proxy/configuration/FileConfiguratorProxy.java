@@ -19,12 +19,14 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
+import se.ekonomipuls.service.AndroidApiUtil;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -41,7 +43,7 @@ import com.google.inject.Inject;
 public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 
 	@Inject
-	EkonomipulsUtil util;
+	AndroidApiUtil util;
 
 	@Inject
 	Gson gson;
@@ -74,8 +76,8 @@ public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 		final String json = util
 				.getConfigurationFile(ConfigurationFileType.TAGS);
 
-		final Map<String, List<AddTagAction>> tags = gson
-				.fromJson(json, mapType);
+		final Map<String, List<AddTagAction>> tags = gson.fromJson(json,
+				mapType);
 
 		return tags;
 	}
@@ -90,8 +92,8 @@ public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 		final String json = util
 				.getConfigurationFile(ConfigurationFileType.FILTER_RULES);
 
-		final Map<String, List<AddFilterRuleAction>> rules = gson
-				.fromJson(json, mapType);
+		final Map<String, List<AddFilterRuleAction>> rules = gson.fromJson(
+				json, mapType);
 
 		return rules;
 	}

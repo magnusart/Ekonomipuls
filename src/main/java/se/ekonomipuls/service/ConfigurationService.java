@@ -15,12 +15,15 @@
  */
 package se.ekonomipuls.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.proxy.configuration.GDocsConfiguratorProxy;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 
 /**
@@ -33,6 +36,18 @@ public class ConfigurationService {
 	GDocsConfiguratorProxy gdocsProxy;
 
 	public final Map<String, List<AddFilterRuleAction>> getFilterRules() {
-		return gdocsProxy.getFilterRules();
+		try {
+			return gdocsProxy.getFilterRules();
+		} catch (final JsonIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final JsonSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
