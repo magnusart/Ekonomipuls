@@ -34,7 +34,7 @@ public class AddFilterRuleAction extends FilterRule {
 	 * @param priority
 	 * @param tagId
 	 */
-	AddFilterRuleAction(final String name, final String description,
+	public AddFilterRuleAction(final String name, final String description,
 			final String pattern, final boolean markFiltered,
 			final int priority, final long tagId) {
 		super(0L, name, description, pattern, null, markFiltered, priority);

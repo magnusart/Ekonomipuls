@@ -74,6 +74,12 @@ public class ExtractTransformLoadService {
 		final List<ApplyFilterTagAction> filteredTransactions = filterService
 				.applyFilters(deduplicatedTransactions);
 
+		// Clean out Transactions without a Global ID.
+		final int i = analyticsTransactionsDbFacade.purgeNonGlobalIDTransactions();
+
+		Log.d(TAG, "Purged " + i
+				+ " transactions that did not have a Global ID");
+
 		// Load the transactions into the Analytics table
 		analyticsTransactionsDbFacade
 				.insertTransactionsAssignTags(filteredTransactions);

@@ -14,7 +14,7 @@ import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
 import se.ekonomipuls.database.staging.StagingDbImpl;
 import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
-import se.ekonomipuls.proxy.configuration.GDocsConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.GoogleSpreadsheetConfiguratorProxy;
 
 /**
  * Serves the purpose of telling Guice how to satisfy dependencies
@@ -43,7 +43,7 @@ public class EkonomipulsModule extends AbstractAndroidModule {
 
 		bind(AnalyticsTagsDbFacade.class).to(AnalyticsTagsDbImpl.class);
 
-		bind(ConfiguratorProxy.class).to(GDocsConfiguratorProxy.class);
+		bind(ConfiguratorProxy.class).to(GoogleSpreadsheetConfiguratorProxy.class);
 
 	}
 }

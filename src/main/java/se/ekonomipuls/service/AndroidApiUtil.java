@@ -23,6 +23,8 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -59,14 +61,41 @@ public class AndroidApiUtil {
 
 		try {
 			response = httpclient.execute(httpget, handler);
-			Log.i(LogTag.TAG, "Status:[" + response + "]");
+			Log.v(LogTag.TAG, "Status:[" + response + "]");
 
 		} catch (final ClientProtocolException e) {
+			httpclient.getConnectionManager().shutdown();
 			Log.e(LogTag.TAG, "There was a protocol based error", e);
 		} catch (final IOException e) {
+			httpclient.getConnectionManager().shutdown();
 			Log.e(LogTag.TAG, "There was an IO Stream related error", e);
 		}
 		return response;
+	}
+
+	public InputStream queryRestUrlStream(final String url) {
+		final HttpClient httpclient = new DefaultHttpClient();
+		final HttpGet httpget = new HttpGet(url);
+
+		HttpResponse httpResponse;
+		InputStream instream = null;
+		try {
+			httpResponse = httpclient.execute(httpget);
+			final HttpEntity entity = httpResponse.getEntity();
+
+			if (entity != null) {
+				instream = entity.getContent();
+			}
+
+		} catch (final ClientProtocolException e) {
+			httpclient.getConnectionManager().shutdown();
+			e.printStackTrace();
+		} catch (final IOException e) {
+			httpclient.getConnectionManager().shutdown();
+			e.printStackTrace();
+		}
+
+		return instream;
 	}
 
 	public String getConfigurationFile(final ConfigurationFileType type)

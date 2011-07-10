@@ -37,15 +37,12 @@ import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
-import se.ekonomipuls.proxy.configuration.ConfigurationValidator.ConfigurationError;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -146,11 +143,15 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 			final Map<String, Long> tagIds = new HashMap<String, Long>();
 
+			Log.v(TAG, "Before running validator!");
+
 			// Throws error if not successful.
 			validator
 					.validateConfiguration(categoryActions, tagsActions, filterRulesActions, util
 							.getDefaultExpenseTag().getName(), util
 							.getDefaultIncomeTag().getName());
+
+			Log.v(TAG, "Before assigning categories to default reports");
 
 			// Assign Categories to Report
 			for (final AddCategoryAction categoryAction : categoryActions) {
@@ -189,14 +190,10 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 			Log.d(TAG, "Added default values for Category and Tag");
 
-		} catch (final JsonIOException e) {
-			e.printStackTrace();
-		} catch (final JsonSyntaxException e) {
-			e.printStackTrace();
+			// FIXME Don't swallow errors.
+
 		} catch (final IOException e) {
-			e.printStackTrace();
-		} catch (final ConfigurationError e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 

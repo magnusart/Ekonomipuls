@@ -73,8 +73,8 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 	/** {@inheritDoc} */
 	@Override
 	public List<Transaction> getTransactionsByCategory(final Category cat) {
-		return getTransactions(Views.TRANSACTIONS_CATEGORY_FROM_STMT,
-				Categories.TABLE + "." + Categories.ID + " = " + cat.getId());
+		return getTransactions(Views.TRANSACTIONS_CATEGORY_FROM_STMT, Categories.TABLE
+				+ "." + Categories.ID + " = " + cat.getId());
 	}
 
 	/** {@inheritDoc} */
@@ -90,8 +90,7 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		final String having = null;
 		final String groupBy = null;
 		final String sortOrder = Transactions.DATE + " DESC";
-		final String[] columns = prefixColumns(Transactions.TABLE,
-				Transactions.COLUMNS);
+		final String[] columns = prefixColumns(Transactions.TABLE, Transactions.COLUMNS);
 		;
 
 		final SQLiteDatabase db = helper.getReadableDatabase();
@@ -99,8 +98,7 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		final List<Transaction> transactions = new ArrayList<Transaction>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection,
-					selectionArgs, groupBy, having, sortOrder);
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
 			final int[] indices = mapper.getTransactionCursorIndices(cur);
 
@@ -146,6 +144,22 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 			shutdownDb(db, helper);
 		}
 
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int purgeNonGlobalIDTransactions() {
+		final SQLiteDatabase db = helper.getWritableDatabase();
+
+		final String table = Transactions.TABLE;
+
+		try {
+
+		} finally {
+			shutdownDb(db, helper);
+		}
+
+		return 0;
 	}
 
 }

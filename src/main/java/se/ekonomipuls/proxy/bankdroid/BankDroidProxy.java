@@ -45,8 +45,6 @@ public class BankDroidProxy implements IBankTransactionsProvider {
 	@Inject
 	BankDroidModelSqlMapper mapper;
 
-	private static final String CONTENT_PROVIDER_API_KEY = "content_provider_api_key";
-
 	/**
 	 * Get a list of BankDroidTransactions.
 	 * 

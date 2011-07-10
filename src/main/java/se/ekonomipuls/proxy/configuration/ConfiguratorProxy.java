@@ -23,28 +23,26 @@ import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-
 /**
  * @author Magnus Andersson
  * @since 29 jun 2011
  */
 public interface ConfiguratorProxy {
 
-	public abstract List<AddCategoryAction> getCategories()
-			throws JsonIOException, JsonSyntaxException, IOException;
+	public abstract List<AddCategoryAction> getCategories() throws IOException;
 
 	/**
 	 * @return
+	 * @throws IOException
 	 */
 	public abstract Map<String, List<AddTagAction>> getTags()
-			throws JsonIOException, JsonSyntaxException, IOException;
+			throws IOException;
 
 	/**
 	 * @return
+	 * @throws IOException
 	 */
 	public abstract Map<String, List<AddFilterRuleAction>> getFilterRules()
-			throws JsonIOException, JsonSyntaxException, IOException;
+			throws IOException;
 
 }

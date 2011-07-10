@@ -62,4 +62,9 @@ public interface AnalyticsTransactionsDbFacade {
 	public abstract void insertTransactionsAssignTags(
 			final List<ApplyFilterTagAction> actions);
 
+	/**
+	 * 
+	 */
+	public abstract int purgeNonGlobalIDTransactions();
+
 }

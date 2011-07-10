@@ -17,15 +17,10 @@ package se.ekonomipuls.proxy.configuration;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-
+import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,20 +44,11 @@ import com.google.inject.Inject;
  */
 @RunWith(InjectedTestRunner.class)
 public class FileConfiguratorProxyTest {
-
-	private static final String ASSETS = "assets/";
-
 	private static final int FILTER_RULE_SIZE = 8;
-
 	private static final int CATEGORY_SIZE = 22;
 
 	private static final String EXPENSES_TAG_NAME = "Övriga utgifter";
-
 	private static final String INCOME_TAG_NAME = "Övriga inkomster";
-
-	@Inject
-	@InjectMocks
-	private FileConfiguratorProxy config;
 
 	@Inject
 	private ConfigurationValidator validator;
@@ -70,20 +56,49 @@ public class FileConfiguratorProxyTest {
 	@Mock
 	private AndroidApiUtil util;
 
+	@Inject
+	private AndroidApiUtil util2;
+
+	@Inject
+	private FileMockUtil fileMock;
+
+	@Inject
+	@InjectMocks
+	private FileConfiguratorProxy config;
+	private List<AddCategoryAction> categories;
+	private Map<String, List<AddTagAction>> tags;
+	private Map<String, List<AddFilterRuleAction>> rules;
+
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+		final InputStream catStream = fileMock.setupCategoryFileMock();
+		final InputStream tagStream = fileMock.setupTagFileMock();
+		final InputStream rulesStream = fileMock.setupFilterRulesFileMock();
+
+		final String tagString = util2.convertStreamToString(tagStream);
+		final String catString = util2.convertStreamToString(catStream);
+		final String ruleString = util2.convertStreamToString(rulesStream);
+
+		when(util.getConfigurationFile(ConfigurationFileType.CATEGORIES))
+				.thenReturn(catString);
+
+		when(util.getConfigurationFile(ConfigurationFileType.FILTER_RULES))
+				.thenReturn(ruleString);
+
+		when(util.getConfigurationFile(ConfigurationFileType.TAGS))
+				.thenReturn(tagString);
+
+		categories = config.getCategories();
+		tags = config.getTags();
+		rules = config.getFilterRules();
 	}
 
 	@Test
 	public void loadCategoriesFromFile() throws Exception {
-
-		final List<AddCategoryAction> categories = setupCategoryFileMock();
-
 		assertNotNull("Category list should not be null", categories);
 		assertTrue("Category list should be exactly " + CATEGORY_SIZE
-				+ " entries, found " + categories.size() + ".",
-				categories.size() == CATEGORY_SIZE);
+				+ " entries, found " + categories.size() + ".", categories.size() == CATEGORY_SIZE);
 
 		int i = 0;
 		for (final AddCategoryAction cat : categories) {
@@ -98,9 +113,6 @@ public class FileConfiguratorProxyTest {
 
 	@Test
 	public void loadTagConfigurationFromFile() throws Exception {
-		final List<AddCategoryAction> categories = setupCategoryFileMock();
-		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
-
 		assertNotNull("Tags map should not be null", tags);
 
 		// Make sure all categories are represented in the tags file
@@ -112,12 +124,9 @@ public class FileConfiguratorProxyTest {
 
 	@Test
 	public void loadFilterRuleFromFile() throws Exception {
-		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
-
 		assertNotNull("Filter Rules list should no be null", rules);
 		assertTrue("Filter rule list should be exactly " + FILTER_RULE_SIZE
-				+ " entries, found " + rules.size() + ".",
-				rules.size() == FILTER_RULE_SIZE);
+				+ " entries, found " + rules.size() + ".", rules.size() == FILTER_RULE_SIZE);
 
 		assertTrue(rules.containsKey("Lön"));
 		assertTrue(rules.containsKey("Luncher"));
@@ -125,55 +134,8 @@ public class FileConfiguratorProxyTest {
 
 	@Test
 	public void validateConfigurationTest() throws Exception {
-		final List<AddCategoryAction> categories = setupCategoryFileMock();
-		final Map<String, List<AddTagAction>> tags = setupTagFileMock();
-		final Map<String, List<AddFilterRuleAction>> rules = setupFilterRulesFileMock();
-
-		validator.validateConfiguration(categories, tags, rules,
-				EXPENSES_TAG_NAME, INCOME_TAG_NAME);
-	}
-
-	/**
-	 * @return
-	 */
-	private Map<String, List<AddFilterRuleAction>> setupFilterRulesFileMock()
-			throws Exception {
-		final InputStream is = new BufferedInputStream(new FileInputStream(
-				ASSETS + ConfigurationFileType.FILTER_RULES.getFileName()));
-
-		when(util.getConfigurationFile(ConfigurationFileType.FILTER_RULES))
-				.thenReturn(util.convertStreamToString(is));
-
-		return config.getFilterRules();
-	}
-
-	/**
-	 * @return
-	 * 
-	 */
-	private Map<String, List<AddTagAction>> setupTagFileMock() throws Exception {
-		final InputStream is = new BufferedInputStream(new FileInputStream(
-				ASSETS + ConfigurationFileType.TAGS.getFileName()));
-
-		when(util.getConfigurationFile(ConfigurationFileType.TAGS)).thenReturn(
-				util.convertStreamToString(is));
-
-		return config.getTags();
-	}
-
-	/**
-	 * @return
-	 * @throws IOException
-	 * 
-	 */
-	private List<AddCategoryAction> setupCategoryFileMock() throws Exception {
-		final InputStream is = new BufferedInputStream(new FileInputStream(
-				ASSETS + ConfigurationFileType.CATEGORIES.getFileName()));
-
-		when(util.getConfigurationFile(ConfigurationFileType.CATEGORIES))
-				.thenReturn(util.convertStreamToString(is));
-
-		return config.getCategories();
+		validator
+				.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
 	}
 
 }

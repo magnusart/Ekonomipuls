@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import se.ekonomipuls.actions.AddFilterRuleAction;
-import se.ekonomipuls.proxy.configuration.GDocsConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -33,11 +33,11 @@ import com.google.inject.Inject;
 public class ConfigurationService {
 
 	@Inject
-	GDocsConfiguratorProxy gdocsProxy;
+	ConfiguratorProxy proxy;
 
 	public final Map<String, List<AddFilterRuleAction>> getFilterRules() {
 		try {
-			return gdocsProxy.getFilterRules();
+			return proxy.getFilterRules();
 		} catch (final JsonIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -48,10 +48,13 @@ public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 	@Inject
 	Gson gson;
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IOException
+	 */
 	@Override
-	public List<AddCategoryAction> getCategories() throws JsonIOException,
-			JsonSyntaxException, IOException {
+	public List<AddCategoryAction> getCategories() throws IOException {
 
 		final String json = util
 				.getConfigurationFile(ConfigurationFileType.CATEGORIES);
@@ -67,8 +70,7 @@ public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, List<AddTagAction>> getTags() throws JsonIOException,
-			JsonSyntaxException, IOException {
+	public Map<String, List<AddTagAction>> getTags() throws IOException {
 
 		final Type mapType = new TypeToken<Map<String, List<AddTagAction>>>() {
 		}.getType();
@@ -76,24 +78,28 @@ public class FileConfiguratorProxy implements LogTag, ConfiguratorProxy {
 		final String json = util
 				.getConfigurationFile(ConfigurationFileType.TAGS);
 
-		final Map<String, List<AddTagAction>> tags = gson.fromJson(json,
-				mapType);
+		final Map<String, List<AddTagAction>> tags = gson
+				.fromJson(json, mapType);
 
 		return tags;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IOException
+	 */
 	@Override
 	public Map<String, List<AddFilterRuleAction>> getFilterRules()
-			throws JsonIOException, JsonSyntaxException, IOException {
+			throws IOException {
 		final Type mapType = new TypeToken<Map<String, List<AddFilterRuleAction>>>() {
 		}.getType();
 
 		final String json = util
 				.getConfigurationFile(ConfigurationFileType.FILTER_RULES);
 
-		final Map<String, List<AddFilterRuleAction>> rules = gson.fromJson(
-				json, mapType);
+		final Map<String, List<AddFilterRuleAction>> rules = gson
+				.fromJson(json, mapType);
 
 		return rules;
 	}

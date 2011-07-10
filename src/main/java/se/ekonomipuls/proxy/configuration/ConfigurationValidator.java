@@ -205,8 +205,8 @@ public class ConfigurationValidator implements LogTag {
 		final int foundRuleTags = containsTagName(sourceTagList, ruleTags);
 
 		if (foundRuleTags != ruleTags.size()) {
-			throw new ConfigurationError("Rule tag " + ruleTags
-					+ " does not exist in the tag list " + sourceTagList);
+			throw new ConfigurationError("One of the rule tags in: " + ruleTags
+					+ " does not exist in the tag list: " + sourceTagList);
 		}
 
 		// **********************************************************************

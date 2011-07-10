@@ -23,7 +23,7 @@ import java.util.Map;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
+import com.liato.bankdroid.provider.IAccountTypes;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.proxy.bankdroid.BankDroidAccount;
@@ -57,12 +57,20 @@ public class BankDroidImportService {
 
 		for (final BankDroidBank bank : banks) {
 			for (final BankDroidAccount account : bank.getAccounts()) {
-				importAccount(account.getId());
+				if (correctAccountType(account)) {
+					importAccount(account.getId());
+				}
 			}
 		}
 
 		// Make sure we see that there are new transactions in the GUI.
 		util.setNewTransactionStatus(true);
+	}
+
+	private boolean correctAccountType(final BankDroidAccount account) {
+		// Only ímport transactions from Credit Cards or Regular Accounts.
+		return (account.getType() == IAccountTypes.CCARD)
+				|| (account.getType() == IAccountTypes.REGULAR);
 	}
 
 	public void importSingleAccount(final String accountId)
