@@ -34,7 +34,6 @@ import se.ekonomipuls.model.Transaction;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -79,7 +78,7 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Transaction> getAllTransactions() throws RemoteException {
+	public List<Transaction> getAllTransactions() {
 		return getTransactions(Transactions.TABLE, null);
 	}
 
@@ -152,14 +151,16 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		final String table = Transactions.TABLE;
+		final String whereClause = "LENGTH(" + Transactions.GLOBAL_ID + ") = 0";
+		final String[] whereArgs = new String[] {};
+		int numDeletions = 0;
 
 		try {
-
+			numDeletions = delete(db, table, whereClause, whereArgs);
 		} finally {
 			shutdownDb(db, helper);
 		}
 
-		return 0;
+		return numDeletions;
 	}
-
 }

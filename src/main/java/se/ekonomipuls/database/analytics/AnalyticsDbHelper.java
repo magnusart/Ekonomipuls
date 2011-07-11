@@ -122,6 +122,10 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 		Log.d(TAG, "Creating join table with "
 				+ DB_CREATE_FILTER_RULES_TAGS_JOIN_TABLE);
 		db.execSQL(DB_CREATE_FILTER_RULES_TAGS_JOIN_TABLE);
+
+		Log.d(TAG, "Creating trigger with "
+				+ DB_CREATE_TRIGGER_TRANSACTIONS_DELETE_CASCADE);
+		db.execSQL(DB_CREATE_TRIGGER_TRANSACTIONS_DELETE_CASCADE);
 	}
 
 	/** {@inheritDoc} */

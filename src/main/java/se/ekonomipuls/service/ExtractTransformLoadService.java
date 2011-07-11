@@ -55,6 +55,12 @@ public class ExtractTransformLoadService {
 	private FilterRuleService filterService;
 
 	public boolean performETL() {
+		// Clean out Transactions without a Global ID.
+		// final int i = analyticsTransactionsDbFacade
+		// .purgeNonGlobalIDTransactions();
+		//
+		// Log.d(TAG, "Purged " + i
+		// + " transactions that did not have a Global ID");
 
 		// Get staged transactions with external model
 		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade
@@ -73,12 +79,6 @@ public class ExtractTransformLoadService {
 		// Apply filters
 		final List<ApplyFilterTagAction> filteredTransactions = filterService
 				.applyFilters(deduplicatedTransactions);
-
-		// Clean out Transactions without a Global ID.
-		final int i = analyticsTransactionsDbFacade.purgeNonGlobalIDTransactions();
-
-		Log.d(TAG, "Purged " + i
-				+ " transactions that did not have a Global ID");
 
 		// Load the transactions into the Analytics table
 		analyticsTransactionsDbFacade

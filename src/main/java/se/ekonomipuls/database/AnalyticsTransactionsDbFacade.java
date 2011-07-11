@@ -20,7 +20,6 @@ import java.util.List;
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.Transaction;
-import android.os.RemoteException;
 
 /**
  * @author Magnus Andersson
@@ -30,40 +29,54 @@ import android.os.RemoteException;
 public interface AnalyticsTransactionsDbFacade {
 
 	/**
+	 * Get all transactions that have not yet had any filters applied to them.
 	 * 
-	 * @return
+	 * @return List of unfiltered transactions.
 	 */
 	public abstract List<Transaction> getUnfilteredTransactions();
 
 	/**
+	 * Get all unverified transactions.
 	 * 
-	 * @return
+	 * @return List of unverified transactions
 	 */
 	public abstract List<Transaction> getUnverifiedTransactions();
 
 	/**
+	 * Get all transactions belonging to a certain category.
 	 * 
 	 * @param cat
-	 * @return
+	 *            Category to search within.
+	 * @return List of transactions.
 	 */
 	public abstract List<Transaction> getTransactionsByCategory(
 			final Category cat);
 
 	/**
+	 * Get all transaction in the analytics database.
 	 * 
-	 * @return
+	 * @return List of transactions.
 	 */
-	public abstract List<Transaction> getAllTransactions()
-			throws RemoteException;
+	public abstract List<Transaction> getAllTransactions();
 
 	/**
+	 * Insert new transactions and assign tags to it.
+	 * 
 	 * @param actions
+	 *            List of actions to execute.
 	 */
 	public abstract void insertTransactionsAssignTags(
 			final List<ApplyFilterTagAction> actions);
 
 	/**
+	 * <p>
+	 * Delete all transactions that does not contain a Global ID.
+	 * </p>
+	 * <p>
+	 * Note: implicitly triggers deletion in Join Table via Trigger
+	 * </p>
 	 * 
+	 * @return Number of transactions found and deleted.
 	 */
 	public abstract int purgeNonGlobalIDTransactions();
 

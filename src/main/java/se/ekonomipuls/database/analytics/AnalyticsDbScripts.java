@@ -31,8 +31,8 @@ public interface AnalyticsDbScripts {
 	String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE + " ( " + Transactions.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Transactions.GLOBAL_ID
-			+ " TEXT NOT NULL, " + Transactions.DATE + " TEXT NOT NULL, "
-			+ Transactions.AMOUNT + " TEXT NOT NULL, "
+			+ " TEXT NOT NULL DEFAULT '', " + Transactions.DATE
+			+ " TEXT NOT NULL, " + Transactions.AMOUNT + " TEXT NOT NULL, "
 			+ Transactions.DESCRIPTION + " TEXT NOT NULL, "
 			+ Transactions.COMMENT + " TEXT, " + Transactions.CURRENCY
 			+ " TEXT NOT NULL, " + Transactions.FILTERED
@@ -151,4 +151,17 @@ public interface AnalyticsDbScripts {
 			+ ") ON DELETE RESTRICT ON UPDATE CASCADE, "
 			+ "UNIQUE ( "
 			+ Joins.FILTER_RULE_FK + ", " + Joins.TAG_FK_3 + " )" + ")";
+
+	String DB_CREATE_TRIGGER_TRANSACTIONS_DELETE_CASCADE = "CREATE TRIGGER [delete_"
+			+ Transactions.TABLE
+			+ "] "
+			+ "BEFORE DELETE ON ["
+			+ Transactions.TABLE
+			+ "] "
+			+ "FOR EACH ROW BEGIN "
+			+ "DELETE FROM "
+			+ Joins.TRANSACTIONS_TAGS_TABLE
+			+ " WHERE "
+			+ Joins.TRANS_FK + " = old." + Transactions.ID + "; " + "END";
+
 }

@@ -58,7 +58,7 @@ public class ExternalModelMapper {
 		final String desc = bdTransaction.getDescription();
 		final BigDecimal amt = bdTransaction.getAmount();
 		final String currency = bdTransaction.getCurrency();
-		final String globalId = bdTransaction.getId();
+		final String globalId = ""; // TODO: Add Global ID here.
 
 		return new Transaction(0, globalId, date, desc, "", amt, currency,
 				false, false, accId);
