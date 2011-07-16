@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Magnus Andersson, Michael Svensson
+ * Copyright 2011 Magnus Andersson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,14 @@ import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Transactions;
 
 /**
  * @author Magnus Andersson
- * @author Michael Svensson
  * @since 1 apr 2011
  */
 public interface AnalyticsDbScripts {
 	String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE + " ( " + Transactions.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Transactions.GLOBAL_ID
-			+ " TEXT NOT NULL DEFAULT '', " + Transactions.DATE
-			+ " TEXT NOT NULL, " + Transactions.AMOUNT + " TEXT NOT NULL, "
+			+ " TEXT DEFAULT NULL, " + Transactions.DATE + " TEXT NOT NULL, "
+			+ Transactions.AMOUNT + " TEXT NOT NULL, "
 			+ Transactions.DESCRIPTION + " TEXT NOT NULL, "
 			+ Transactions.COMMENT + " TEXT, " + Transactions.CURRENCY
 			+ " TEXT NOT NULL, " + Transactions.FILTERED
@@ -152,16 +151,15 @@ public interface AnalyticsDbScripts {
 			+ "UNIQUE ( "
 			+ Joins.FILTER_RULE_FK + ", " + Joins.TAG_FK_3 + " )" + ")";
 
-	String DB_CREATE_TRIGGER_TRANSACTIONS_DELETE_CASCADE = "CREATE TRIGGER [delete_"
+	String DB_CREATE_TRIGGER_TRANSACTIONS_DELETE_CASCADE = "CREATE TRIGGER delete_"
 			+ Transactions.TABLE
-			+ "] "
-			+ "BEFORE DELETE ON ["
+			+ " BEFORE DELETE ON "
 			+ Transactions.TABLE
-			+ "] "
-			+ "FOR EACH ROW BEGIN "
+			+ " FOR EACH ROW BEGIN "
 			+ "DELETE FROM "
 			+ Joins.TRANSACTIONS_TAGS_TABLE
 			+ " WHERE "
-			+ Joins.TRANS_FK + " = old." + Transactions.ID + "; " + "END";
+			+ Joins.TRANS_FK
+			+ " = old." + Transactions.ID + "; " + "END";
 
 }

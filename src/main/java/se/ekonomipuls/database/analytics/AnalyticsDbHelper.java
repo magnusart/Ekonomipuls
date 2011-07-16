@@ -39,7 +39,6 @@ import se.ekonomipuls.model.Report;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -53,8 +52,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class AnalyticsDbHelper extends AbstractDbHelper implements
 		AnalyticsDbScripts {
-
-	final Context context = contextProvider.get();
 
 	@Inject
 	EkonomipulsUtil util;

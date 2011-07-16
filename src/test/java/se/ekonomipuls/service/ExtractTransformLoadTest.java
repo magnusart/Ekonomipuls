@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Magnus Andersson, Michael Svensson
+ * Copyright 2011 Magnus Andersson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package se.ekonomipuls.service;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +28,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -41,11 +42,11 @@ import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.ModelResources;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
+
 import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
- * @author Michael Svensson
  * @since 1 apr 2011
  */
 @RunWith(InjectedTestRunner.class)
@@ -76,32 +77,28 @@ public class ExtractTransformLoadTest {
 	@Mock
 	private EkonomipulsUtil util;
 
+	// Mocked data.
+	private List<BankDroidTransaction> mockedStagingTrans;
+	private List<Transaction> mockedTransactions;
+	private List<ApplyFilterTagAction> mockedActions;
+	private ArrayList<Transaction> dedupTransactions;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-	}
 
-	@Test
-	public void transactionsStagingIntoAnalytics() throws InterruptedException,
-			ExecutionException, TimeoutException {
-		final List<BankDroidTransaction> mockedStagingTrans = resources
-				.getStagingTransactions();
-
-		final List<Transaction> mockedTransactions = resources
-				.getTransactions();
-
-		final List<ApplyFilterTagAction> mockedActions = resources
-				.getTagFilterActions(mockedTransactions);
+		// Get mock data resources
+		mockedStagingTrans = resources.getStagingTransactions();
+		mockedTransactions = resources.getTransactions();
+		mockedActions = resources.getTagFilterActions(mockedTransactions);
 
 		when(stagingDbFacade.getStagedTransactions())
 				.thenReturn(mockedStagingTrans);
-
 		when(mapper.fromBdTransactionsToTransactions(eq(mockedStagingTrans)))
 				.thenReturn(mockedTransactions);
 
 		// Simulate that transactions have been removed in dedup.
-		final List<Transaction> dedupTransactions = new ArrayList<Transaction>(
-				mockedTransactions);
+		dedupTransactions = new ArrayList<Transaction>(mockedTransactions);
 		Collections.copy(dedupTransactions, mockedTransactions);
 		dedupTransactions.remove(0);
 
@@ -113,21 +110,26 @@ public class ExtractTransformLoadTest {
 		when(filterService.applyFilters(eq(dedupTransactions)))
 				.thenReturn(mockedActions);
 
+	}
+
+	@Test
+	public void transactionsStagingIntoAnalytics() throws InterruptedException,
+			ExecutionException, TimeoutException {
+
 		service.performETL();
 
-		verify(stagingDbFacade).getStagedTransactions();
+		final InOrder inOrder = inOrder(analyticsTransDbFacade, stagingDbFacade, mapper, dedupService, filterService, util);
 
-		verify(mapper).fromBdTransactionsToTransactions(eq(mockedStagingTrans));
-
-		verify(dedupService).deduplicate(eq(mockedTransactions));
-
-		verify(filterService).applyFilters(eq(dedupTransactions));
-
-		verify(analyticsTransDbFacade)
+		// Verify flow is executed in correct order.
+		inOrder.verify(analyticsTransDbFacade).purgeNonGlobalIDTransactions();
+		inOrder.verify(stagingDbFacade).getStagedTransactions();
+		inOrder.verify(mapper)
+				.fromBdTransactionsToTransactions(eq(mockedStagingTrans));
+		inOrder.verify(dedupService).deduplicate(eq(mockedTransactions));
+		inOrder.verify(filterService).applyFilters(eq(dedupTransactions));
+		inOrder.verify(analyticsTransDbFacade)
 				.insertTransactionsAssignTags(eq(mockedActions));
-
-		verify(stagingDbFacade).purgeStagingTable();
-
-		verify(util).setNewTransactionStatus(eq(false));
+		inOrder.verify(stagingDbFacade).purgeStagingTable();
+		inOrder.verify(util).setNewTransactionStatus(eq(false));
 	}
 }

@@ -21,9 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.liato.bankdroid.provider.IAccountTypes;
 import se.ekonomipuls.database.StagingDbFacade;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.proxy.bankdroid.BankDroidAccount;
@@ -31,6 +28,10 @@ import se.ekonomipuls.proxy.bankdroid.BankDroidBank;
 import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 import android.util.Log;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.liato.bankdroid.provider.IAccountTypes;
 
 /**
  * @author Magnus Andersson
@@ -57,8 +58,11 @@ public class BankDroidImportService {
 
 		for (final BankDroidBank bank : banks) {
 			for (final BankDroidAccount account : bank.getAccounts()) {
-				if (correctAccountType(account)) {
+				if (correctAccountType(account.getType())) {
 					importAccount(account.getId());
+				} else {
+					Log.d(TAG, "Skipping account of incorrect type. Account = "
+							+ account);
 				}
 			}
 		}
@@ -67,19 +71,35 @@ public class BankDroidImportService {
 		util.setNewTransactionStatus(true);
 	}
 
-	private boolean correctAccountType(final BankDroidAccount account) {
-		// Only ímport transactions from Credit Cards or Regular Accounts.
-		return (account.getType() == IAccountTypes.CCARD)
-				|| (account.getType() == IAccountTypes.REGULAR);
-	}
-
 	public void importSingleAccount(final String accountId)
 			throws IllegalAccessException {
 
-		importAccount(accountId);
+		if (correctAccountType(getAccountType(accountId))) {
+			importAccount(accountId);
+			// Make sure we see that there are new transactions in the GUI.
+			util.setNewTransactionStatus(true);
+		} else {
+			Log.d(TAG, "Skipping account of incorrect type. Account id = "
+					+ accountId);
+		}
+	}
 
-		// Make sure we see that there are new transactions in the GUI.
-		util.setNewTransactionStatus(true);
+	private int getAccountType(final String accountId)
+			throws IllegalAccessException {
+		final Map<Long, BankDroidBank> bankMap = bankDroidProxy
+				.getBankDroidBanks();
+
+		// This is an O(n²) algo, which is bad. However we will most likely
+		// never handle more than n = 5 so performance hit is negligible.
+		for (final BankDroidBank bank : bankMap.values()) {
+			for (final BankDroidAccount acc : bank.getAccounts()) {
+				if (acc.getId().equals(accountId)) {
+					return acc.getType();
+				}
+			}
+		}
+
+		return -1;
 	}
 
 	/**
@@ -101,4 +121,11 @@ public class BankDroidImportService {
 		}
 
 	}
+
+	private boolean correctAccountType(final int accountType) {
+		// Only ímport transactions from Credit Cards or Regular Accounts.
+		return (accountType == IAccountTypes.CCARD)
+				|| (accountType == IAccountTypes.REGULAR);
+	}
+
 }

@@ -19,8 +19,6 @@ import static se.ekonomipuls.LogTag.TAG;
 
 import java.util.List;
 
-import com.google.inject.Inject;
-
 import se.ekonomipuls.actions.ApplyFilterTagAction;
 import se.ekonomipuls.database.AnalyticsTransactionsDbFacade;
 import se.ekonomipuls.database.StagingDbFacade;
@@ -29,6 +27,8 @@ import se.ekonomipuls.model.ExternalModelMapper;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
 import android.util.Log;
+
+import com.google.inject.Inject;
 
 /**
  * @author Magnus Andersson
@@ -56,11 +56,7 @@ public class ExtractTransformLoadService {
 
 	public boolean performETL() {
 		// Clean out Transactions without a Global ID.
-		// final int i = analyticsTransactionsDbFacade
-		// .purgeNonGlobalIDTransactions();
-		//
-		// Log.d(TAG, "Purged " + i
-		// + " transactions that did not have a Global ID");
+		analyticsTransactionsDbFacade.purgeNonGlobalIDTransactions();
 
 		// Get staged transactions with external model
 		final List<BankDroidTransaction> stagedTransactions = stagingDbFacade

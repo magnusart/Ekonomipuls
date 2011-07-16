@@ -151,12 +151,13 @@ public class AnalyticsTransactionsDbImpl extends AbstractDb implements
 		final SQLiteDatabase db = helper.getWritableDatabase();
 
 		final String table = Transactions.TABLE;
-		final String whereClause = "LENGTH(" + Transactions.GLOBAL_ID + ") = 0";
-		final String[] whereArgs = new String[] {};
+		final String whereClause = Transactions.GLOBAL_ID + " ISNULL";
+		final String[] whereArgs = null;
 		int numDeletions = 0;
 
 		try {
 			numDeletions = delete(db, table, whereClause, whereArgs);
+			db.setTransactionSuccessful();
 		} finally {
 			shutdownDb(db, helper);
 		}

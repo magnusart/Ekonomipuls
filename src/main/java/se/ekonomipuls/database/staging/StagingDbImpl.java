@@ -15,25 +15,23 @@
  */
 package se.ekonomipuls.database.staging;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import se.ekonomipuls.database.StagingDbFacade;
-import se.ekonomipuls.database.abstr.AbstractDb;
-import se.ekonomipuls.model.ExternalModelMapper;
-import se.ekonomipuls.model.ModelSqlMapper;
-import se.ekonomipuls.proxy.bankdroid.BankDroidModelSqlMapper;
-import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
+import static se.ekonomipuls.LogTag.TAG;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static se.ekonomipuls.LogTag.TAG;
-import static se.ekonomipuls.database.staging.StagingDbConstants.Staging;
+import se.ekonomipuls.database.StagingDbFacade;
+import se.ekonomipuls.database.abstr.AbstractDb;
+import se.ekonomipuls.database.staging.StagingDbConstants.Staging;
+import se.ekonomipuls.model.ModelSqlMapper;
+import se.ekonomipuls.proxy.bankdroid.BankDroidTransaction;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
@@ -128,6 +126,7 @@ public class StagingDbImpl extends AbstractDb implements StagingDbFacade {
 
 		try {
 			numDeleted = delete(db, table, whereClause, whereArgs);
+			db.setTransactionSuccessful();
 		} finally {
 			shutdownDb(db, helper);
 		}

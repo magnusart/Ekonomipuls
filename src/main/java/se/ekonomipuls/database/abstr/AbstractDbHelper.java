@@ -15,26 +15,23 @@
  */
 package se.ekonomipuls.database.abstr;
 
+import static se.ekonomipuls.LogTag.TAG;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import static se.ekonomipuls.LogTag.TAG;
 
 /**
  * @author Magnus Andersson
- * @author Michael Svensson
  * @since 13 mar 2011
  */
 public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 
-	public static final String TURN_ON_FK = "PRAGMA foreign_keys = ON;";
-
 	@Inject
-	protected static Provider<Context> contextProvider;
+	protected static Context context;
 
 	/**
 	 * @param name
@@ -43,13 +40,12 @@ public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 	 */
 	public AbstractDbHelper(final String name, final CursorFactory factory,
 			final int version) {
-		super(contextProvider.get(), name, factory, version);
+		super(context, name, factory, version);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onCreate(final SQLiteDatabase db) {
-		// db.execSQL(TURN_ON_FK); // Has to be outside an transaction
 		db.beginTransaction();
 		createTables(db);
 		initTables(db);
@@ -62,9 +58,7 @@ public abstract class AbstractDbHelper extends SQLiteOpenHelper {
 	/** {@inheritDoc} */
 	@Override
 	public void onOpen(final SQLiteDatabase db) {
-		// The transaction is closed in LeaklessCursor#close()
 		if (!db.isReadOnly()) {
-			// db.execSQL(TURN_ON_FK);
 			Log.v(TAG, "Beginning transaction for " + db.toString());
 			db.beginTransaction();
 		}

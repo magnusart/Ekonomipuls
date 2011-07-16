@@ -17,9 +17,10 @@ package se.ekonomipuls.service;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -82,8 +83,7 @@ public class BankDroidImportTest {
 	}
 
 	@Test
-	public void importTransactionsFromSingleAccount()
-			throws IllegalAccessException {
+	public void importTransactionsFromSingleAccount() throws Exception {
 
 		final List<BankDroidTransaction> mockedTransactions = setupMockedTranscationsList();
 		when(bankDroidProxy.getBankDroidTransactions(isA(String.class)))
@@ -104,8 +104,7 @@ public class BankDroidImportTest {
 	}
 
 	@Test
-	public void importTransactionsFromAllAccounts()
-			throws IllegalAccessException {
+	public void importTransactionsFromAllAccounts() throws Exception {
 
 		final Map<Long, BankDroidBank> mockedBankAccounts = setupMockedBanksMap();
 		when(bankDroidProxy.getBankDroidBanks()).thenReturn(mockedBankAccounts);
@@ -137,6 +136,41 @@ public class BankDroidImportTest {
 		// Now we should have new transactions
 		verify(ekonomipulsUtil).setNewTransactionStatus(eq(true));
 
+	}
+
+	@Test
+	public void importTransactionsOnlyCertainAccounts()
+			throws IllegalAccessException {
+
+		final Map<Long, BankDroidBank> mockedBankAccounts = setupIncorrectMockedBanksMap();
+
+		when(bankDroidProxy.getBankDroidBanks()).thenReturn(mockedBankAccounts);
+
+		bankDroidImportService.importAllAccounts();
+
+		// verify nothing is put into the staging table.
+		verifyZeroInteractions(stagingDbFacade);
+
+	}
+
+	/**
+	 * @return
+	 */
+	private Map<Long, BankDroidBank> setupIncorrectMockedBanksMap() {
+		final Map<Long, BankDroidBank> bankDroidBanks = new LinkedHashMap<Long, BankDroidBank>();
+
+		final BankDroidBank bank = new BankDroidBank(BANK_ID, BANK_NAME,
+				IBankTypes.TESTBANK, LAST_UPDATED);
+
+		// Create an account with incorrect account type.
+		final BankDroidAccount incorrectAccountType = new BankDroidAccount(
+				ACC_ID + "_" + 666, ACCOUNT_BALANCE, ACC_NAME + 666,
+				IAccountTypes.LOANS);
+
+		bank.getAccounts().add(incorrectAccountType);
+		bankDroidBanks.put(bank.getId(), bank);
+
+		return bankDroidBanks;
 	}
 
 	private Map<Long, BankDroidBank> setupMockedBanksMap() {
