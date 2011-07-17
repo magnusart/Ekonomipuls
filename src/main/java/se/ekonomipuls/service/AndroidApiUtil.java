@@ -15,13 +15,8 @@
  */
 package se.ekonomipuls.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,7 +28,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
+import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import android.content.Context;
 import android.util.Log;
 
@@ -98,38 +93,9 @@ public class AndroidApiUtil {
 		return instream;
 	}
 
-	public String getConfigurationFile(final ConfigurationFileType type)
+	public InputStream getConfigurationFile(final ConfigurationType type)
 			throws IOException {
-		final InputStream is = context.getAssets().open(type.getFileName());
-		return convertStreamToString(is);
+		return context.getAssets().open(type.getFileName());
+
 	}
-
-	public String convertStreamToString(final InputStream is)
-			throws IOException {
-		/*
-		 * To convert the InputStream to String we use the Reader.read(char[]
-		 * buffer) method. We iterate until the Reader return -1 which means
-		 * there's no more data to read. We use the StringWriter class to
-		 * produce the string.
-		 */
-		if (is != null) {
-			final Writer writer = new StringWriter();
-
-			final char[] buffer = new char[1024];
-			try {
-				final Reader reader = new BufferedReader(new InputStreamReader(
-						is, "UTF-8"));
-				int n;
-				while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
-				}
-			} finally {
-				is.close();
-			}
-			return writer.toString();
-		} else {
-			return "";
-		}
-	}
-
 }

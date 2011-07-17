@@ -17,10 +17,12 @@ package se.ekonomipuls.proxy.configuration;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +34,7 @@ import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
+import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import se.ekonomipuls.model.EntityType;
 import se.ekonomipuls.service.AndroidApiUtil;
 
@@ -44,7 +46,7 @@ import com.google.inject.Inject;
  */
 @RunWith(InjectedTestRunner.class)
 public class FileConfiguratorProxyTest {
-	private static final int FILTER_RULE_SIZE = 8;
+	private static final int FILTER_RULE_SIZE = 30;
 	private static final int CATEGORY_SIZE = 22;
 
 	private static final String EXPENSES_TAG_NAME = "Övriga utgifter";
@@ -55,9 +57,6 @@ public class FileConfiguratorProxyTest {
 
 	@Mock
 	private AndroidApiUtil util;
-
-	@Inject
-	private AndroidApiUtil util2;
 
 	@Inject
 	private FileMockUtil fileMock;
@@ -76,18 +75,14 @@ public class FileConfiguratorProxyTest {
 		final InputStream tagStream = fileMock.setupTagFileMock();
 		final InputStream rulesStream = fileMock.setupFilterRulesFileMock();
 
-		final String tagString = util2.convertStreamToString(tagStream);
-		final String catString = util2.convertStreamToString(catStream);
-		final String ruleString = util2.convertStreamToString(rulesStream);
+		when(util.getConfigurationFile(ConfigurationType.CATEGORIES))
+				.thenReturn(catStream);
 
-		when(util.getConfigurationFile(ConfigurationFileType.CATEGORIES))
-				.thenReturn(catString);
+		when(util.getConfigurationFile(ConfigurationType.TAGS))
+				.thenReturn(tagStream);
 
-		when(util.getConfigurationFile(ConfigurationFileType.FILTER_RULES))
-				.thenReturn(ruleString);
-
-		when(util.getConfigurationFile(ConfigurationFileType.TAGS))
-				.thenReturn(tagString);
+		when(util.getConfigurationFile(ConfigurationType.FILTER_RULES))
+				.thenReturn(rulesStream);
 
 		categories = config.getCategories();
 		tags = config.getTags();

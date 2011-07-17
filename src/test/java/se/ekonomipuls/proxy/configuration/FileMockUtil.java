@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 
 import com.google.inject.Singleton;
 
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationFileType;
+import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 
 /**
  * @author Magnus Andersson
@@ -41,7 +41,7 @@ public class FileMockUtil {
 	 */
 	InputStream setupFilterRulesFileMock() throws Exception {
 		final String filePath = ASSETS
-				+ ConfigurationFileType.FILTER_RULES.getFileName();
+				+ ConfigurationType.FILTER_RULES.getFileName();
 
 		assertFileExists(filePath);
 
@@ -56,7 +56,7 @@ public class FileMockUtil {
 	InputStream setupTagFileMock() throws Exception {
 
 		final String filePath = ASSETS
-				+ ConfigurationFileType.TAGS.getFileName();
+				+ ConfigurationType.TAGS.getFileName();
 
 		assertFileExists(filePath);
 
@@ -71,7 +71,7 @@ public class FileMockUtil {
 	 */
 	InputStream setupCategoryFileMock() throws Exception {
 		final String filePath = ASSETS
-				+ ConfigurationFileType.CATEGORIES.getFileName();
+				+ ConfigurationType.CATEGORIES.getFileName();
 
 		assertFileExists(filePath);
 

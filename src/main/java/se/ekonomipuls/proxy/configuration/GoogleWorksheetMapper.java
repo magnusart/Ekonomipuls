@@ -15,11 +15,17 @@
  */
 package se.ekonomipuls.proxy.configuration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import se.ekonomipuls.LogTag;
 import se.ekonomipuls.actions.AddFilterRuleAction;
+import se.ekonomipuls.proxy.configuration.GoogleFilterRulesWorksheet.Entry;
+import android.util.Log;
 
 import com.google.inject.Singleton;
 
@@ -40,6 +46,8 @@ final class GoogleWorksheetMapper implements LogTag {
 	private static final String TRANSACTION_TYPE_KEY = "vilkentypavtransaktionärdet";
 	private static final String SIGNATURE = "signaturellere-post";
 	private static final String EXPENSE_CATEGORY = "utgiftskategori";
+
+	private static final String COLON_SPLIT = ":";
 
 	/**
 	 * @param col
@@ -89,5 +97,80 @@ final class GoogleWorksheetMapper implements LogTag {
 		final Collection<String> values = row.values();
 
 		return values.iterator().next();
+	}
+
+	/**
+	 * @param worksheet
+	 * @return
+	 */
+	public Map<String, List<AddFilterRuleAction>> mapActiveFilterRules(
+			final GoogleFilterRulesWorksheet worksheet) {
+		final Map<String, List<AddFilterRuleAction>> activeFilterRules = new HashMap<String, List<AddFilterRuleAction>>();
+
+		// Make sure we actually have values
+		if (weHaveData(worksheet)) {
+
+			Log.d(TAG, "Parsed worksheet, converting to domain object");
+
+			// Iterate over entries.
+			for (final GoogleFilterRulesWorksheet.Entry e : worksheet.feed.entry) {
+				Log.d(TAG, "Parsing entry [ " + e.content.value + " ]");
+
+				final HashMap<String, String> row = getFilterRuleValues(e);
+
+				final AddFilterRuleAction action = mapActiveFilterRule(row);
+
+				if (action != null) {
+					final String tag = mapTag(row);
+
+					List<AddFilterRuleAction> actions;
+					if (activeFilterRules.containsKey(tag)) {
+						actions = activeFilterRules.get(tag);
+					} else {
+						actions = new ArrayList<AddFilterRuleAction>();
+					}
+
+					// Add the action
+					actions.add(action);
+
+					activeFilterRules.put(tag, actions);
+
+					Log.d(TAG, "Adding action " + action + " with tag " + tag);
+				}
+
+			}
+		}
+
+		return activeFilterRules;
+	}
+
+	/**
+	 * @param worksheet
+	 * @return
+	 */
+	private boolean weHaveData(final GoogleFilterRulesWorksheet worksheet) {
+		return (worksheet != null)
+				&& (worksheet.feed != null)
+				&& ((worksheet.feed.entry != null) && (worksheet.feed.entry
+						.size() > 0));
+	}
+
+	/**
+	 * @param e
+	 * @return
+	 */
+	private HashMap<String, String> getFilterRuleValues(final Entry e) {
+		final StringTokenizer tokenizer = new StringTokenizer(e.content.value,
+				",");
+		final HashMap<String, String> columns = new HashMap<String, String>();
+
+		// Split into key value and insert into columns hashmap.
+		while (tokenizer.hasMoreTokens()) {
+			final String keyValue = tokenizer.nextToken();
+			final String[] s = keyValue.split(COLON_SPLIT);
+			columns.put(s[0].trim(), s[1].trim());
+		}
+
+		return columns;
 	}
 }

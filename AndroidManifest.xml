@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest package="se.ekonomipuls" android:versionName="0.1.Pre-Alpha-8" android:versionCode="8" xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:debuggable="false" android:label="@string/app_homescreen" android:name="se.ekonomipuls.EkonomipulsApplication" android:icon="@drawable/ic_launcher_ekonomipuls">
+	<application android:debuggable="true" android:label="@string/app_homescreen" android:name="se.ekonomipuls.EkonomipulsApplication" android:icon="@drawable/ic_launcher_ekonomipuls">
 		<activity android:name="EkonomipulsHome" android:theme="@android:style/Theme.NoTitleBar" android:screenOrientation="portrait">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

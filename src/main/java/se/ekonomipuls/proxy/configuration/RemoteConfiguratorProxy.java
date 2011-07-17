@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Magnus Andersson, Michael Svensson
+ * Copyright 2011 Magnus Andersson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,16 @@ package se.ekonomipuls.proxy.configuration;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 
 /**
- * This class loads the default categories for initial configuration of the
- * application.
- * 
  * @author Magnus Andersson
- * @since 16 maj 2011
+ * @since 15 jun 2011
  */
-public class FileConfiguratorProxy extends AbstractConfiguratorProxy {
+public class RemoteConfiguratorProxy extends AbstractConfiguratorProxy {
+
 	{
 		sourceMapping.put(ConfigurationType.CATEGORIES, SourceType.LOCAL_JSON);
 		sourceMapping.put(ConfigurationType.TAGS, SourceType.LOCAL_JSON);
 		sourceMapping
-				.put(ConfigurationType.FILTER_RULES, SourceType.LOCAL_SPREADSHEET_JSON);
+				.put(ConfigurationType.FILTER_RULES, SourceType.REMOTE_SPREADSHEET_JSON);
 	}
+
 }
