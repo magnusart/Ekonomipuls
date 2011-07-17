@@ -18,7 +18,6 @@ package se.ekonomipuls.proxy.configuration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +29,11 @@ import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
+import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
 import se.ekonomipuls.service.AndroidApiUtil;
-import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
@@ -49,18 +45,7 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 		ConfiguratorProxy {
 
 	@Inject
-	Gson gson;
-
-	@Inject
-	private Provider<GoogleWorksheetMapper> mapperProvider;
-
-	/**
-	 * @author Magnus Andersson
-	 * @since 17 jul 2011
-	 */
-	static enum SourceType {
-		LOCAL_JSON, LOCAL_SPREADSHEET_JSON, REMOTE_SPREADSHEET_JSON
-	}
+	protected ConfigurationRemapUtil remapUtil;
 
 	@Inject
 	private AndroidApiUtil util;
@@ -69,12 +54,7 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	private String filterRulesUrl;
 
 	final Map<ConfigurationType, SourceType> sourceMapping = new HashMap<ConfigurationType, SourceType>();
-	private final Map<SourceType, String> remoteUrlMapping = new HashMap<SourceType, String>();
-
-	{
-		remoteUrlMapping
-				.put(SourceType.REMOTE_SPREADSHEET_JSON, filterRulesUrl);
-	}
+	private final Map<ConfigurationType, String> remoteUrlMapping = new HashMap<ConfigurationType, String>();
 
 	/**
 	 * {@inheritDoc}
@@ -84,8 +64,9 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	@Override
 	public List<AddCategoryAction> getCategories() throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.CATEGORIES);
-		final List<AddCategoryAction> categories = mapCategories(reader, sourceMapping
-				.get(ConfigurationType.CATEGORIES));
+		final List<AddCategoryAction> categories = remapUtil
+				.mapCategories(reader, sourceMapping
+						.get(ConfigurationType.CATEGORIES));
 		reader.close();
 		return categories;
 	}
@@ -94,8 +75,8 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	@Override
 	public Map<String, List<AddTagAction>> getTags() throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.TAGS);
-		final Map<String, List<AddTagAction>> tags = mapTags(reader, sourceMapping
-				.get(ConfigurationType.TAGS));
+		final Map<String, List<AddTagAction>> tags = remapUtil
+				.mapTags(reader, sourceMapping.get(ConfigurationType.TAGS));
 		reader.close();
 		return tags;
 	}
@@ -109,87 +90,20 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	public Map<String, List<AddFilterRuleAction>> getFilterRules()
 			throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.FILTER_RULES);
-		final Map<String, List<AddFilterRuleAction>> filterRules = mapFilterRules(reader, sourceMapping
-				.get(ConfigurationType.FILTER_RULES));
+		final Map<String, List<AddFilterRuleAction>> filterRules = remapUtil
+				.mapFilterRules(reader, sourceMapping
+						.get(ConfigurationType.FILTER_RULES));
 		reader.close();
 		return filterRules;
-	}
-
-	/**
-	 * @param reader
-	 * @return
-	 */
-	protected Map<String, List<AddTagAction>> mapTags(final JsonReader reader,
-			final SourceType type) {
-		Map<String, List<AddTagAction>> tags = null;
-
-		switch (type) {
-		case LOCAL_JSON:
-			final Type mapType = new TypeToken<Map<String, List<AddTagAction>>>() {
-			}.getType();
-			tags = gson.fromJson(reader, mapType);
-			break;
-		case LOCAL_SPREADSHEET_JSON:
-		case REMOTE_SPREADSHEET_JSON:
-			Log.w(TAG, "No Spreadsheet mapper for tags implemented");
-			break;
-		}
-
-		return tags;
-	}
-
-	/**
-	 * @param reader
-	 * @return
-	 */
-	protected final Map<String, List<AddFilterRuleAction>> mapFilterRules(
-			final JsonReader reader, final SourceType type) {
-		Map<String, List<AddFilterRuleAction>> filterRules = null;
-
-		switch (type) {
-		case LOCAL_JSON:
-			final Type mapType = new TypeToken<Map<String, List<AddFilterRuleAction>>>() {
-			}.getType();
-			filterRules = gson.fromJson(reader, mapType);
-			break;
-		case LOCAL_SPREADSHEET_JSON:
-		case REMOTE_SPREADSHEET_JSON:
-			final GoogleFilterRulesWorksheet worksheet = gson
-					.fromJson(reader, GoogleFilterRulesWorksheet.class);
-			filterRules = mapperProvider.get().mapActiveFilterRules(worksheet);
-			break;
-		}
-
-		return filterRules;
-	}
-
-	/**
-	 * @param reader
-	 * @return
-	 */
-	private final List<AddCategoryAction> mapCategories(
-			final JsonReader reader, final SourceType type) {
-		List<AddCategoryAction> categories = null;
-
-		switch (type) {
-		case LOCAL_JSON:
-			final Type listType = new TypeToken<List<AddCategoryAction>>() {
-			}.getType();
-
-			categories = gson.fromJson(reader, listType);
-			break;
-		case LOCAL_SPREADSHEET_JSON:
-		case REMOTE_SPREADSHEET_JSON:
-			Log.w(TAG, "No Spreadsheet mapper for Categories implemented");
-			break;
-		}
-
-		return categories;
 	}
 
 	private JsonReader getConfiguration(final ConfigurationType type)
 			throws IOException {
 		final SourceType source = sourceMapping.get(type);
+
+		if (remoteUrlMapping.size() == 0) {
+			initRemoteUrlMapping();
+		}
 
 		InputStream is = null;
 
@@ -210,5 +124,13 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 		}
 
 		return new JsonReader(new InputStreamReader(is, "UTF-8"));
+	}
+
+	/**
+	 * Do this after constructor finished to be able to access injected
+	 * resources.
+	 */
+	private void initRemoteUrlMapping() {
+		remoteUrlMapping.put(ConfigurationType.FILTER_RULES, filterRulesUrl);
 	}
 }

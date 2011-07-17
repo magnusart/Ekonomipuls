@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<string name="error_configuration_service_unable_to_load">Importen av filterregler misslyckades. Vänligen kontrollera din Internet-anslutning.</string>
+	<string name="success_configuration_service_async">Importen av filterregler lyckades.</string>
+</resources>

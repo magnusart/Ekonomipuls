@@ -38,6 +38,7 @@ import se.ekonomipuls.model.ModelSqlMapper;
 import se.ekonomipuls.model.Report;
 import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy.LocalConfiguration;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -60,7 +61,8 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	ModelSqlMapper mapper;
 
 	@Inject
-	ConfiguratorProxy config;
+	@LocalConfiguration
+	private ConfiguratorProxy configProxy;
 
 	@Inject
 	ConfigurationValidator validator;
@@ -133,13 +135,13 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 
 		Log.d(TAG, "Adding Categories");
 		try {
-			final List<AddCategoryAction> categoryActions = config
+			final List<AddCategoryAction> categoryActions = configProxy
 					.getCategories();
 
-			final Map<String, List<AddTagAction>> tagsActions = config
+			final Map<String, List<AddTagAction>> tagsActions = configProxy
 					.getTags();
 
-			final Map<String, List<AddFilterRuleAction>> filterRulesActions = config
+			final Map<String, List<AddFilterRuleAction>> filterRulesActions = configProxy
 					.getFilterRules();
 
 			final Map<String, Long> tagIds = new HashMap<String, Long>();
@@ -180,7 +182,7 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 						initAddFilterRule(db, tagId, ruleActions);
 					}
 
-					// Construct temporary map with Tagname -> tagId for
+					// Construct temporary map with Tag name -> tagId for
 					// later use.
 					tagIds.put(tagAction.getName(), tagId);
 

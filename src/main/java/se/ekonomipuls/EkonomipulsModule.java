@@ -14,6 +14,9 @@ import se.ekonomipuls.database.analytics.AnalyticsTransactionsDbImpl;
 import se.ekonomipuls.database.staging.StagingDbImpl;
 import se.ekonomipuls.proxy.bankdroid.BankDroidProxy;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy.LocalConfiguration;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy.RemoteConfiguration;
+import se.ekonomipuls.proxy.configuration.LocalConfiguratorProxy;
 import se.ekonomipuls.proxy.configuration.RemoteConfiguratorProxy;
 
 /**
@@ -30,20 +33,23 @@ public class EkonomipulsModule extends AbstractAndroidModule {
 		requestStaticInjection(AbstractDbHelper.class);
 		requestStaticInjection(BankDroidProxy.class);
 
-		bind(AnalyticsTransactionsDbFacade.class).to(
-				AnalyticsTransactionsDbImpl.class);
+		bind(AnalyticsTransactionsDbFacade.class)
+				.to(AnalyticsTransactionsDbImpl.class);
 
 		bind(StagingDbFacade.class).to(StagingDbImpl.class);
 
-		bind(AnalyticsCategoriesDbFacade.class).to(
-				AnalyticsCategoriesDbImpl.class);
+		bind(AnalyticsCategoriesDbFacade.class)
+				.to(AnalyticsCategoriesDbImpl.class);
 
-		bind(AnalyticsFilterRulesDbFacade.class).to(
-				AnalyticsFilterRulesDbImpl.class);
+		bind(AnalyticsFilterRulesDbFacade.class)
+				.to(AnalyticsFilterRulesDbImpl.class);
 
 		bind(AnalyticsTagsDbFacade.class).to(AnalyticsTagsDbImpl.class);
 
-		bind(ConfiguratorProxy.class).to(RemoteConfiguratorProxy.class);
+		bind(ConfiguratorProxy.class).annotatedWith(RemoteConfiguration.class)
+				.to(RemoteConfiguratorProxy.class);
+		bind(ConfiguratorProxy.class).annotatedWith(LocalConfiguration.class)
+				.to(LocalConfiguratorProxy.class);
 
 	}
 }

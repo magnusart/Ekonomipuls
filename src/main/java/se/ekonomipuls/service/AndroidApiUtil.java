@@ -31,6 +31,7 @@ import se.ekonomipuls.LogTag;
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -97,5 +98,12 @@ public class AndroidApiUtil {
 			throws IOException {
 		return context.getAssets().open(type.getFileName());
 
+	}
+
+	public void toastMessage(final String message) {
+		final int duration = Toast.LENGTH_LONG;
+
+		final Toast toast = Toast.makeText(context, message, duration);
+		toast.show();
 	}
 }

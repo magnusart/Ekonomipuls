@@ -28,12 +28,28 @@ import se.ekonomipuls.model.FilterRule;
 public interface AnalyticsFilterRulesDbFacade {
 
 	/**
-	 * Will return the filter rules sorted based on respective priority
+	 * Will return the filter rules sorted based on respective priority.
 	 * 
 	 * @return All the filter rules.
 	 */
 	List<FilterRule> getFilterRules();
 
+	/**
+	 * Add one filter rule into the database.
+	 * 
+	 * @param action
+	 *            Action to perform
+	 * @return number of rows affected
+	 */
 	long insertFilterRule(AddFilterRuleAction action);
+
+	/**
+	 * Purge existing filter rules and batch insert a list of filter rules.
+	 * 
+	 * @param actions
+	 *            List of actions to perform
+	 * @return number of rows affected
+	 */
+	long replaceFilterRules(List<AddFilterRuleAction> actions);
 
 }

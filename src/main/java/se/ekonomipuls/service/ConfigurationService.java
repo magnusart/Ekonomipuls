@@ -16,38 +16,79 @@
 package se.ekonomipuls.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import se.ekonomipuls.LogTag;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
+import se.ekonomipuls.actions.AddTagAction;
+import se.ekonomipuls.database.AnalyticsFilterRulesDbFacade;
+import se.ekonomipuls.model.EkonomipulsUtil;
+import se.ekonomipuls.proxy.configuration.ConfigurationValidator;
 import se.ekonomipuls.proxy.configuration.ConfiguratorProxy;
+import se.ekonomipuls.proxy.configuration.ConfiguratorProxy.RemoteConfiguration;
+import android.util.Log;
 
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
- * @since 14 jun 2011
+ * @since 17 jul 2011
  */
-public class ConfigurationService {
+@Singleton
+public class ConfigurationService implements LogTag {
 
 	@Inject
-	ConfiguratorProxy proxy;
+	@RemoteConfiguration
+	private ConfiguratorProxy configProxy;
 
-	public final Map<String, List<AddFilterRuleAction>> getFilterRules() {
+	@Inject
+	private AnalyticsFilterRulesDbFacade filterRules;
+
+	@Inject
+	private ConfigurationValidator validator;
+
+	@Inject
+	private EkonomipulsUtil util;
+
+	public boolean importRemoteFilterRulesLocalCategoriesTags() {
+
+		long updatedRows = -1;
+
 		try {
-			return proxy.getFilterRules();
-		} catch (final JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final JsonSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			final Map<String, List<AddFilterRuleAction>> rules = configProxy
+					.getFilterRules();
+
+			final List<AddCategoryAction> categories = configProxy
+					.getCategories();
+
+			final Map<String, List<AddTagAction>> tags = configProxy.getTags();
+
+			validator.validateConfiguration(categories, tags, rules, util
+					.getDefaultExpenseTag().getName(), util
+					.getDefaultIncomeTag().getName());
+
+			final List<AddFilterRuleAction> actions = new ArrayList<AddFilterRuleAction>();
+			for (final List<AddFilterRuleAction> a : rules.values()) {
+				actions.addAll(a);
+			}
+
+			updatedRows = filterRules.replaceFilterRules(actions);
+
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
+			Log.e(TAG, e.getMessage());
 			e.printStackTrace();
+
+			return false;
 		}
-		return null;
+
+		if (updatedRows > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

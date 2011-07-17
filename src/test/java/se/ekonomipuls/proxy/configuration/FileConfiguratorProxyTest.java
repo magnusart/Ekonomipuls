@@ -63,7 +63,7 @@ public class FileConfiguratorProxyTest {
 
 	@Inject
 	@InjectMocks
-	private FileConfiguratorProxy config;
+	private LocalConfiguratorProxy configProxy;
 	private List<AddCategoryAction> categories;
 	private Map<String, List<AddTagAction>> tags;
 	private Map<String, List<AddFilterRuleAction>> rules;
@@ -84,9 +84,9 @@ public class FileConfiguratorProxyTest {
 		when(util.getConfigurationFile(ConfigurationType.FILTER_RULES))
 				.thenReturn(rulesStream);
 
-		categories = config.getCategories();
-		tags = config.getTags();
-		rules = config.getFilterRules();
+		categories = configProxy.getCategories();
+		tags = configProxy.getTags();
+		rules = configProxy.getFilterRules();
 	}
 
 	@Test

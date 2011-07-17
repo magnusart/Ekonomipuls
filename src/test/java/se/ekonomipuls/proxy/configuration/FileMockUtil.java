@@ -15,16 +15,17 @@
  */
 package se.ekonomipuls.proxy.configuration;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import static org.junit.Assert.*;
-
-import com.google.inject.Singleton;
 
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
+
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
@@ -39,7 +40,7 @@ public class FileMockUtil {
 	 * @return
 	 * @return
 	 */
-	InputStream setupFilterRulesFileMock() throws Exception {
+	public InputStream setupFilterRulesFileMock() throws Exception {
 		final String filePath = ASSETS
 				+ ConfigurationType.FILTER_RULES.getFileName();
 
@@ -53,10 +54,9 @@ public class FileMockUtil {
 	 * @return
 	 * 
 	 */
-	InputStream setupTagFileMock() throws Exception {
+	public InputStream setupTagFileMock() throws Exception {
 
-		final String filePath = ASSETS
-				+ ConfigurationType.TAGS.getFileName();
+		final String filePath = ASSETS + ConfigurationType.TAGS.getFileName();
 
 		assertFileExists(filePath);
 
@@ -69,7 +69,7 @@ public class FileMockUtil {
 	 * @throws IOException
 	 * 
 	 */
-	InputStream setupCategoryFileMock() throws Exception {
+	public InputStream setupCategoryFileMock() throws Exception {
 		final String filePath = ASSETS
 				+ ConfigurationType.CATEGORIES.getFileName();
 

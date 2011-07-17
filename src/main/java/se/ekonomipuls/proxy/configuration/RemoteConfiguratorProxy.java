@@ -16,6 +16,7 @@
 package se.ekonomipuls.proxy.configuration;
 
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
+import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
 
 /**
  * @author Magnus Andersson

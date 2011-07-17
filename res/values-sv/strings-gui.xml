@@ -7,16 +7,17 @@
 	<string name="settings_item">Inställningar Ekonomisk Översikt</string>
 	<string name="filter_rules_item">Hantera filterregler</string>
 	
-	<string name="default_expense_tag_name">Övriga utgifter</string>
-	<string name="default_incomes_tag_name">Övriga inkomster</string>
-	
 	<string name="economic_overview_name">Ekonomisk översikt</string>
-	<string name="economic_overview_desc">Ekonomisk översikt är en rapport innehålland dina transaktioner innevarande månad.</string>
+	<string name="economic_overview_desc">Ekonomisk översikt är en rapport innehållande dina transaktioner innevarande månad.</string>
 	<string name="economic_overview_date_from">N/A</string>
 	<string name="economic_overview_date_to">N/A</string>
 	<string name="economic_overview_categories_name">Kategorier</string>
 	<string name="category_name">Kategorinamn...</string>
 	<string name="new_transactions">Det finns nya transaktioner tillgängliga</string>
 	<string name="dialog_stage_import_message">Arbetar med nya transaktioner...</string>
-
+	<string name="verify_transactions_name">Verifiera nya transaktioner</string>
+	<string name="verification_finish_text">Verifiera</string>
+	<string name="home_menu_sync_filer_rules">Synkronisera filterregler</string>
+	<string name="home_menu_debug_backup_database">[Debug] Säkerhetskopiera databaser till SD-kort</string>
+	<string name="home_menu_sync_filer_rules_dialog_message">Importerar filterregler...</string>
 </resources>

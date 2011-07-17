@@ -70,8 +70,7 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		final List<FilterRule> rules = new ArrayList<FilterRule>();
 
 		try {
-			final Cursor cur = query(db, table, columns, selection,
-					selectionArgs, groupBy, having, sortOrder);
+			final Cursor cur = query(db, table, columns, selection, selectionArgs, groupBy, having, sortOrder);
 
 			final int[] indices = mapper.getFilterRuleCursorIndices(cur);
 
@@ -82,8 +81,7 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 						+ FilterRules.ID + " = " + rule.getId();
 				;
 
-				final Cursor cur2 = query(db, view, viewColumns, viewSelection,
-						selectionArgs, groupBy, having, viewSortOrder);
+				final Cursor cur2 = query(db, view, viewColumns, viewSelection, selectionArgs, groupBy, having, viewSortOrder);
 
 				final int[] tagIndices = mapper.getTagsCursorIndices(cur2);
 
@@ -103,6 +101,30 @@ public class AnalyticsFilterRulesDbImpl extends AbstractDb implements
 		}
 
 		return rules;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long replaceFilterRules(final List<AddFilterRuleAction> actions) {
+		final SQLiteDatabase db = helper.getWritableDatabase();
+
+		long numRows = -1;
+		try {
+			final String table = FilterRules.TABLE;
+			final String whereClause = null;
+			final String[] whereArgs = null;
+
+			// Purge old filters.
+			delete(db, table, whereClause, whereArgs);
+
+			for (final AddFilterRuleAction action : actions) {
+				numRows = insertFilterRuleCore(action, db);
+			}
+			db.setTransactionSuccessful();
+		} finally {
+			shutdownDb(db, helper);
+		}
+		return numRows;
 	}
 
 	/** {@inheritDoc} */

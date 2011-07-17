@@ -89,10 +89,13 @@ public class BankDroidImportTest {
 		when(bankDroidProxy.getBankDroidTransactions(isA(String.class)))
 				.thenReturn(mockedTransactions);
 
-		bankDroidImportService.importSingleAccount(ACC_ID);
+		final Map<Long, BankDroidBank> mockedBankAccounts = setupMockedBanksMap();
+		when(bankDroidProxy.getBankDroidBanks()).thenReturn(mockedBankAccounts);
+
+		bankDroidImportService.importSingleAccount(ACC_ID + "_1");
 
 		// verify that transactions are loaded from provider
-		verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID));
+		verify(bankDroidProxy).getBankDroidTransactions(eq(ACC_ID + "_1"));
 
 		// verify entries are put in staging
 		verify(stagingDbFacade)

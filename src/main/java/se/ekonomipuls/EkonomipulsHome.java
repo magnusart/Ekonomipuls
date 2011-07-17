@@ -31,6 +31,7 @@ import se.ekonomipuls.model.Category;
 import se.ekonomipuls.model.EkonomipulsUtil;
 import se.ekonomipuls.model.Transaction;
 import se.ekonomipuls.service.async.BankDroidImportIntentService;
+import se.ekonomipuls.service.async.ConfigurationAsyncTask;
 import se.ekonomipuls.service.async.ExtractTransformLoadAsyncTask;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
@@ -52,6 +53,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.liato.bankdroid.provider.IBankTransactionsProvider;
 
 /**
@@ -71,12 +73,13 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	private AnalyticsTransactionsDbFacade analyticsTransactionsDbFacade;
 
 	@Inject
-	private ExtractTransformLoadAsyncTask etlService;
+	private Provider<ExtractTransformLoadAsyncTask> etlServiceProvider;
 
 	@Inject
-	private BackupDatabaseUtil debugUtil;
+	private Provider<BackupDatabaseUtil> debugUtilProvider;
 
-	private LegendAdapter legendAdapter;
+	@Inject
+	private Provider<ConfigurationAsyncTask> configTaskProvider;
 
 	@InjectView(R.id.newTransactions)
 	private TextView newTransactions;
@@ -103,7 +106,9 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	@InjectResource(R.integer.request_code_default)
 	private int defaultRequestCode;
 
-	private IntentFilter filter = null;;
+	private IntentFilter filter = null;
+
+	private LegendAdapter legendAdapter;
 
 	private final BroadcastReceiver homeScreenTaskListener = new BroadcastReceiver() {
 
@@ -138,6 +143,9 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	 */
 	public void importStagingTransactions(final View view) {
 		final ProgressDialog dialog = new ProgressDialog(this);
+		final ExtractTransformLoadAsyncTask etlService = etlServiceProvider
+				.get();
+
 		etlService.setDialog(dialog);
 		etlService.setCallback(new Callback() {
 			@Override
@@ -149,6 +157,15 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 			}
 		});
 		etlService.execute();
+	}
+
+	private void importConfiguration() {
+		final ProgressDialog dialog = new ProgressDialog(this);
+		final ConfigurationAsyncTask configService = configTaskProvider.get();
+
+		configService.setDialog(dialog);
+		configService.execute();
+
 	}
 
 	public void verifyTransactions() {
@@ -268,13 +285,16 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 		switch (item.getItemId()) {
 		case (R.id.debug_backup_db):
 			try {
-				debugUtil.doBackup();
+				debugUtilProvider.get().doBackup();
 			} catch (final FileNotFoundException e) {
 				// FIXME Throw typed Exceptions!
 				throw new RuntimeException(DEBUG_DB_BACKUP_ERROR_MESSAGE, e);
 			} catch (final IOException e) {
 				throw new RuntimeException(DEBUG_DB_BACKUP_ERROR_MESSAGE, e);
 			}
+			break;
+		case (R.id.sync_filter_rules):
+			importConfiguration();
 			break;
 		default:
 			return super.onOptionsItemSelected(item);

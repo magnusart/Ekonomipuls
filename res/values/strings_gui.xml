@@ -7,12 +7,6 @@
 	<string name="settings_item">Economic Overview Settings</string>
 	<string name="filter_rules_item">Manage Filter Rules</string>
 
-	<!-- string name="default_expense_tag_name">Expenses</string>
-	<string name="default_incomes_tag_name">Incomes</string -->
-
-	<string name="default_expense_tag_name">Övriga utgifter</string>
-	<string name="default_incomes_tag_name">Övriga inkomster</string>
-
 	<string name="economic_overview_name">Economic overview</string>
 	<string name="economic_overview_desc">Economic overview is a report of your transactions for the current month.</string>
 	<string name="economic_overview_date_from">N/A</string>
@@ -24,5 +18,8 @@
 	<string name="dialog_stage_import_message">Processing new transactions...</string>
 	<string name="verify_transactions_name">Verify new transactions</string>
 	<string name="verification_finish_text">Finish verification</string>
+	<string name="home_menu_sync_filer_rules">Synchronze filter rules</string>
+	<string name="home_menu_debug_backup_database">[Debug] Backup databases to SD-card</string>
+	<string name="home_menu_sync_filer_rules_dialog_message">Importing filter rules from central repository...</string>
 
 </resources>

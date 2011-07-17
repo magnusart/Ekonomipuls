@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ 	<string name="error_configuration_service_async">Unable to download filter rules. Please check your Internet connection.</string>
+ 	<string name="success_configuration_service_async">Filter rules have been updated successfully.</string>
+</resources>

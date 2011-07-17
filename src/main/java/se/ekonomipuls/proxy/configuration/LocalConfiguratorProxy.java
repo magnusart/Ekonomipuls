@@ -16,6 +16,7 @@
 package se.ekonomipuls.proxy.configuration;
 
 import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
+import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
 
 /**
  * This class loads the default categories for initial configuration of the
@@ -24,7 +25,7 @@ import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
  * @author Magnus Andersson
  * @since 16 maj 2011
  */
-public class FileConfiguratorProxy extends AbstractConfiguratorProxy {
+public class LocalConfiguratorProxy extends AbstractConfiguratorProxy {
 	{
 		sourceMapping.put(ConfigurationType.CATEGORIES, SourceType.LOCAL_JSON);
 		sourceMapping.put(ConfigurationType.TAGS, SourceType.LOCAL_JSON);
