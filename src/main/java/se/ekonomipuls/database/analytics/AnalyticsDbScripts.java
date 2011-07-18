@@ -27,6 +27,7 @@ import se.ekonomipuls.database.analytics.AnalyticsDbConstants.Transactions;
  * @since 1 apr 2011
  */
 public interface AnalyticsDbScripts {
+
 	String DB_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE IF NOT EXISTS "
 			+ Transactions.TABLE + " ( " + Transactions.ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, " + Transactions.GLOBAL_ID

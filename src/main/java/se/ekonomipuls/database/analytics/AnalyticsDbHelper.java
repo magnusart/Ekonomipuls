@@ -84,7 +84,16 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	@Override
 	public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
 			final int newVersion) {
+		for (final String table : AnalyticsDbConstants.DROP_ALL_TABLES) {
+			db.execSQL(AnalyticsDbConstants.DROP_TABLE_PREFIX + table);
+		}
 
+		// Clear settings
+		util.setPairedBankDroid(false);
+		util.setApiKey("");
+
+		// Start over from the beginning.
+		super.onCreate(db);
 	}
 
 	/** {@inheritDoc} */
@@ -268,6 +277,5 @@ public class AnalyticsDbHelper extends AbstractDbHelper implements
 	/** {@inheritDoc} */
 	@Override
 	protected void initConfiguration() {
-
 	}
 }

@@ -21,159 +21,130 @@ package se.ekonomipuls.database.analytics;
  */
 public interface AnalyticsDbConstants {
 	// Database configuration for Analytics.
-	public static final int ANALYTICS_DB_VERSION = 1;
-	public static final String ANALYTICS_DB_NAME = "ekonomipuls_analytics.db";
+	int ANALYTICS_DB_VERSION = 2;
+	String ANALYTICS_DB_NAME = "ekonomipuls_analytics.db";
+
+	String[] DROP_ALL_TABLES = new String[] { Joins.CATEGORIES_TAGS_TABLE,
+			Joins.TRANSACTIONS_TAGS_TABLE, Joins.REPORTS_CATEGORIES_TABLE,
+			Joins.FILTER_RULES_TAGS_TABLE, FilterRules.TABLE, Categories.TABLE,
+			Transactions.TABLE, Tags.TABLE, Reports.TABLE };
+
+	String DROP_TABLE_PREFIX = "DROP TABLE IF EXISTS ";
 
 	static interface Transactions {
-		public final static String TABLE = "transactions";
+		String TABLE = "transactions";
 		// Columns for transaction table
-		public final static String ID = "_id";
-		public final static String GLOBAL_ID = "global_id";
-		public final static String DATE = "t_date";
-		public final static String DESCRIPTION = "description";
-		public final static String COMMENT = "comment";
-		public final static String AMOUNT = "amount";
-		public final static String CURRENCY = "currency";
-		public final static String BD_ACCOUNT = "bd_account_id";
-		public final static String FILTERED = "filtered";
-		public final static String VERIFIED = "verified";
+		String ID = "_id";
+		String GLOBAL_ID = "global_id";
+		String DATE = "t_date";
+		String DESCRIPTION = "description";
+		String COMMENT = "comment";
+		String AMOUNT = "amount";
+		String CURRENCY = "currency";
+		String BD_ACCOUNT = "bd_account_id";
+		String FILTERED = "filtered";
+		String VERIFIED = "verified";
 
-		public static final String[] COLUMNS = new String[] { ID, GLOBAL_ID,
-				DATE, DESCRIPTION, COMMENT, AMOUNT, CURRENCY, FILTERED,
-				VERIFIED, BD_ACCOUNT };
+		String[] COLUMNS = new String[] { ID, GLOBAL_ID, DATE, DESCRIPTION,
+				COMMENT, AMOUNT, CURRENCY, FILTERED, VERIFIED, BD_ACCOUNT };
 	};
 
 	static interface Categories {
 
-		public final static String TABLE = "categories";
+		String TABLE = "categories";
 		// Columns for Categories
-		public final static String ID = "_id";
-		public final static String NAME = "name";
-		public final static String COLOR = "color";
-		public static final String TYPE = "entity_type";
+		String ID = "_id";
+		String NAME = "name";
+		String COLOR = "color";
+		String TYPE = "entity_type";
 
-		public static final String[] COLUMNS = new String[] { ID, COLOR, NAME,
-				TYPE };
+		String[] COLUMNS = new String[] { ID, COLOR, NAME, TYPE };
 	}
 
 	static interface Tags {
-		public static final String TABLE = "tags";
+		String TABLE = "tags";
 		// Columns for Tags
-		public final static String ID = "_id";
-		public final static String NAME = "name";
-		public static final String TYPE = "entity_type";
+		String ID = "_id";
+		String NAME = "name";
+		String TYPE = "entity_type";
 
-		public static final String[] COLUMNS = new String[] { ID, NAME, TYPE };
+		String[] COLUMNS = new String[] { ID, NAME, TYPE };
 	}
 
 	static interface Reports {
-		public final static String TABLE = "reports";
+		String TABLE = "reports";
 		// Columns for Reports table
-		public final static String ID = "_id";
-		public final static String NAME = "name";
-		public final static String DESC = "description";
-		public final static String DATE_FROM = "date_from";
-		public final static String DATE_TO = "date_to";
+		String ID = "_id";
+		String NAME = "name";
+		String DESC = "description";
+		String DATE_FROM = "date_from";
+		String DATE_TO = "date_to";
 
-		public static final String[] COLUMNS = new String[] { ID, NAME, DESC,
-				DATE_FROM, DATE_TO };
+		String[] COLUMNS = new String[] { ID, NAME, DESC, DATE_FROM, DATE_TO };
 	}
 
 	static interface FilterRules {
-		public final static String TABLE = "filter_rules";
+		String TABLE = "filter_rules";
 		// Columns for Filter Rules table
-		public final static String ID = "_id";
-		public final static String NAME = "name";
-		public final static String DESC = "description";
-		public final static String PATTERN = "pattern";
-		public final static String MARK_FILTER = "mark_filtered";
-		public final static String PRIORITY = "priority";
+		String ID = "_id";
+		String NAME = "name";
+		String DESC = "description";
+		String PATTERN = "pattern";
+		String MARK_FILTER = "mark_filtered";
+		String PRIORITY = "priority";
 
-		public static final String[] COLUMNS = new String[] { ID, NAME, DESC,
-				PATTERN, MARK_FILTER, PRIORITY };
+		String[] COLUMNS = new String[] { ID, NAME, DESC, PATTERN, MARK_FILTER,
+				PRIORITY };
 	}
 
 	static interface Joins {
-		public final static String CATEGORIES_TAGS_TABLE = "categories_tags";
+		String CATEGORIES_TAGS_TABLE = "categories_tags";
 		// Columns for Categories/Tags join table
-		public final static String CAT_FK_1 = "category_fk";
-		public final static String TAG_FK_1 = "tag_fk";
+		String CAT_FK_1 = "category_fk";
+		String TAG_FK_1 = "tag_fk";
 
-		public final static String TRANSACTIONS_TAGS_TABLE = "transactions_tags";
+		String TRANSACTIONS_TAGS_TABLE = "transactions_tags";
 		// Columns for Transactions/Tags join table
-		public final static String TRANS_FK = "transaction_fk";
-		public final static String TAG_FK_2 = "tag_fk";
+		String TRANS_FK = "transaction_fk";
+		String TAG_FK_2 = "tag_fk";
 
-		public final static String REPORTS_CATEGORIES_TABLE = "reports_categories";
+		String REPORTS_CATEGORIES_TABLE = "reports_categories";
 		// Columns for Reports/Categories join table
-		public final static String REP_FK = "report_fk";
-		public final static String CAT_FK_2 = "category_fk";
+		String REP_FK = "report_fk";
+		String CAT_FK_2 = "category_fk";
 
-		public final static String FILTER_RULES_TAGS_TABLE = "filter_rules_tags_table";
+		String FILTER_RULES_TAGS_TABLE = "filter_rules_tags_table";
 		// Columns for Filter Rules/Tags join table
-		public final static String FILTER_RULE_FK = "filter_rule_fk";
-		public final static String TAG_FK_3 = "tag_fk";
+		String FILTER_RULE_FK = "filter_rule_fk";
+		String TAG_FK_3 = "tag_fk";
 
 	}
 
 	static interface Views {
-		public final static String TRANSACTIONS_CATEGORY_FROM_STMT = Categories.TABLE
-				+ " INNER JOIN "
-				+ Joins.CATEGORIES_TAGS_TABLE
-				+ " ON "
-				+ Categories.TABLE
-				+ "."
-				+ Categories.ID
-				+ " = "
-				+ Joins.CATEGORIES_TAGS_TABLE
-				+ "."
-				+ Joins.CAT_FK_1
-				+ " INNER JOIN "
-				+ Joins.TRANSACTIONS_TAGS_TABLE
-				+ " ON "
-				+ Joins.CATEGORIES_TAGS_TABLE
-				+ "."
-				+ Joins.TAG_FK_1
-				+ " = "
-				+ Joins.TRANSACTIONS_TAGS_TABLE
-				+ "."
-				+ Joins.TAG_FK_2
-				+ " INNER JOIN "
-				+ Transactions.TABLE
-				+ " ON "
-				+ Joins.TRANSACTIONS_TAGS_TABLE
-				+ "."
-				+ Joins.TRANS_FK
-				+ " = "
+		String TRANSACTIONS_CATEGORY_FROM_STMT = Categories.TABLE
+				+ " INNER JOIN " + Joins.CATEGORIES_TAGS_TABLE + " ON "
+				+ Categories.TABLE + "." + Categories.ID + " = "
+				+ Joins.CATEGORIES_TAGS_TABLE + "." + Joins.CAT_FK_1
+				+ " INNER JOIN " + Joins.TRANSACTIONS_TAGS_TABLE + " ON "
+				+ Joins.CATEGORIES_TAGS_TABLE + "." + Joins.TAG_FK_1 + " = "
+				+ Joins.TRANSACTIONS_TAGS_TABLE + "." + Joins.TAG_FK_2
+				+ " INNER JOIN " + Transactions.TABLE + " ON "
+				+ Joins.TRANSACTIONS_TAGS_TABLE + "." + Joins.TRANS_FK + " = "
 				+ Transactions.TABLE + "." + Transactions.ID;;
 
-		public final static String CATEGORIES_REPORT_FROM_STMT = Reports.TABLE
-				+ " INNER JOIN " + Joins.REPORTS_CATEGORIES_TABLE + " ON "
-				+ Reports.TABLE + "." + Reports.ID + " = "
-				+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.REP_FK
-				+ " INNER JOIN " + Categories.TABLE + " ON "
+		String CATEGORIES_REPORT_FROM_STMT = Reports.TABLE + " INNER JOIN "
+				+ Joins.REPORTS_CATEGORIES_TABLE + " ON " + Reports.TABLE + "."
+				+ Reports.ID + " = " + Joins.REPORTS_CATEGORIES_TABLE + "."
+				+ Joins.REP_FK + " INNER JOIN " + Categories.TABLE + " ON "
 				+ Joins.REPORTS_CATEGORIES_TABLE + "." + Joins.CAT_FK_2 + " = "
 				+ Categories.TABLE + "." + Categories.ID;
 
-		public final static String FILTER_RULES_TAGS_FROM_STMT = FilterRules.TABLE
-				+ " INNER JOIN "
-				+ Joins.FILTER_RULES_TAGS_TABLE
-				+ " ON "
-				+ FilterRules.TABLE
-				+ "."
-				+ FilterRules.ID
-				+ " = "
-				+ Joins.FILTER_RULES_TAGS_TABLE
-				+ "."
-				+ Joins.FILTER_RULE_FK
-				+ " INNER JOIN "
-				+ Tags.TABLE
-				+ " ON "
-				+ Joins.FILTER_RULES_TAGS_TABLE
-				+ "."
-				+ Joins.TAG_FK_3
-				+ " = "
-				+ Tags.TABLE + "." + Tags.ID;
+		String FILTER_RULES_TAGS_FROM_STMT = FilterRules.TABLE + " INNER JOIN "
+				+ Joins.FILTER_RULES_TAGS_TABLE + " ON " + FilterRules.TABLE
+				+ "." + FilterRules.ID + " = " + Joins.FILTER_RULES_TAGS_TABLE
+				+ "." + Joins.FILTER_RULE_FK + " INNER JOIN " + Tags.TABLE
+				+ " ON " + Joins.FILTER_RULES_TAGS_TABLE + "." + Joins.TAG_FK_3
+				+ " = " + Tags.TABLE + "." + Tags.ID;
 
 	}
 }
