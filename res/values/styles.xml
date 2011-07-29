@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="text_engrave" parent="@android:style/Widget.TextView">
+        <item name="android:shadowColor">#FF777777</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:textColor">#FF222222</item>
+    </style>
+</resources>

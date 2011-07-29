@@ -2,6 +2,7 @@
 <resources>
  	<string name="app_homescreen">Ekonomipuls</string>
 	<string name="app_name">Ekonomipuls</string>
+	<string name="app_slogan">Home economy made easy!</string>
 	<string name="no_data">No data</string>
 	
 	<string name="settings_item">Economic Overview Settings</string>
@@ -21,5 +22,6 @@
 	<string name="home_menu_sync_filer_rules">Synchronze filter rules</string>
 	<string name="home_menu_debug_backup_database">[Debug] Backup databases to SD-card</string>
 	<string name="home_menu_sync_filer_rules_dialog_message">Importing filter rules from central repository...</string>
+	
 
 </resources>

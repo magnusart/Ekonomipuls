@@ -36,6 +36,7 @@ import se.ekonomipuls.service.async.ExtractTransformLoadAsyncTask;
 import se.ekonomipuls.views.adapter.LegendAdapter;
 import se.ekonomipuls.views.charts.PieChartView;
 import se.ekonomipuls.views.charts.SeriesEntry;
+import se.ekonomipuls.wizard.WelcomeWizard;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -185,6 +186,9 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		final Intent i = new Intent(this, WelcomeWizard.class);
+		startActivity(i);
 
 		registerTaskRecievier();
 

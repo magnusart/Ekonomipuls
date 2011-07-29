@@ -2,6 +2,8 @@
 <resources>
 	<string name="app_homescreen">Ekonomipuls</string>
 	<string name="app_name">Ekonomipuls</string>
+	<string name="app_slogan">Ta pulsen på din ekonomi!</string>
+	
 	<string name="no_data">Ingen data</string>
 	
 	<string name="settings_item">Inställningar Ekonomisk Översikt</string>

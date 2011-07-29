@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_header"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="122dp"
+		    android:background="@drawable/wizard_title_background">
+        <ImageView 
+	        android:id="@+id/logo_ekonomipuls" android:src="@drawable/ic_logo_ekonomipuls" 
+	        android:layout_width="wrap_content" 
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginTop="10dp"></ImageView>
+        <LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_marginLeft="5dp"
+		    android:layout_marginTop="30dp">
+	        <TextView 
+	           	style="@style/text_engrave"
+	        	android:text="@string/app_name" 
+		        android:layout_height="wrap_content" 
+		        android:layout_width="fill_parent" 
+		        android:id="@+id/app_name"
+		        android:textStyle="bold" 
+		        android:typeface="sans" 
+		        android:textSize="30sp" />
+	        <TextView
+	        	style="@style/text_engrave"
+	        	android:layout_marginLeft="2dp"
+	        	android:layout_marginTop="-3dp"
+	        	android:layout_width="fill_parent" 
+	        	android:text="@string/app_slogan" 
+	        	android:textStyle="bold" 
+		        android:typeface="sans" 
+		        android:layout_height="wrap_content" />
+        
+   		</LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_below="@id/top_header"
+        android:layout_width="fill_parent"
+        android:layout_height="5dip"
+        android:background="@drawable/drop_shadow"/>
+    <ViewFlipper android:id="@+id/details"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">  
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        </LinearLayout> 
+
+        <LinearLayout
+               android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffffff">
+
+            <TextView android:id="@+id/tv_income"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18px"
+            android:text="Income" >
+            </TextView>
+            <EditText android:text=""
+            android:id="@+id/et_income"
+            android:layout_width="200px"
+            android:layout_height="55px">
+            </EditText>
+            <Button android:text="Previous"
+            android:id="@+id/Button_previous"
+            android:layout_width="250px"
+                android:textSize="18px"
+            android:layout_height="55px">
+            </Button>
+        </LinearLayout> 
+
+    </ViewFlipper>        
+
+</LinearLayout>
