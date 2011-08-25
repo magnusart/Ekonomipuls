@@ -23,7 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
+import se.ekonomipuls.service.AndroidApiUtil.ConfigurationType;
 
 import com.google.inject.Singleton;
 

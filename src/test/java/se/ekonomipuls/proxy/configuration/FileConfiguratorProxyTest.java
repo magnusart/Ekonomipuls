@@ -34,9 +34,9 @@ import se.ekonomipuls.InjectedTestRunner;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import se.ekonomipuls.model.EntityType;
 import se.ekonomipuls.service.AndroidApiUtil;
+import se.ekonomipuls.service.AndroidApiUtil.ConfigurationType;
 
 import com.google.inject.Inject;
 
@@ -78,8 +78,8 @@ public class FileConfiguratorProxyTest {
 		when(util.getConfigurationFile(ConfigurationType.CATEGORIES))
 				.thenReturn(catStream);
 
-		when(util.getConfigurationFile(ConfigurationType.TAGS))
-				.thenReturn(tagStream);
+		when(util.getConfigurationFile(ConfigurationType.TAGS)).thenReturn(
+				tagStream);
 
 		when(util.getConfigurationFile(ConfigurationType.FILTER_RULES))
 				.thenReturn(rulesStream);
@@ -93,7 +93,8 @@ public class FileConfiguratorProxyTest {
 	public void loadCategoriesFromFile() throws Exception {
 		assertNotNull("Category list should not be null", categories);
 		assertTrue("Category list should be exactly " + CATEGORY_SIZE
-				+ " entries, found " + categories.size() + ".", categories.size() == CATEGORY_SIZE);
+				+ " entries, found " + categories.size() + ".",
+				categories.size() == CATEGORY_SIZE);
 
 		int i = 0;
 		for (final AddCategoryAction cat : categories) {
@@ -121,7 +122,8 @@ public class FileConfiguratorProxyTest {
 	public void loadFilterRuleFromFile() throws Exception {
 		assertNotNull("Filter Rules list should no be null", rules);
 		assertTrue("Filter rule list should be exactly " + FILTER_RULE_SIZE
-				+ " entries, found " + rules.size() + ".", rules.size() == FILTER_RULE_SIZE);
+				+ " entries, found " + rules.size() + ".",
+				rules.size() == FILTER_RULE_SIZE);
 
 		assertTrue(rules.containsKey("Lön"));
 		assertTrue(rules.containsKey("Luncher"));
@@ -129,8 +131,8 @@ public class FileConfiguratorProxyTest {
 
 	@Test
 	public void validateConfigurationTest() throws Exception {
-		validator
-				.validateConfiguration(categories, tags, rules, EXPENSES_TAG_NAME, INCOME_TAG_NAME);
+		validator.validateConfiguration(categories, tags, rules,
+				EXPENSES_TAG_NAME, INCOME_TAG_NAME);
 	}
 
 }

@@ -15,8 +15,8 @@
  */
 package se.ekonomipuls.proxy.configuration;
 
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
+import se.ekonomipuls.service.AndroidApiUtil.ConfigurationType;
 
 /**
  * This class loads the default categories for initial configuration of the
@@ -29,7 +29,7 @@ public class LocalConfiguratorProxy extends AbstractConfiguratorProxy {
 	{
 		sourceMapping.put(ConfigurationType.CATEGORIES, SourceType.LOCAL_JSON);
 		sourceMapping.put(ConfigurationType.TAGS, SourceType.LOCAL_JSON);
-		sourceMapping
-				.put(ConfigurationType.FILTER_RULES, SourceType.LOCAL_SPREADSHEET_JSON);
+		sourceMapping.put(ConfigurationType.FILTER_RULES,
+				SourceType.LOCAL_SPREADSHEET_JSON);
 	}
 }

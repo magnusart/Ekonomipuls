@@ -28,9 +28,9 @@ import se.ekonomipuls.R;
 import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
 import se.ekonomipuls.service.AndroidApiUtil;
+import se.ekonomipuls.service.AndroidApiUtil.ConfigurationType;
 
 import com.google.gson.stream.JsonReader;
 import com.google.inject.Inject;
@@ -61,22 +61,19 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	 * 
 	 * @throws IOException
 	 */
-	@Override
 	public List<AddCategoryAction> getCategories() throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.CATEGORIES);
-		final List<AddCategoryAction> categories = remapUtil
-				.mapCategories(reader, sourceMapping
-						.get(ConfigurationType.CATEGORIES));
+		final List<AddCategoryAction> categories = remapUtil.mapCategories(
+				reader, sourceMapping.get(ConfigurationType.CATEGORIES));
 		reader.close();
 		return categories;
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public Map<String, List<AddTagAction>> getTags() throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.TAGS);
-		final Map<String, List<AddTagAction>> tags = remapUtil
-				.mapTags(reader, sourceMapping.get(ConfigurationType.TAGS));
+		final Map<String, List<AddTagAction>> tags = remapUtil.mapTags(reader,
+				sourceMapping.get(ConfigurationType.TAGS));
 		reader.close();
 		return tags;
 	}
@@ -86,13 +83,12 @@ public abstract class AbstractConfiguratorProxy implements LogTag,
 	 * 
 	 * @throws IOException
 	 */
-	@Override
 	public Map<String, List<AddFilterRuleAction>> getFilterRules()
 			throws IOException {
 		final JsonReader reader = getConfiguration(ConfigurationType.FILTER_RULES);
 		final Map<String, List<AddFilterRuleAction>> filterRules = remapUtil
-				.mapFilterRules(reader, sourceMapping
-						.get(ConfigurationType.FILTER_RULES));
+				.mapFilterRules(reader,
+						sourceMapping.get(ConfigurationType.FILTER_RULES));
 		reader.close();
 		return filterRules;
 	}

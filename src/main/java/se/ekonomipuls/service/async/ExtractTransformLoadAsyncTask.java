@@ -21,6 +21,7 @@ import se.ekonomipuls.R;
 import se.ekonomipuls.service.ExtractTransformLoadService;
 import android.app.ProgressDialog;
 import android.os.Handler.Callback;
+
 import com.google.inject.Inject;
 
 /**
@@ -61,16 +62,15 @@ public class ExtractTransformLoadAsyncTask extends RoboAsyncTask<Boolean> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Boolean call() {
-		return service.performETL();
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	protected void onSuccess(final Boolean t) throws Exception {
 		if (callback instanceof Callback) {
 			callback.handleMessage(null);
 		}
+	}
+
+	/** {@inheritDoc} */
+	public Boolean call() throws Exception {
+		return service.performETL();
 	}
 
 	/**

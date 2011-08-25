@@ -67,7 +67,6 @@ public class ConfigurationAsyncTask extends RoboAsyncTask<Boolean> {
 	}
 
 	/** {@inheritDoc} */
-	@Override
 	public Boolean call() throws Exception {
 		return service.importRemoteFilterRulesLocalCategoriesTags();
 	}

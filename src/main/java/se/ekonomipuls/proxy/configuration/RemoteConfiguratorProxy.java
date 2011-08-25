@@ -15,8 +15,8 @@
  */
 package se.ekonomipuls.proxy.configuration;
 
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import se.ekonomipuls.proxy.configuration.ConfigurationRemapUtil.SourceType;
+import se.ekonomipuls.service.AndroidApiUtil.ConfigurationType;
 
 /**
  * @author Magnus Andersson
@@ -27,8 +27,8 @@ public class RemoteConfiguratorProxy extends AbstractConfiguratorProxy {
 	{
 		sourceMapping.put(ConfigurationType.CATEGORIES, SourceType.LOCAL_JSON);
 		sourceMapping.put(ConfigurationType.TAGS, SourceType.LOCAL_JSON);
-		sourceMapping
-				.put(ConfigurationType.FILTER_RULES, SourceType.REMOTE_SPREADSHEET_JSON);
+		sourceMapping.put(ConfigurationType.FILTER_RULES,
+				SourceType.REMOTE_SPREADSHEET_JSON);
 	}
 
 }

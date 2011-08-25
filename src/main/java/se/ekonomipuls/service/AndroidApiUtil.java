@@ -28,7 +28,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import se.ekonomipuls.LogTag;
-import se.ekonomipuls.model.EkonomipulsUtil.ConfigurationType;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -45,6 +44,28 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class AndroidApiUtil {
+	/**
+	 * @author Magnus Andersson
+	 * @since 19 maj 2011
+	 */
+	public static enum ConfigurationType {
+
+		CATEGORIES("categories.json"), TAGS("tags.json"), FILTER_RULES(
+				"filter_rules.json");
+
+		private final String fileName;
+
+		ConfigurationType(final String fileName) {
+			this.fileName = fileName;
+		}
+
+		/**
+		 * @return the fileName
+		 */
+		public String getFileName() {
+			return fileName;
+		}
+	}
 
 	@Inject
 	private Context context;

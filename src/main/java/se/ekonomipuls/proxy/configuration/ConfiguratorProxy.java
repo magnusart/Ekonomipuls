@@ -50,6 +50,10 @@ public interface ConfiguratorProxy {
 	public static @interface LocalConfiguration {
 	}
 
+	/**
+	 * @return
+	 * @throws IOException
+	 */
 	public abstract List<AddCategoryAction> getCategories() throws IOException;
 
 	/**

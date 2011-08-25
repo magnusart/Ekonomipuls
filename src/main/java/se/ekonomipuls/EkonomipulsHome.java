@@ -149,7 +149,6 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 		etlService.setDialog(dialog);
 		etlService.setCallback(new Callback() {
-			@Override
 			public boolean handleMessage(final Message msg) {
 
 				verifyTransactions();
@@ -233,8 +232,10 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 				BankDroidImportIntentService.class);
 
 		importService
-				.putExtra(BankDroidImportIntentService.IMPORT_ACTION, BankDroidImportIntentService.ImportAction.ALL_AVAILABLE_ACCOUNTS
-						.toString());
+				.putExtra(
+						BankDroidImportIntentService.IMPORT_ACTION,
+						BankDroidImportIntentService.ImportAction.ALL_AVAILABLE_ACCOUNTS
+								.toString());
 
 		Log.v(TAG, "Handing over to import service");
 		// Hand over to service queue since broadcast receivers have a very
@@ -320,7 +321,8 @@ public class EkonomipulsHome extends RoboActivity implements LogTag {
 
 		populateSeriesEntries(pieChart);
 
-		populateLegendList(legendList, pieChart.getSeries(), pieChart.getTotalAmt());
+		populateLegendList(legendList, pieChart.getSeries(),
+				pieChart.getTotalAmt());
 
 		// pieChart.requestLayout();
 

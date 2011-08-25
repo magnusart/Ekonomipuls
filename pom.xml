@@ -12,6 +12,7 @@
 		<android.version>2.2.1</android.version>
 		<mockito.version>1.8.5</mockito.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<android.sdk.path>/home/magnus/Dokument/JavaBibliotek/android-sdk-linux_x86</android.sdk.path>
 	</properties>
 
 	<dependencies>

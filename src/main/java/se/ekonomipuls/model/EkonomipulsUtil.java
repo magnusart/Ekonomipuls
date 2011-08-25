@@ -48,29 +48,6 @@ import com.google.inject.Singleton;
 @Singleton
 public class EkonomipulsUtil implements PropertiesConstants {
 
-	/**
-	 * @author Magnus Andersson
-	 * @since 19 maj 2011
-	 */
-	public static enum ConfigurationType {
-
-		CATEGORIES("categories.json"), TAGS("tags.json"), FILTER_RULES(
-				"filter_rules.json");
-
-		private final String fileName;
-
-		ConfigurationType(final String fileName) {
-			this.fileName = fileName;
-		}
-
-		/**
-		 * @return the fileName
-		 */
-		public String getFileName() {
-			return fileName;
-		}
-	}
-
 	@Inject
 	private Context context;
 
@@ -243,8 +220,9 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	 * @return True if new transactions exists.
 	 */
 	public boolean getNewTransactionsStatus() {
-		return preferences.getBoolean(context
-				.getString(R.string.setting_staging_contains_updates), false);
+		return preferences.getBoolean(
+				context.getString(R.string.setting_staging_contains_updates),
+				false);
 	}
 
 	/**
@@ -287,8 +265,8 @@ public class EkonomipulsUtil implements PropertiesConstants {
 		final SharedPreferences.Editor editor = preferences.edit();
 
 		// Commit to preferences
-		editor.putLong(CONF_EXPENSES_DEF_TAG, tagIds
-				.get(defaultExpensesTagName));
+		editor.putLong(CONF_EXPENSES_DEF_TAG,
+				tagIds.get(defaultExpensesTagName));
 		editor.putLong(CONF_INCOMES_DEF_TAG, tagIds.get(defaultIncomesTagName));
 		editor.putLong(ECONOMIC_OVERVIEW_REPORT_ID, repId);
 		editor.commit();
@@ -311,8 +289,8 @@ public class EkonomipulsUtil implements PropertiesConstants {
 	public boolean isIntentAvailable(final Context context, final String action) {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
-		final List<ResolveInfo> list = packageManager
-				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		final List<ResolveInfo> list = packageManager.queryIntentActivities(
+				intent, PackageManager.MATCH_DEFAULT_ONLY);
 		return list.size() > 0;
 	}
 

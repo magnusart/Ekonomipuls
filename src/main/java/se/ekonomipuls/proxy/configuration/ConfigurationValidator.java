@@ -23,16 +23,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.google.inject.Singleton;
-
-import android.util.Log;
-
 import se.ekonomipuls.LogTag;
+import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.actions.AddFilterRuleAction;
 import se.ekonomipuls.actions.AddTagAction;
-import se.ekonomipuls.actions.AddCategoryReportAction.AddCategoryAction;
 import se.ekonomipuls.model.EntityType;
 import se.ekonomipuls.model.Tag;
+import android.util.Log;
+
+import com.google.inject.Singleton;
 
 /**
  * @author Magnus Andersson
@@ -85,7 +84,6 @@ public class ConfigurationValidator implements LogTag {
 	private static class TagNameComparator implements Comparator<Tag> {
 
 		/** {@inheritDoc} */
-		@Override
 		public int compare(final Tag arg0, final Tag arg1) {
 			final int result = arg0.getName().compareTo(arg1.getName());
 
