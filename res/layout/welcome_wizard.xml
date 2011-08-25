@@ -47,7 +47,7 @@
         android:layout_below="@id/top_header"
         android:layout_width="fill_parent"
         android:layout_height="5dip"
-        android:background="@drawable/drop_shadow"/>
+      /> <!--   android:background="@drawable/drop_shadow" -->
     <ViewFlipper android:id="@+id/details"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">  
